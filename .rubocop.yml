@@ -1,0 +1,28 @@
+require:
+  - rubocop-rspec
+
+# ================ LINT ================
+Lint/AmbiguousBlockAssociation:
+  Exclude:
+    - spec/**/*_spec.rb
+
+# ================ Metics ================
+Metrics/LineLength:
+  Max: 150
+
+Metrics/BlockLength:
+  Exclude:
+    - spec/**/*_spec.rb
+
+# ================ RSPEC ================
+
+RSpec/MultipleExpectations:
+  Max: 5
+
+Rspec/NestedGroups:
+  Max: 5
+
+
+# TODO: Activate later
+Style/Documentation:
+  Enabled: false
