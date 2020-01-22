@@ -32,7 +32,8 @@ module SnFoil
         options[:action] = :index
         options = setup_index(**options)
         options.fetch(:searcher) { searcher_class }
-               .new(params: params, scope: scope.resolve)
+               .new(scope: scope.resolve)
+               .search(params: params)
       end
 
       # Param manipulation based on User should be done here

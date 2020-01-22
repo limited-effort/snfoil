@@ -13,12 +13,14 @@ RSpec.describe SnFoil::Contexts::IndexContextConcern do
   let(:searcher) { TestSeacher }
   let(:searcher_double) { class_double(searcher) }
   let(:searcher_instance_double) { instance_double(searcher) }
+  let(:results) { double }
   let(:params) { {} }
 
   before do
     including_class.model_class(model_double)
     including_class.policy_class(FakePolicy)
     allow(searcher_double).to receive(:new).and_return(searcher_instance_double)
+    allow(searcher_instance_double).to receive(:search).with(anything).and_return(results)
   end
 
   describe '#self.searcher_class' do
@@ -67,33 +69,37 @@ RSpec.describe SnFoil::Contexts::IndexContextConcern do
     context 'with options[:searcher]' do
       let(:other_searcher_double) { class_double(searcher) }
       let(:other_searcher_instance_double) { instance_double(searcher) }
+      let(:other_results) { double }
 
       before do
         allow(other_searcher_double).to receive(:new).and_return(other_searcher_instance_double)
+        allow(other_searcher_instance_double).to receive(:search).and_return(other_results)
       end
 
       it 'uses the options searcher class' do
-        expect(instance.index(params: params, searcher: other_searcher_double)).to eq(other_searcher_instance_double)
+        expect(instance.index(params: params, searcher: other_searcher_double)).to eq(other_results)
         expect(other_searcher_double).to have_received(:new).once
       end
 
       it 'provides scope to the searcher' do
         instance.index(params: params, searcher: other_searcher_double)
         expect(model_double).to have_received(:all)
-        expect(other_searcher_double).to have_received(:new).with(hash_including(params: params, scope: relation_double))
+        expect(other_searcher_double).to have_received(:new).with(hash_including(scope: relation_double))
+        expect(other_searcher_instance_double).to have_received(:search).with(hash_including(params: params))
       end
     end
 
     context 'without options[:searcher]' do
       it 'uses the context\'s searcher class' do
-        expect(instance.index(params: params)).to eq(searcher_instance_double)
+        expect(instance.index(params: params)).to eq(results)
         expect(searcher_double).to have_received(:new).once
       end
 
       it 'provides scope to the searcher' do
         instance.index(params: params)
         expect(model_double).to have_received(:all)
-        expect(searcher_double).to have_received(:new).with(hash_including(params: params, scope: relation_double))
+        expect(searcher_double).to have_received(:new).with(hash_including(scope: relation_double))
+        expect(searcher_instance_double).to have_received(:search).with(hash_including(params: params))
       end
     end
   end

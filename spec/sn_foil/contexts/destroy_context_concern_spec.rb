@@ -117,6 +117,144 @@ RSpec.describe SnFoil::Contexts::DestroyContextConcern do
       end
     end
   end
+
+  context 'when hooks are provided' do
+    let(:canary) { double }
+
+    before do
+      allow(canary).to receive(:ping).with(instance_of(Symbol))
+
+      # Setup Action Hooks
+      including_class.before_destroy do |obj, opts|
+        opts[:canary].ping(:before_destroy)
+        obj
+      end
+      including_class.before_change do |obj, opts|
+        opts[:canary].ping(:before_change)
+        obj
+      end
+      including_class.after_destroy_success do |obj, opts|
+        opts[:canary].ping(:after_destroy_success)
+        obj
+      end
+      including_class.after_change_success do |obj, opts|
+        opts[:canary].ping(:after_change_success)
+        obj
+      end
+      including_class.after_destroy_failure do |obj, opts|
+        opts[:canary].ping(:after_destroy_failure)
+        obj
+      end
+      including_class.after_change_failure do |obj, opts|
+        opts[:canary].ping(:after_change_failure)
+        obj
+      end
+      including_class.after_destroy do |obj, opts|
+        opts[:canary].ping(:after_destroy)
+        obj
+      end
+      including_class.after_change do |obj, opts|
+        opts[:canary].ping(:after_change)
+        obj
+      end
+    end
+
+    describe 'self#before_destroy' do
+      before do
+        allow(SnFoil).to receive(:adapter).and_return(FakeErrorORMAdapter)
+      end
+
+      it 'gets called before any save' do
+        expect do
+          instance.destroy(params: params, id: 1, canary: canary)
+        end.to raise_error(StandardError)
+        expect(canary).to have_received(:ping).exactly(2).times
+        expect(canary).to have_received(:ping).with(:before_destroy).once
+      end
+    end
+
+    describe 'self#before_change' do
+      before do
+        allow(SnFoil).to receive(:adapter).and_return(FakeErrorORMAdapter)
+      end
+
+      it 'gets called before any save' do
+        expect do
+          instance.destroy(params: params, id: 1, canary: canary)
+        end.to raise_error(StandardError)
+        expect(canary).to have_received(:ping).exactly(2).times
+        expect(canary).to have_received(:ping).with(:before_change).once
+      end
+    end
+
+    describe 'self#after_destroy_success' do
+      it 'gets called after a successful save' do
+        instance.destroy(params: params, id: 1, canary: canary)
+        expect(canary).to have_received(:ping).exactly(6).times
+        expect(canary).to have_received(:ping).with(:after_destroy_success).once
+        expect(canary).not_to have_received(:ping).with(:after_destroy_failure)
+      end
+    end
+
+    describe 'self#after_change_success' do
+      it 'gets called after a successful save' do
+        instance.destroy(params: params, id: 1, canary: canary)
+        expect(canary).to have_received(:ping).exactly(6).times
+        expect(canary).to have_received(:ping).with(:after_change_success).once
+        expect(canary).not_to have_received(:ping).with(:after_change_failure)
+      end
+    end
+
+    describe 'self#after_destroy_failure' do
+      before do
+        allow(SnFoil).to receive(:adapter).and_return(FakeFailureORMAdapter)
+      end
+
+      it 'gets called after a failed save' do
+        instance.destroy(params: params, id: 1, canary: canary)
+        expect(canary).to have_received(:ping).exactly(6).times
+        expect(canary).to have_received(:ping).with(:after_destroy_failure).once
+        expect(canary).not_to have_received(:ping).with(:after_destroy_success)
+      end
+    end
+
+    describe 'self#after_change_failure' do
+      before do
+        allow(SnFoil).to receive(:adapter).and_return(FakeFailureORMAdapter)
+      end
+
+      it 'gets called after a failed save' do
+        instance.destroy(params: params, id: 1, canary: canary)
+        expect(canary).to have_received(:ping).exactly(6).times
+        expect(canary).to have_received(:ping).with(:after_change_failure).once
+        expect(canary).not_to have_received(:ping).with(:after_change_success)
+      end
+    end
+
+    describe 'self#after_destroy' do
+      before do
+        allow(SnFoil).to receive(:adapter).and_return(FakeFailureORMAdapter)
+      end
+
+      it 'gets called regardless of save success' do
+        instance.destroy(params: params, id: 1, canary: canary)
+        expect(canary).to have_received(:ping).exactly(6).times
+        expect(canary).to have_received(:ping).with(:after_destroy).once
+      end
+    end
+
+    describe 'self#after_change' do
+      before do
+        allow(SnFoil).to receive(:adapter).and_return(FakeFailureORMAdapter)
+      end
+
+      it 'gets called regardless of save success' do
+        instance.destroy(params: params, id: 1, canary: canary)
+        expect(canary).to have_received(:ping).exactly(6).times
+        expect(canary).to have_received(:ping).with(:after_change).once
+      end
+    end
+  end
 end
 
 class DestroyContextClass
