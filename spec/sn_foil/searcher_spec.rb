@@ -11,7 +11,7 @@ RSpec.describe SnFoil::Searcher do
   subject(:searcher) { Class.new TestSearcherClass }
 
   let(:instance) { searcher.new }
-  let(:query) { instance.results }
+  let(:query) { instance.search({}).to_query }
 
   before do
     searcher.model_class model_double
@@ -19,8 +19,6 @@ RSpec.describe SnFoil::Searcher do
   end
 
   describe '#initialize' do
-    let(:query) { instance.results.scope }
-
     context 'when a scope is provided' do
       let(:instance) { searcher.new(scope: FakeScope.new(Person, '"doctors".*')) }
 
@@ -43,7 +41,7 @@ RSpec.describe SnFoil::Searcher do
   end
 
   describe 'self#filter' do
-    context 'with params[:if]' do
+    context 'with options[:if]' do
       context 'when the provided lamba returns true' do
         before do
           searcher.filter(if: ->(_) { true }) do |scope, _|
@@ -69,7 +67,7 @@ RSpec.describe SnFoil::Searcher do
       end
     end
 
-    context 'with params[:unless]' do
+    context 'with options[:unless]' do
       context 'when the provided lamba returns true' do
         before do
           searcher.filter(unless: ->(_) { true }) do |scope, _|
@@ -96,23 +94,10 @@ RSpec.describe SnFoil::Searcher do
     end
   end
 
-  describe '#reset_scope' do
+  describe '#filter' do
     before do
-      searcher.filter { |scope, _| scope.where('"people"."client_id" = 5') }
-    end
-
-    it 'resets the internal scope to the intialized scope' do
-      expect(query).to match(/"people"."client_id" = 5/)
-      expect do
-        instance.reset_scope
-      end.to change(instance, :scope)
-    end
-  end
-
-  describe '#filtered_results' do
-    before do
-      def instance.filtered_results
-        '"farmers".*'
+      def instance.filter
+        FakeScope.new(Person, '"farmers".*')
       end
     end
 
@@ -161,5 +146,10 @@ class FakeScope
   def where(addition)
     @scope += ' ' unless @scope.empty?
     @scope += addition
+    self
+  end
+
+  def to_query
+    scope
   end
 end

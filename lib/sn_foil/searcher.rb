@@ -34,60 +34,52 @@ module SnFoil
       self.class.i_model_class
     end
 
-    attr_reader :initial_scope, :scope, :params, :options
-    def initialize(scope: nil, params: {}, **options)
-      @initial_scope = @scope = scope || model_class.all
-      @params = params
-      @options = options
+    attr_reader :scope
+    def initialize(scope: nil)
+      @scope = scope || model_class.all
     end
 
-    def reset_scope
-      @scope = initial_scope
+    def search(params = {})
+      filtered_scope = filter || scope # start usimg the default scope of the class or the filter method
+      filtered_scope = apply_setup(filtered_scope, params)
+      apply_filters(filtered_scope, params)
     end
 
-    def filtered_results
-      scope
+    def filter; end
+
+    def setup
+      self.class.i_setup
     end
 
-    def results
-      return scope if scope != initial_scope
-
-      @scope = filtered_results
-      @scope = apply_setup
-      @scope = apply_filters
-      scope
+    def filters
+      self.class.i_filters || []
     end
 
     private
 
-    def apply_setup
-      return scope if self.class.i_setup.nil?
+    def apply_setup(filtered_scope, params)
+      return filtered_scope if setup.nil?
 
-      self.class.i_setup.call(scope, params)
+      setup.call(filtered_scope, params)
     end
 
-    def apply_filters
-      return scope if self.class.i_filters.nil?
-
-      self.class.i_filters&.each do |filter|
-        apply_filter(filter)
+    def apply_filters(filtered_scope, params)
+      filters&.reduce(filtered_scope) do |i_scope, i_filter|
+        apply_filter(i_filter, i_scope, params)
       end
-      scope
     end
 
-    def apply_filter(filter)
-      return unless filter_valid?(filter)
+    def apply_filter(i_filter, filtered_scope, params)
+      return filtered_scope unless filter_valid?(i_filter, params)
 
-      @scope = if filter[:method]
-                 send(filter[:method], scope)
-               else
-                 filter[:block].call(scope, params)
-               end
+      return send(i_filter[:method], filtered_scope, params) if i_filter[:method]
+
+      i_filter[:block].call(filtered_scope, params)
     end
 
-    def filter_valid?(filter)
-      return false if !filter[:if].nil? && filter[:if].call(params) == false
-      return false if !filter[:unless].nil? && filter[:unless].call(params) == true
+    def filter_valid?(i_filter, params)
+      return false if !i_filter[:if].nil? && i_filter[:if].call(params) == false
+      return false if !i_filter[:unless].nil? && i_filter[:unless].call(params) == true
 
       true
     end
