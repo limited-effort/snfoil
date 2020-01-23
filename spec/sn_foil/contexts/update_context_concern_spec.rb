@@ -45,7 +45,7 @@ RSpec.describe SnFoil::Contexts::UpdateContextConcern do
       let(:object) { Person.new(first_name: nil, last_name: nil) }
 
       it 'operates on any object provided in the options' do
-        expect(instance.setup_update_object(params: {}, object: object)).to eq object
+        expect(instance.setup_update_object(params: {}, object: object)[:object]).to eq object
       end
 
       it 'authorizes any (wrapped) object provided in the options' do
@@ -63,7 +63,7 @@ RSpec.describe SnFoil::Contexts::UpdateContextConcern do
 
     context 'with options[:id]' do
       it 'lookups the object in the scope' do
-        expect(instance.setup_update_object(params: {}, id: 1)).to eq model_instance_double
+        expect(instance.setup_update_object(params: {}, id: 1)[:object]).to eq model_instance_double
         expect(relation_double).to have_received(:find).once
       end
 
@@ -146,37 +146,37 @@ RSpec.describe SnFoil::Contexts::UpdateContextConcern do
       allow(canary).to receive(:ping).with(instance_of(Symbol))
 
       # Setup Action Hooks
-      including_class.before_update do |obj, opts|
+      including_class.before_update do |opts|
         opts[:canary].ping(:before_update)
-        obj
+        opts
       end
-      including_class.before_change do |obj, opts|
+      including_class.before_change do |opts|
         opts[:canary].ping(:before_change)
-        obj
+        opts
       end
-      including_class.after_update_success do |obj, opts|
+      including_class.after_update_success do |opts|
         opts[:canary].ping(:after_update_success)
-        obj
+        opts
       end
-      including_class.after_change_success do |obj, opts|
+      including_class.after_change_success do |opts|
         opts[:canary].ping(:after_change_success)
-        obj
+        opts
       end
-      including_class.after_update_failure do |obj, opts|
+      including_class.after_update_failure do |opts|
         opts[:canary].ping(:after_update_failure)
-        obj
+        opts
       end
-      including_class.after_change_failure do |obj, opts|
+      including_class.after_change_failure do |opts|
         opts[:canary].ping(:after_change_failure)
-        obj
+        opts
       end
-      including_class.after_update do |obj, opts|
+      including_class.after_update do |opts|
         opts[:canary].ping(:after_update)
-        obj
+        opts
       end
-      including_class.after_change do |obj, opts|
+      including_class.after_change do |opts|
         opts[:canary].ping(:after_change)
-        obj
+        opts
       end
     end
 

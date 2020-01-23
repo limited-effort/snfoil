@@ -50,14 +50,14 @@ RSpec.describe SnFoil::Contexts::BuildContextConcern do
       end
 
       it 'instantiates an object using the options model class' do
-        expect(instance.setup_build_object(params: {}, model_class: other_model_double)).to eq other_model_instance_double
+        expect(instance.setup_build_object(params: {}, model_class: other_model_double)[:object]).to eq other_model_instance_double
         expect(other_model_double).to have_received(:new)
       end
     end
 
     context 'without options[:model_class]' do
       it 'instantiates an object using the contexts model class' do
-        expect(instance.setup_build_object(params: {})).to eq(model_instance_double)
+        expect(instance.setup_build_object(params: {})[:object]).to eq(model_instance_double)
         expect(model_double).to have_received(:new)
       end
     end

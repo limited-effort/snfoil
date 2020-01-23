@@ -46,10 +46,13 @@ module SnFoil
       end
 
       def setup_create_object(params: {}, object: nil, **options)
-        return wrap_object(object) if object
+        object = if object
+                   wrap_object(object)
+                 else
+                   klass = options.fetch(:model_class) { model_class }
+                   wrap_object(klass).new
+                 end
 
-        klass = options.fetch(:model_class) { model_class }
-        object = wrap_object(klass).new
         object.attributes = params
         options.merge! object: object
       end
@@ -60,7 +63,7 @@ module SnFoil
         options = setup_create_object(**options)
         authorize(options[:object], :create?, **options)
         options = create_hooks(**options)
-        unwrap_object(object[:object])
+        unwrap_object(options[:object])
       end
 
       def setup_create(**options)
@@ -114,7 +117,7 @@ module SnFoil
 
       def before_create_save(**options)
         options = before_create(**options)
-        options = before_create_hooks.reduce(options) { |opts, hook| run_hook(hook, opt) }
+        options = before_create_hooks.reduce(options) { |opts, hook| run_hook(hook, opts) }
         options = before_change(**options)
         before_change_hooks.reduce(options) { |opts, hook| run_hook(hook, opts) }
       end

@@ -46,7 +46,7 @@ RSpec.describe SnFoil::Contexts::DestroyContextConcern do
     context 'with options[:object]' do
       it 'directly returns any object provided in the options' do
         object = instance_double(model_double)
-        expect(instance.setup_destroy_object(params: {}, object: object)).to eq object
+        expect(instance.setup_destroy_object(params: {}, object: object)[:object]).to eq object
       end
     end
 
@@ -54,7 +54,7 @@ RSpec.describe SnFoil::Contexts::DestroyContextConcern do
       let(:object) { instance_double(model_class) }
 
       it 'lookups the object in the scope' do
-        expect(instance.setup_destroy_object(params: {}, id: 1)).to eq model_instance_double
+        expect(instance.setup_destroy_object(params: {}, id: 1)[:object]).to eq model_instance_double
         expect(relation_double).to have_received(:find).once
       end
     end
@@ -125,37 +125,37 @@ RSpec.describe SnFoil::Contexts::DestroyContextConcern do
       allow(canary).to receive(:ping).with(instance_of(Symbol))
 
       # Setup Action Hooks
-      including_class.before_destroy do |obj, opts|
+      including_class.before_destroy do |opts|
         opts[:canary].ping(:before_destroy)
-        obj
+        opts
       end
-      including_class.before_change do |obj, opts|
+      including_class.before_change do |opts|
         opts[:canary].ping(:before_change)
-        obj
+        opts
       end
-      including_class.after_destroy_success do |obj, opts|
+      including_class.after_destroy_success do |opts|
         opts[:canary].ping(:after_destroy_success)
-        obj
+        opts
       end
-      including_class.after_change_success do |obj, opts|
+      including_class.after_change_success do |opts|
         opts[:canary].ping(:after_change_success)
-        obj
+        opts
       end
-      including_class.after_destroy_failure do |obj, opts|
+      including_class.after_destroy_failure do |opts|
         opts[:canary].ping(:after_destroy_failure)
-        obj
+        opts
       end
-      including_class.after_change_failure do |obj, opts|
+      including_class.after_change_failure do |opts|
         opts[:canary].ping(:after_change_failure)
-        obj
+        opts
       end
-      including_class.after_destroy do |obj, opts|
+      including_class.after_destroy do |opts|
         opts[:canary].ping(:after_destroy)
-        obj
+        opts
       end
-      including_class.after_change do |obj, opts|
+      including_class.after_change do |opts|
         opts[:canary].ping(:after_change)
-        obj
+        opts
       end
     end
 

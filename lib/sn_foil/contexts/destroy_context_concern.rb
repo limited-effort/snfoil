@@ -111,30 +111,30 @@ module SnFoil
 
       def before_destroy_save(options)
         options = before_destroy(**options)
-        options = before_destroy_hooks.reduce(options) { |obj, hook| run_hook(hook, **options) }
+        options = before_destroy_hooks.reduce(options) { |opts, hook| run_hook(hook, **opts) }
         options = before_change(**options)
-        before_change_hooks.reduce(options) { |obj, hook| run_hook(hook, **options) }
+        before_change_hooks.reduce(options) { |opts, hook| run_hook(hook, **opts) }
       end
 
       def after_destroy_save(options)
         options = after_destroy(**options)
-        options = after_destroy_hooks.reduce(options) { |obj, hook| run_hook(hook, **options) }
+        options = after_destroy_hooks.reduce(options) { |opts, hook| run_hook(hook, **opts) }
         options = after_change(**options)
-        after_change_hooks.reduce(options) { |obj, hook| run_hook(hook, **options) }
+        after_change_hooks.reduce(options) { |opts, hook| run_hook(hook, **opts) }
       end
 
       def after_destroy_save_success(options)
         options = after_destroy_success(**options)
-        options = after_destroy_success_hooks.reduce(options) { |obj, hook| run_hook(hook, **options) }
+        options = after_destroy_success_hooks.reduce(options) { |opts, hook| run_hook(hook, **opts) }
         options = after_change_success(**options)
-        after_change_success_hooks.reduce(options) { |obj, hook| run_hook(hook, **options) }
+        after_change_success_hooks.reduce(options) { |opts, hook| run_hook(hook, **opts) }
       end
 
       def after_destroy_save_failure(options)
         options = after_destroy_failure(**options)
-        options = after_destroy_failure_hooks.reduce(options) { |obj, hook| run_hook(hook, **options) }
+        options = after_destroy_failure_hooks.reduce(options) { |opts, hook| run_hook(hook, **opts) }
         options = after_change_failure(**options)
-        after_change_failure_hooks.reduce(options) { |obj, hook| run_hook(hook, **options) }
+        after_change_failure_hooks.reduce(options) { |opts, hook| run_hook(hook, **opts) }
       end
     end
   end

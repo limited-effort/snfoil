@@ -38,7 +38,8 @@ RSpec.describe SnFoil::Contexts::CreateContextConcern do
     context 'with options[:object]' do
       it 'directly returns any object provided in the options' do
         object = double
-        expect(instance.setup_create_object(params: {}, object: object)).to eq object
+        allow(object).to receive(:attributes).and_return({})
+        expect(instance.setup_create_object(params: {}, object: object)[:object]).to eq object
       end
     end
 
@@ -51,14 +52,14 @@ RSpec.describe SnFoil::Contexts::CreateContextConcern do
       end
 
       it 'instantiates an object using the options model class' do
-        expect(instance.setup_create_object(params: {}, model_class: other_model_double)).to eq other_model_instance_double
+        expect(instance.setup_create_object(params: {}, model_class: other_model_double)[:object]).to eq other_model_instance_double
         expect(other_model_double).to have_received(:new).twice # Once for creation and once for attr assignment
       end
     end
 
     context 'without options[:model_class]' do
       it 'instantiates an object using the contexts model class' do
-        expect(instance.setup_create_object(params: {})).to eq(model_instance_double)
+        expect(instance.setup_create_object(params: {})[:object]).to eq(model_instance_double)
         expect(model_double).to have_received(:new)
       end
     end
@@ -129,37 +130,37 @@ RSpec.describe SnFoil::Contexts::CreateContextConcern do
       allow(canary).to receive(:ping).with(instance_of(Symbol))
 
       # Setup Action Hooks
-      including_class.before_create do |obj, opts|
+      including_class.before_create do |opts|
         opts[:canary].ping(:before_create)
-        obj
+        opts
       end
-      including_class.before_change do |obj, opts|
+      including_class.before_change do |opts|
         opts[:canary].ping(:before_change)
-        obj
+        opts
       end
-      including_class.after_create_success do |obj, opts|
+      including_class.after_create_success do |opts|
         opts[:canary].ping(:after_create_success)
-        obj
+        opts
       end
-      including_class.after_change_success do |obj, opts|
+      including_class.after_change_success do |opts|
         opts[:canary].ping(:after_change_success)
-        obj
+        opts
       end
-      including_class.after_create_failure do |obj, opts|
+      including_class.after_create_failure do |opts|
         opts[:canary].ping(:after_create_failure)
-        obj
+        opts
       end
-      including_class.after_change_failure do |obj, opts|
+      including_class.after_change_failure do |opts|
         opts[:canary].ping(:after_change_failure)
-        obj
+        opts
       end
-      including_class.after_create do |obj, opts|
+      including_class.after_create do |opts|
         opts[:canary].ping(:after_create)
-        obj
+        opts
       end
-      including_class.after_change do |obj, opts|
+      including_class.after_change do |opts|
         opts[:canary].ping(:after_change)
-        obj
+        opts
       end
     end
 
@@ -262,9 +263,9 @@ RSpec.describe SnFoil::Contexts::CreateContextConcern do
     describe 'with options[:if]' do
       context 'when the provided lamba returns true' do
         before do
-          including_class.before_change(if: ->(_, _) { true }) do |obj, opts|
+          including_class.before_change(if: ->(_) { true }) do |opts|
             opts[:canary].ping(:conditional)
-            obj
+            opts
           end
         end
 
@@ -277,9 +278,9 @@ RSpec.describe SnFoil::Contexts::CreateContextConcern do
 
       context 'when the provided lamba returns false' do
         before do
-          including_class.before_change(if: ->(_, _) { false }) do |obj, opts|
+          including_class.before_change(if: ->(_) { false }) do |opts|
             opts[:canary].ping(:conditional)
-            obj
+            opts
           end
         end
 
@@ -294,9 +295,9 @@ RSpec.describe SnFoil::Contexts::CreateContextConcern do
     describe 'with options[:unless]' do
       context 'when the provided lamba returns true' do
         before do
-          including_class.before_change(unless: ->(_, _) { true }) do |obj, opts|
+          including_class.before_change(unless: ->(_) { true }) do |opts|
             opts[:canary].ping(:conditional)
-            obj
+            opts
           end
         end
 
@@ -309,9 +310,9 @@ RSpec.describe SnFoil::Contexts::CreateContextConcern do
 
       context 'when the provided lamba returns false' do
         before do
-          including_class.before_change(unless: ->(_, _) { false }) do |obj, opts|
+          including_class.before_change(unless: ->(_) { false }) do |opts|
             opts[:canary].ping(:conditional)
-            obj
+            opts
           end
         end
 

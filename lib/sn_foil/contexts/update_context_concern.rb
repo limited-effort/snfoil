@@ -104,7 +104,7 @@ module SnFoil
       # This method is private to help protect the order of execution of hooks
       def update_hooks(options)
         options = before_update_save(options)
-        options = if object.save
+        options = if options[:object].save
                     after_update_save_success(options)
                   else
                     after_update_save_failure(options)
