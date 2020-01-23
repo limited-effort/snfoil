@@ -45,39 +45,39 @@ module SnFoil
         end
       end
 
-      def setup_destroy_object(id: nil, object: nil, **_options)
+      def setup_destroy_object(id: nil, object: nil, **options)
         raise ArgumentError, 'one of the following keywords is required: id, object' unless id || object
 
-        wrap_object(object || scope.resolve.find(id))
+        options.merge! object: wrap_object(object || scope.resolve.find(id))
       end
 
       def destroy(**options)
         options[:action] = :destroy
         options = setup_destroy(setup_change(**options))
-        object = setup_destroy_object(**options)
-        authorize(object, :destroy?, **options)
-        object = destroy_hooks(object, **options)
-        unwrap_object(object)
+        options = setup_destroy_object(**options)
+        authorize(options[:object], :destroy?, **options)
+        options = destroy_hooks(**options)
+        unwrap_object(options[:object])
       end
 
       def setup_destroy(**options)
         options
       end
 
-      def before_destroy(object, **_options)
-        object
+      def before_destroy(**options)
+        options
       end
 
-      def after_destroy(object, **_options)
-        object
+      def after_destroy(**options)
+        options
       end
 
-      def after_destroy_success(object, **_options)
-        object
+      def after_destroy_success(**options)
+        options
       end
 
-      def after_destroy_failure(object, **_options)
-        object
+      def after_destroy_failure(**options)
+        options
       end
 
       def before_destroy_hooks
@@ -99,42 +99,42 @@ module SnFoil
       private
 
       # This method is private to help protect the order of execution of hooks
-      def destroy_hooks(object, options)
-        object = before_destroy_save(object, **options)
-        object = if object.destroy
-                   after_destroy_save_success(object, **options)
-                 else
-                   after_destroy_save_failure(object, **options)
-                 end
-        after_destroy_save(object, **options)
+      def destroy_hooks(options)
+        options = before_destroy_save(options)
+        options = if options[:object].destroy
+                    after_destroy_save_success(options)
+                  else
+                    after_destroy_save_failure(options)
+                  end
+        after_destroy_save(options)
       end
 
-      def before_destroy_save(object, **options)
-        object = before_destroy(object, **options)
-        object = before_destroy_hooks.reduce(object) { |obj, hook| run_hook(hook, obj, **options) }
-        object = before_change(object, **options)
-        before_change_hooks.reduce(object) { |obj, hook| run_hook(hook, obj, **options) }
+      def before_destroy_save(options)
+        options = before_destroy(**options)
+        options = before_destroy_hooks.reduce(options) { |obj, hook| run_hook(hook, **options) }
+        options = before_change(**options)
+        before_change_hooks.reduce(options) { |obj, hook| run_hook(hook, **options) }
       end
 
-      def after_destroy_save(object, **options)
-        object = after_destroy(object, **options)
-        object = after_destroy_hooks.reduce(object) { |obj, hook| run_hook(hook, obj, **options) }
-        object = after_change(object, **options)
-        after_change_hooks.reduce(object) { |obj, hook| run_hook(hook, obj, **options) }
+      def after_destroy_save(options)
+        options = after_destroy(**options)
+        options = after_destroy_hooks.reduce(options) { |obj, hook| run_hook(hook, **options) }
+        options = after_change(**options)
+        after_change_hooks.reduce(options) { |obj, hook| run_hook(hook, **options) }
       end
 
-      def after_destroy_save_success(object, **options)
-        object = after_destroy_success(object, **options)
-        object = after_destroy_success_hooks.reduce(object) { |obj, hook| run_hook(hook, obj, **options) }
-        object = after_change_success(object, **options)
-        after_change_success_hooks.reduce(object) { |obj, hook| run_hook(hook, obj, **options) }
+      def after_destroy_save_success(options)
+        options = after_destroy_success(**options)
+        options = after_destroy_success_hooks.reduce(options) { |obj, hook| run_hook(hook, **options) }
+        options = after_change_success(**options)
+        after_change_success_hooks.reduce(options) { |obj, hook| run_hook(hook, **options) }
       end
 
-      def after_destroy_save_failure(object, **options)
-        object = after_destroy_failure(object, **options)
-        object = after_destroy_failure_hooks.reduce(object) { |obj, hook| run_hook(hook, obj, **options) }
-        object = after_change_failure(object, **options)
-        after_change_failure_hooks.reduce(object) { |obj, hook| run_hook(hook, obj, **options) }
+      def after_destroy_save_failure(options)
+        options = after_destroy_failure(**options)
+        options = after_destroy_failure_hooks.reduce(options) { |obj, hook| run_hook(hook, **options) }
+        options = after_change_failure(**options)
+        after_change_failure_hooks.reduce(options) { |obj, hook| run_hook(hook, **options) }
       end
     end
   end

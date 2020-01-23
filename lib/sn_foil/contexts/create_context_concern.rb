@@ -51,36 +51,36 @@ module SnFoil
         klass = options.fetch(:model_class) { model_class }
         object = wrap_object(klass).new
         object.attributes = params
-        object
+        options.merge! object: object
       end
 
       def create(**options)
         options[:action] = :create
         options = setup_change(setup_create(**options))
-        object = setup_create_object(**options)
-        authorize(object, :create?, **options)
-        object = create_hooks(object, **options)
-        unwrap_object(object)
+        options = setup_create_object(**options)
+        authorize(options[:object], :create?, **options)
+        options = create_hooks(**options)
+        unwrap_object(object[:object])
       end
 
       def setup_create(**options)
         options
       end
 
-      def before_create(object, **_options)
-        object
+      def before_create(**options)
+        options
       end
 
-      def after_create(object, **_options)
-        object
+      def after_create(**options)
+        options
       end
 
-      def after_create_success(object, **_options)
-        object
+      def after_create_success(**options)
+        options
       end
 
-      def after_create_failure(object, **_options)
-        object
+      def after_create_failure(**options)
+        options
       end
 
       def before_create_hooks
@@ -102,42 +102,42 @@ module SnFoil
       private
 
       # This method is private to help protect the order of execution of hooks
-      def create_hooks(object, options)
-        object = before_create_save(object, **options)
-        object = if object.save
-                   after_create_save_success(object, **options)
-                 else
-                   after_create_save_failure(object, **options)
-                 end
-        after_create_save(object, **options)
+      def create_hooks(options)
+        options = before_create_save(**options)
+        options = if options[:object].save
+                    after_create_save_success(**options)
+                  else
+                    after_create_save_failure(**options)
+                  end
+        after_create_save(**options)
       end
 
-      def before_create_save(object, **options)
-        object = before_create(object, **options)
-        object = before_create_hooks.reduce(object) { |obj, hook| run_hook(hook, obj, **options) }
-        object = before_change(object, **options)
-        before_change_hooks.reduce(object) { |obj, hook| run_hook(hook, obj, **options) }
+      def before_create_save(**options)
+        options = before_create(**options)
+        options = before_create_hooks.reduce(options) { |opts, hook| run_hook(hook, opt) }
+        options = before_change(**options)
+        before_change_hooks.reduce(options) { |opts, hook| run_hook(hook, opts) }
       end
 
-      def after_create_save(object, **options)
-        object = after_create(object, **options)
-        object = after_create_hooks.reduce(object) { |obj, hook| run_hook(hook, obj, **options) }
-        object = after_change(object, **options)
-        after_change_hooks.reduce(object) { |obj, hook| run_hook(hook, obj, **options) }
+      def after_create_save(**options)
+        options = after_create(**options)
+        options = after_create_hooks.reduce(options) { |opts, hook| run_hook(hook, opts) }
+        options = after_change(**options)
+        after_change_hooks.reduce(options) { |opts, hook| run_hook(hook, opts) }
       end
 
-      def after_create_save_success(object, **options)
-        object = after_create_success(object, **options)
-        object = after_create_success_hooks.reduce(object) { |obj, hook| run_hook(hook, obj, **options) }
-        object = after_change_success(object, **options)
-        after_change_success_hooks.reduce(object) { |obj, hook| run_hook(hook, obj, **options) }
+      def after_create_save_success(**options)
+        options = after_create_success(**options)
+        options = after_create_success_hooks.reduce(options) { |opts, hook| run_hook(hook, opts) }
+        options = after_change_success(**options)
+        after_change_success_hooks.reduce(options) { |opts, hook| run_hook(hook, opts) }
       end
 
-      def after_create_save_failure(object, **options)
-        object = after_create_failure(object, **options)
-        object = after_create_failure_hooks.reduce(object) { |obj, hook| run_hook(hook, obj, **options) }
-        object = after_change_failure(object, **options)
-        after_change_failure_hooks.reduce(object) { |obj, hook| run_hook(hook, obj, **options) }
+      def after_create_save_failure(**options)
+        options = after_create_failure(**options)
+        options = after_create_failure_hooks.reduce(options) { |opts, hook| run_hook(hook, opts) }
+        options = after_change_failure(**options)
+        after_change_failure_hooks.reduce(options) { |opts, hook| run_hook(hook, opts) }
       end
     end
   end

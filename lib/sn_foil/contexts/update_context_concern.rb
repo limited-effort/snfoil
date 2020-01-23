@@ -51,36 +51,36 @@ module SnFoil
         object = wrap_object(object || scope.resolve.find(id))
         authorize(object, :update?, **options)
         object.attributes = params
-        object
+        options.merge! object: object
       end
 
       def update(**options)
         options[:action] = :update
         options = setup_change(setup_update(**options))
-        object = setup_update_object(**options)
-        authorize(object, :update?, **options)
-        object = update_hooks(object, **options)
-        unwrap_object(object)
+        options = setup_update_object(**options)
+        authorize(options[:object], :update?, **options)
+        options = update_hooks(**options)
+        unwrap_object(options[:object])
       end
 
       def setup_update(**options)
         options
       end
 
-      def before_update(object, **_options)
-        object
+      def before_update(**options)
+        options
       end
 
-      def after_update(object, **_options)
-        object
+      def after_update(**options)
+        options
       end
 
-      def after_update_success(object, **_options)
-        object
+      def after_update_success(**options)
+        options
       end
 
-      def after_update_failure(object, **_options)
-        object
+      def after_update_failure(**options)
+        options
       end
 
       def before_update_hooks
@@ -102,42 +102,42 @@ module SnFoil
       private
 
       # This method is private to help protect the order of execution of hooks
-      def update_hooks(object, options)
-        object = before_update_save(object, **options)
-        object = if object.save
-                   after_update_save_success(object, **options)
-                 else
-                   after_update_save_failure(object, **options)
-                 end
-        after_update_save(object, **options)
+      def update_hooks(options)
+        options = before_update_save(options)
+        options = if object.save
+                    after_update_save_success(options)
+                  else
+                    after_update_save_failure(options)
+                  end
+        after_update_save(options)
       end
 
-      def before_update_save(object, **options)
-        object = before_update(object, **options)
-        object = before_update_hooks.reduce(object) { |obj, hook| run_hook(hook, obj, **options) }
-        object = before_change(object, **options)
-        before_change_hooks.reduce(object) { |obj, hook| run_hook(hook, obj, **options) }
+      def before_update_save(options)
+        options = before_update(**options)
+        options = before_update_hooks.reduce(options) { |opts, hook| run_hook(hook, **opts) }
+        options = before_change(**options)
+        before_change_hooks.reduce(options) { |opts, hook| run_hook(hook, **opts) }
       end
 
-      def after_update_save(object, **options)
-        object = after_update(object, **options)
-        object = after_update_hooks.reduce(object) { |obj, hook| run_hook(hook, obj, **options) }
-        object = after_change(object, **options)
-        after_change_hooks.reduce(object) { |obj, hook| run_hook(hook, obj, **options) }
+      def after_update_save(options)
+        options = after_update(**options)
+        options = after_update_hooks.reduce(options) { |opts, hook| run_hook(hook, **opts) }
+        options = after_change(**options)
+        after_change_hooks.reduce(options) { |opts, hook| run_hook(hook, **opts) }
       end
 
-      def after_update_save_success(object, **options)
-        object = after_update_success(object, **options)
-        object = after_update_success_hooks.reduce(object) { |obj, hook| run_hook(hook, obj, **options) }
-        object = after_change_success(object, **options)
-        after_change_success_hooks.reduce(object) { |obj, hook| run_hook(hook, obj, **options) }
+      def after_update_save_success(options)
+        options = after_update_success(**options)
+        options = after_update_success_hooks.reduce(options) { |opts, hook| run_hook(hook, **opts) }
+        options = after_change_success(**options)
+        after_change_success_hooks.reduce(options) { |opts, hook| run_hook(hook, **opts) }
       end
 
-      def after_update_save_failure(object, **options)
-        object = after_update_failure(object, **options)
-        object = after_update_failure_hooks.reduce(object) { |obj, hook| run_hook(hook, obj, **options) }
-        object = after_change_failure(object, **options)
-        after_change_failure_hooks.reduce(object) { |obj, hook| run_hook(hook, obj, **options) }
+      def after_update_save_failure(options)
+        options = after_update_failure(**options)
+        options = after_update_failure_hooks.reduce(options) { |opts, hook| run_hook(hook, **opts) }
+        options = after_change_failure(**options)
+        after_change_failure_hooks.reduce(options) { |opts, hook| run_hook(hook, **opts) }
       end
     end
   end

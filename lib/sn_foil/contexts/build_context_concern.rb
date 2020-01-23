@@ -25,14 +25,14 @@ module SnFoil
         return wrap_object(object) if object
 
         klass = options.fetch(:model_class) { model_class }
-        wrap_object(klass).new(**params)
+        options.merge! object: wrap_object(klass).new(**params)
       end
 
       def build(**options)
         options[:action] = :build
         options = setup_build(setup_change(**options))
-        object = setup_build_object(**options)
-        unwrap_object(object)
+        options = setup_build_object(**options)
+        unwrap_object(options[:object])
       end
 
       def setup_build(**options)
