@@ -7,6 +7,11 @@ module SnFoil
   module Searcher
     extend ActiveSupport::Concern
 
+    included do
+      TRUE = 'true'
+      FALSE = 'false'
+    end
+
     class_methods do
       attr_reader :i_model_class, :i_setup, :i_filters
 
@@ -40,6 +45,7 @@ module SnFoil
     end
 
     def search(params = {})
+      params = transform_params_booleans(params) # this is required for params coming in from http-like sources
       filtered_scope = filter || scope # start usimg the default scope of the class or the filter method
       filtered_scope = apply_setup(filtered_scope, params)
       apply_filters(filtered_scope, params)
@@ -82,6 +88,19 @@ module SnFoil
       return false if !i_filter[:unless].nil? && i_filter[:unless].call(params) == true
 
       true
+    end
+
+    def transform_params_booleans(params)
+      params.map do |key, value|
+        value = if value == TRUE
+                  true
+                elsif value == FALSE
+                  false
+                else
+                  value
+                end
+        [key, value]
+      end.to_h
     end
   end
 end
