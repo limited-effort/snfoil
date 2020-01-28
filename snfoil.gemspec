@@ -34,7 +34,7 @@ Gem::Specification.new do |spec| # rubocop:disable Metrics/BlockLength
   spec.executables   = spec.files.grep(%r{^exe/}) { |f| File.basename(f) }
   spec.require_paths = ['lib']
 
-  spec.add_dependency 'activesupport', '~> 6.0'
+  spec.add_dependency 'activesupport', '>= 5.1'
   spec.add_dependency 'logger', '~> 1.0'
   spec.add_dependency 'pundit', '~> 2.0'
 

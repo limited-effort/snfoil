@@ -2,6 +2,9 @@
 
 require 'logger'
 require 'active_support/core_ext/module/attribute_accessors'
+require 'sn_foil/context'
+require 'sn_foil/policy'
+require 'sn_foil/searcher'
 require 'sn_foil/version'
 
 module SnFoil

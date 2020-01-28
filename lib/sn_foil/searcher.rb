@@ -8,19 +8,19 @@ module SnFoil
     extend ActiveSupport::Concern
 
     included do
-      TRUE = 'true'
-      FALSE = 'false'
+      TRUECAST = 'true'
+      FALSECAST = 'false'
     end
 
     class_methods do
-      attr_reader :i_model_class, :i_setup, :i_filters
+      attr_reader :i_model_class, :i_setup, :i_filters, :i_search_step
 
       def model_class(klass = nil)
         @i_model_class = klass
       end
 
-      def setup(&setup_block)
-        @i_setup = setup_block
+      def setup(setup_method = nil, &setup_block)
+        @i_setup = setup_method || setup_block
       end
 
       def filter(method = nil, **options, &block)
@@ -66,7 +66,11 @@ module SnFoil
     def apply_setup(filtered_scope, params)
       return filtered_scope if setup.nil?
 
-      setup.call(filtered_scope, params)
+      if setup.is_a?(Symbol) || setup.is_a?(String)
+        send(setup, filtered_scope, params)
+      else
+        setup.call(filtered_scope, params)
+      end
     end
 
     def apply_filters(filtered_scope, params)
@@ -92,9 +96,9 @@ module SnFoil
 
     def transform_params_booleans(params)
       params.map do |key, value|
-        value = if value == TRUE
+        value = if value == TRUECAST
                   true
-                elsif value == FALSE
+                elsif value == FALSECAST
                   false
                 else
                   value

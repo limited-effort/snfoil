@@ -124,89 +124,85 @@ RSpec.describe SnFoil::Contexts::CreateContextConcern do
   end
 
   context 'when hooks are provided' do
-    let(:canary) { double }
+    let(:canary) { Canary.new }
 
     before do
-      allow(canary).to receive(:ping).with(instance_of(Symbol))
-
       # Setup Action Hooks
       including_class.before_create do |opts|
-        opts[:canary].ping(:before_create)
+        opts[:canary].sing(:before_create)
         opts
       end
       including_class.before_change do |opts|
-        opts[:canary].ping(:before_change)
+        opts[:canary].sing(:before_change)
         opts
       end
       including_class.after_create_success do |opts|
-        opts[:canary].ping(:after_create_success)
+        opts[:canary].sing(:after_create_success)
         opts
       end
       including_class.after_change_success do |opts|
-        opts[:canary].ping(:after_change_success)
+        opts[:canary].sing(:after_change_success)
         opts
       end
       including_class.after_create_failure do |opts|
-        opts[:canary].ping(:after_create_failure)
+        opts[:canary].sing(:after_create_failure)
         opts
       end
       including_class.after_change_failure do |opts|
-        opts[:canary].ping(:after_change_failure)
+        opts[:canary].sing(:after_change_failure)
         opts
       end
       including_class.after_create do |opts|
-        opts[:canary].ping(:after_create)
+        opts[:canary].sing(:after_create)
         opts
       end
       including_class.after_change do |opts|
-        opts[:canary].ping(:after_change)
+        opts[:canary].sing(:after_change)
         opts
       end
     end
 
     describe 'self#before_create' do
-      before do
-        allow(SnFoil).to receive(:adapter).and_return(FakeErrorORMAdapter)
+      it 'gets called before any save' do
+        instance.create(params: params, canary: canary)
+        expect(canary.song[0][:data]).to eq :before_create
+        expect(canary.song[2][:data]).to eq :after_create_success
       end
 
-      it 'gets called before any save' do
-        expect do
-          instance.create(params: params, canary: canary)
-        end.to raise_error(StandardError)
-        expect(canary).to have_received(:ping).exactly(2).times
-        expect(canary).to have_received(:ping).with(:before_create).once
+      it 'gets called before :before_change' do
+        instance.create(params: params, canary: canary)
+        expect(canary.song[0][:data]).to eq :before_create
+        expect(canary.song[1][:data]).to eq :before_change
       end
     end
 
     describe 'self#before_change' do
-      before do
-        allow(SnFoil).to receive(:adapter).and_return(FakeErrorORMAdapter)
-      end
-
       it 'gets called before any save' do
-        expect do
-          instance.create(params: params, canary: canary)
-        end.to raise_error(StandardError)
-        expect(canary).to have_received(:ping).exactly(2).times
-        expect(canary).to have_received(:ping).with(:before_change).once
+        instance.create(params: params, canary: canary)
+        expect(canary.song[1][:data]).to eq :before_change
+        expect(canary.song[2][:data]).to eq :after_create_success
       end
     end
 
     describe 'self#after_create_success' do
       it 'gets called after a successful save' do
         instance.create(params: params, canary: canary)
-        expect(canary).to have_received(:ping).exactly(6).times
-        expect(canary).to have_received(:ping).with(:after_create_success).once
-        expect(canary).not_to have_received(:ping).with(:after_create_failure)
+        expect(canary.song[2][:data]).to eq :after_create_success
+        expect(canary.song.map { |x| x[:data] }).not_to include(:after_change_failure)
+      end
+
+      it 'gets called before after_create_success' do
+        instance.create(params: params, canary: canary)
+        expect(canary.song[2][:data]).to eq :after_create_success
+        expect(canary.song[3][:data]).to eq :after_change_success
       end
     end
 
     describe 'self#after_change_success' do
       it 'gets called after a successful save' do
         instance.create(params: params, canary: canary)
-        expect(canary).to have_received(:ping).exactly(6).times
-        expect(canary).to have_received(:ping).with(:after_change_success).once
-        expect(canary).not_to have_received(:ping).with(:after_change_failure)
+        expect(canary.song[3][:data]).to eq :after_change_success
+        expect(canary.song.map { |x| x[:data] }).not_to include(:after_change_failure)
       end
     end
 
@@ -217,9 +213,14 @@ RSpec.describe SnFoil::Contexts::CreateContextConcern do
 
       it 'gets called after a failed save' do
         instance.create(params: params, canary: canary)
-        expect(canary).to have_received(:ping).exactly(6).times
-        expect(canary).to have_received(:ping).with(:after_create_failure).once
-        expect(canary).not_to have_received(:ping).with(:after_create_success)
+        expect(canary.song[2][:data]).to eq :after_create_failure
+        expect(canary.song.map { |x| x[:data] }).not_to include(:after_create_success)
+      end
+
+      it 'gets called before after_change_failure' do
+        instance.create(params: params, canary: canary)
+        expect(canary.song[2][:data]).to eq :after_create_failure
+        expect(canary.song[3][:data]).to eq :after_change_failure
       end
     end
 
@@ -230,9 +231,8 @@ RSpec.describe SnFoil::Contexts::CreateContextConcern do
 
       it 'gets called after a failed save' do
         instance.create(params: params, canary: canary)
-        expect(canary).to have_received(:ping).exactly(6).times
-        expect(canary).to have_received(:ping).with(:after_change_failure).once
-        expect(canary).not_to have_received(:ping).with(:after_change_success)
+        expect(canary.song[3][:data]).to eq :after_change_failure
+        expect(canary.song.map { |x| x[:data] }).not_to include(:after_change_success)
       end
     end
 
@@ -243,8 +243,13 @@ RSpec.describe SnFoil::Contexts::CreateContextConcern do
 
       it 'gets called regardless of save success' do
         instance.create(params: params, canary: canary)
-        expect(canary).to have_received(:ping).exactly(6).times
-        expect(canary).to have_received(:ping).with(:after_create).once
+        expect(canary.song[4][:data]).to eq :after_create
+      end
+
+      it 'gets called before after_change' do
+        instance.create(params: params, canary: canary)
+        expect(canary.song[4][:data]).to eq :after_create
+        expect(canary.song[5][:data]).to eq :after_change
       end
     end
 
@@ -255,8 +260,7 @@ RSpec.describe SnFoil::Contexts::CreateContextConcern do
 
       it 'gets called regardless of save success' do
         instance.create(params: params, canary: canary)
-        expect(canary).to have_received(:ping).exactly(6).times
-        expect(canary).to have_received(:ping).with(:after_change).once
+        expect(canary.song[5][:data]).to eq :after_change
       end
     end
 
@@ -264,30 +268,28 @@ RSpec.describe SnFoil::Contexts::CreateContextConcern do
       context 'when the provided lamba returns true' do
         before do
           including_class.before_change(if: ->(_) { true }) do |opts|
-            opts[:canary].ping(:conditional)
+            opts[:canary].sing(:conditional)
             opts
           end
         end
 
         it 'runs the lambda' do
           instance.create(params: params, canary: canary)
-          expect(canary).to have_received(:ping).exactly(7).times
-          expect(canary).to have_received(:ping).with(:conditional).once
+          expect(canary.song.map { |x| x[:data] }).to include :conditional
         end
       end
 
       context 'when the provided lamba returns false' do
         before do
           including_class.before_change(if: ->(_) { false }) do |opts|
-            opts[:canary].ping(:conditional)
+            opts[:canary].sing(:conditional)
             opts
           end
         end
 
         it 'doesn\'t run the lambda' do
           instance.create(params: params, canary: canary)
-          expect(canary).to have_received(:ping).exactly(6).times
-          expect(canary).not_to have_received(:ping).with(:conditional)
+          expect(canary.song.map { |x| x[:data] }).not_to include :conditional
         end
       end
     end
@@ -296,30 +298,28 @@ RSpec.describe SnFoil::Contexts::CreateContextConcern do
       context 'when the provided lamba returns true' do
         before do
           including_class.before_change(unless: ->(_) { true }) do |opts|
-            opts[:canary].ping(:conditional)
+            opts[:canary].sing(:conditional)
             opts
           end
         end
 
         it 'doesn\'t run the lambda' do
           instance.create(params: params, canary: canary)
-          expect(canary).to have_received(:ping).exactly(6).times
-          expect(canary).not_to have_received(:ping).with(:conditional)
+          expect(canary.song.map { |x| x[:data] }).not_to include :conditional
         end
       end
 
       context 'when the provided lamba returns false' do
         before do
           including_class.before_change(unless: ->(_) { false }) do |opts|
-            opts[:canary].ping(:conditional)
+            opts[:canary].sing(:conditional)
             opts
           end
         end
 
         it 'runs the lambda' do
           instance.create(params: params, canary: canary)
-          expect(canary).to have_received(:ping).exactly(7).times
-          expect(canary).to have_received(:ping).with(:conditional).once
+          expect(canary.song.map { |x| x[:data] }).to include :conditional
         end
       end
     end

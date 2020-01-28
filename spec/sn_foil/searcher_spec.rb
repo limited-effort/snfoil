@@ -11,11 +11,47 @@ RSpec.describe SnFoil::Searcher do
   subject(:searcher) { Class.new TestSearcherClass }
 
   let(:instance) { searcher.new }
-  let(:query) { instance.search({}).to_query }
+  let(:query) { instance.search(params).to_query }
+  let(:params) { {} }
+  let(:canary) { Canary.new }
 
   before do
     searcher.model_class model_double
     allow(model_double).to receive(:all).and_return(FakeScope.new(Person, '"people".*'))
+  end
+
+  context 'with params value that include \'true\'(String)' do
+    let(:params) { { canary: canary, parameter: 'true' } }
+
+    before do
+      searcher.filter do |scope, params|
+        params[:canary].sing(params)
+        scope
+      end
+    end
+
+    it 'converts the values to true(Boolean)' do
+      query
+      expect(canary.song[0][:data][:parameter]).to be true
+      expect(canary.song[0][:data][:parameter]).not_to eq 'true'
+    end
+  end
+
+  context 'with params value that include \'false\'(String)' do
+    let(:params) { { canary: canary, parameter: 'false' } }
+
+    before do
+      searcher.filter do |scope, params|
+        params[:canary].sing(params)
+        scope
+      end
+    end
+
+    it 'converts the values to false(Boolean)' do
+      query
+      expect(canary.song[0][:data][:parameter]).to be false
+      expect(canary.song[0][:data][:parameter]).not_to eq 'false'
+    end
   end
 
   describe '#initialize' do
@@ -40,7 +76,83 @@ RSpec.describe SnFoil::Searcher do
     end
   end
 
+  describe 'self#setup' do
+    let(:params) { { canary: canary } }
+
+    before do
+      searcher.filter do |scope, _|
+        params[:canary].sing(:filter)
+        scope
+      end
+
+      searcher.setup do |scope, params|
+        params[:canary].sing(:setup_block)
+        scope
+      end
+    end
+
+    it 'gets called before filters' do
+      query
+      expect(canary.song[0][:data]).to eq(:setup_block)
+      expect(canary.song[1][:data]).to eq(:filter)
+    end
+
+    context 'with a block' do
+      it 'calls the block' do
+        query
+        expect(canary.song[0][:data]).to eq(:setup_block)
+      end
+    end
+
+    context 'with a method' do
+      before do
+        searcher.define_method(:setup_method) do |scope, params|
+          params[:canary].sing(:setup_method)
+          scope
+        end
+        searcher.setup :setup_method
+      end
+
+      it 'calls the method' do
+        query
+        expect(canary.song[0][:data]).to eq(:setup_method)
+      end
+    end
+  end
+
   describe 'self#filter' do
+    let(:canary) { Canary.new }
+    let(:params) { { canary: canary } }
+
+    context 'with a block' do
+      before do
+        searcher.filter do |scope, params|
+          params[:canary].sing(:filter_block)
+          scope
+        end
+      end
+
+      it 'calls the block' do
+        query
+        expect(canary.song[0][:data]).to eq(:filter_block)
+      end
+    end
+
+    context 'with a method' do
+      before do
+        searcher.define_method(:filter_method) do |scope, params|
+          params[:canary].sing(:filter_method)
+          scope
+        end
+        searcher.filter :filter_method
+      end
+
+      it 'calls the method' do
+        query
+        expect(canary.song[0][:data]).to eq(:filter_method)
+      end
+    end
+
     context 'with options[:if]' do
       context 'when the provided lamba returns true' do
         before do

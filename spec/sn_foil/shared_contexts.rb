@@ -70,16 +70,6 @@ class FakeFailureORMAdapter < FakeSuccessORMAdapter
   end
 end
 
-class FakeErrorORMAdapter < FakeSuccessORMAdapter
-  def save
-    raise StandardError
-  end
-
-  def destroy
-    raise StandardError
-  end
-end
-
 class FakePolicy
   include SnFoil::Policy
 
