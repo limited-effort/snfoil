@@ -49,7 +49,7 @@ module SnFoil
         object = if object
                    wrap_object(object)
                  else
-                   klass = options.fetch(:model_class) { model_class }
+                   klass = options.fetch(:model) { model }
                    wrap_object(klass).new
                  end
 

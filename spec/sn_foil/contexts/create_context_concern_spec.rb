@@ -14,8 +14,8 @@ RSpec.describe SnFoil::Contexts::CreateContextConcern do
   let(:params) { {} }
 
   before do
-    including_class.model_class(model_double)
-    including_class.policy_class(policy)
+    including_class.model(model_double)
+    including_class.policy(policy)
   end
 
   describe 'self#create' do
@@ -43,7 +43,7 @@ RSpec.describe SnFoil::Contexts::CreateContextConcern do
       end
     end
 
-    context 'with options[:model_class]' do
+    context 'with options[:model]' do
       let(:other_model_double) { Person }
       let(:other_model_instance_double) { other_model_double.new(first_name: 'Other', last_name: 'Human') }
 
@@ -52,12 +52,12 @@ RSpec.describe SnFoil::Contexts::CreateContextConcern do
       end
 
       it 'instantiates an object using the options model class' do
-        expect(instance.setup_create_object(params: {}, model_class: other_model_double)[:object]).to eq other_model_instance_double
+        expect(instance.setup_create_object(params: {}, model: other_model_double)[:object]).to eq other_model_instance_double
         expect(other_model_double).to have_received(:new).twice # Once for creation and once for attr assignment
       end
     end
 
-    context 'without options[:model_class]' do
+    context 'without options[:model]' do
       it 'instantiates an object using the contexts model class' do
         expect(instance.setup_create_object(params: {})[:object]).to eq(model_instance_double)
         expect(model_double).to have_received(:new)

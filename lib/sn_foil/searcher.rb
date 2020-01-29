@@ -13,10 +13,10 @@ module SnFoil
     end
 
     class_methods do
-      attr_reader :i_model_class, :i_setup, :i_filters, :i_search_step
+      attr_reader :i_model, :i_setup, :i_filters, :i_search_step
 
-      def model_class(klass = nil)
-        @i_model_class = klass
+      def model(klass = nil)
+        @i_model = klass
       end
 
       def setup(setup_method = nil, &setup_block)
@@ -35,13 +35,13 @@ module SnFoil
       end
     end
 
-    def model_class
-      self.class.i_model_class
+    def model
+      self.class.i_model
     end
 
     attr_reader :scope
     def initialize(scope: nil)
-      @scope = scope || model_class.all
+      @scope = scope || model.all
     end
 
     def search(params = {})

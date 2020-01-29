@@ -9,35 +9,35 @@ RSpec.describe SnFoil::Contexts::SetupContextConcern do
   include_context 'with fake policy'
   let(:including_class) { Class.new SetupContextClass }
 
-  describe '#self.model_class' do
-    before { including_class.model_class(model_double) }
+  describe '#self.model' do
+    before { including_class.model(model_double) }
 
     it 'sets the internal model class' do
-      expect(including_class.i_model_class).to eq(model_double)
+      expect(including_class.i_model).to eq(model_double)
     end
   end
 
-  describe '#self.policy_class' do
-    before { including_class.policy_class(FakePolicy) }
+  describe '#self.policy' do
+    before { including_class.policy(FakePolicy) }
 
     it 'sets the internal model class' do
-      expect(including_class.i_policy_class).to eq(FakePolicy)
+      expect(including_class.i_policy).to eq(FakePolicy)
     end
   end
 
-  describe '#model_class' do
-    before { including_class.model_class(model_double) }
+  describe '#model' do
+    before { including_class.model(model_double) }
 
     it 'returns the class internal model class' do
-      expect(including_class.new.model_class).to eq(model_double)
+      expect(including_class.new.model).to eq(model_double)
     end
   end
 
-  describe '#policy_class' do
-    before { including_class.policy_class(model_double) }
+  describe '#policy' do
+    before { including_class.policy(model_double) }
 
     it 'returns the class internal policy class' do
-      expect(including_class.new.policy_class).to eq(model_double)
+      expect(including_class.new.policy).to eq(model_double)
     end
   end
 
@@ -47,8 +47,8 @@ RSpec.describe SnFoil::Contexts::SetupContextConcern do
     let(:action) { :create? }
 
     before do
-      including_class.model_class(model_double)
-      including_class.policy_class(FakePolicy)
+      including_class.model(model_double)
+      including_class.policy(FakePolicy)
     end
 
     context 'when there is no user in the context' do
@@ -79,7 +79,7 @@ RSpec.describe SnFoil::Contexts::SetupContextConcern do
       end
     end
 
-    context 'when the context has a policy_class configured' do
+    context 'when the context has a policy configured' do
       it 'calls the policy from the context' do
         expect(instance.authorize(model_double, action)).to eq true
         expect(policy).to have_received(:new).with(user, model_double)
@@ -89,7 +89,7 @@ RSpec.describe SnFoil::Contexts::SetupContextConcern do
 
     context 'with a user, no options, and no context' do
       before do
-        including_class.policy_class(nil)
+        including_class.policy(nil)
         allow(Pundit).to receive(:policy!).and_return(policy_double)
       end
 
@@ -106,8 +106,8 @@ RSpec.describe SnFoil::Contexts::SetupContextConcern do
     let(:instance) { including_class.new(user) }
 
     before do
-      including_class.model_class(model_double)
-      including_class.policy_class(policy)
+      including_class.model(model_double)
+      including_class.policy(policy)
     end
 
     it 'returns the policy\'s scope' do

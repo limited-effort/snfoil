@@ -14,8 +14,8 @@ RSpec.describe SnFoil::Contexts::DestroyContextConcern do
   let(:params) { {} }
 
   before do
-    including_class.model_class(model_double)
-    including_class.policy_class(FakePolicy)
+    including_class.model(model_double)
+    including_class.policy(FakePolicy)
   end
 
   describe 'self#destroy' do
@@ -51,7 +51,7 @@ RSpec.describe SnFoil::Contexts::DestroyContextConcern do
     end
 
     context 'with options[:id]' do
-      let(:object) { instance_double(model_class) }
+      let(:object) { instance_double(model) }
 
       it 'lookups the object in the scope' do
         expect(instance.setup_destroy_object(params: {}, id: 1)[:object]).to eq model_instance_double

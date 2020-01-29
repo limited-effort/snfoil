@@ -24,7 +24,7 @@ module SnFoil
         SnFoil.logger.info 'Warning: Using build bypasses authorize.  It is safer to interact with models through create' unless ENV['ISTEST']
         return wrap_object(object) if object
 
-        klass = options.fetch(:model_class) { model_class }
+        klass = options.fetch(:model) { model }
         options.merge! object: wrap_object(klass).new(**params)
       end
 

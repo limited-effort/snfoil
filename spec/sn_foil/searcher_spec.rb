@@ -16,42 +16,8 @@ RSpec.describe SnFoil::Searcher do
   let(:canary) { Canary.new }
 
   before do
-    searcher.model_class model_double
+    searcher.model model_double
     allow(model_double).to receive(:all).and_return(FakeScope.new(Person, '"people".*'))
-  end
-
-  context 'with params value that include \'true\'(String)' do
-    let(:params) { { canary: canary, parameter: 'true' } }
-
-    before do
-      searcher.filter do |scope, params|
-        params[:canary].sing(params)
-        scope
-      end
-    end
-
-    it 'converts the values to true(Boolean)' do
-      query
-      expect(canary.song[0][:data][:parameter]).to be true
-      expect(canary.song[0][:data][:parameter]).not_to eq 'true'
-    end
-  end
-
-  context 'with params value that include \'false\'(String)' do
-    let(:params) { { canary: canary, parameter: 'false' } }
-
-    before do
-      searcher.filter do |scope, params|
-        params[:canary].sing(params)
-        scope
-      end
-    end
-
-    it 'converts the values to false(Boolean)' do
-      query
-      expect(canary.song[0][:data][:parameter]).to be false
-      expect(canary.song[0][:data][:parameter]).not_to eq 'false'
-    end
   end
 
   describe '#initialize' do
@@ -70,9 +36,9 @@ RSpec.describe SnFoil::Searcher do
     end
   end
 
-  describe 'self#model_class' do
+  describe 'self#model' do
     it 'sets the internal model class' do
-      expect(instance.model_class.to_s).to match(/Person/)
+      expect(instance.model.to_s).to match(/Person/)
     end
   end
 
@@ -203,6 +169,73 @@ RSpec.describe SnFoil::Searcher do
           expect(query).to match(/"people"."client_id" = 4/)
         end
       end
+    end
+  end
+
+  describe '#search' do
+    let(:params) { { canary: canary } }
+
+    before do
+      searcher.setup do |scope, params|
+        params[:canary].sing(:setup)
+        scope
+      end
+
+      searcher.filter do |scope, params|
+        params[:canary].sing(:filter1)
+        scope
+      end
+
+      searcher.filter do |scope, params|
+        params[:canary].sing(:filter2)
+        scope
+      end
+    end
+
+    context 'with params value that include \'true\'(String)' do
+      let(:params) { { canary: canary, parameter: 'true' } }
+
+      before do
+        searcher.filter do |scope, params|
+          params[:canary].sing(params)
+          scope
+        end
+      end
+
+      it 'converts the values to true(Boolean)' do
+        query
+        expect(canary.song[3][:data][:parameter]).to be true
+        expect(canary.song[3][:data][:parameter]).not_to eq 'true'
+      end
+    end
+
+    context 'with params value that include \'false\'(String)' do
+      let(:params) { { canary: canary, parameter: 'false' } }
+
+      before do
+        searcher.filter do |scope, params|
+          params[:canary].sing(params)
+          scope
+        end
+      end
+
+      it 'converts the values to false(Boolean)' do
+        query
+        expect(canary.song[3][:data][:parameter]).to be false
+        expect(canary.song[3][:data][:parameter]).not_to eq 'false'
+      end
+    end
+
+    it 'calls setup' do
+      query
+      expect(canary.sung?(:setup)).to be true
+    end
+
+    it 'calls all filters' do
+      query
+      expect(canary.sung?(:filter1)).to be true
+      expect(canary.sung?(:filter2)).to be true
+      expect(canary.sung?(:filter3)).to be false
     end
   end
 

@@ -17,17 +17,17 @@ RSpec.describe SnFoil::Contexts::IndexContextConcern do
   let(:params) { {} }
 
   before do
-    including_class.model_class(model_double)
-    including_class.policy_class(FakePolicy)
+    including_class.model(model_double)
+    including_class.policy(FakePolicy)
     allow(searcher_double).to receive(:new).and_return(searcher_instance_double)
     allow(searcher_instance_double).to receive(:search).with(anything).and_return(results)
   end
 
-  describe '#self.searcher_class' do
-    before { including_class.searcher_class(searcher_double) }
+  describe '#self.searcher' do
+    before { including_class.searcher(searcher_double) }
 
     it 'sets the internal searcher class' do
-      expect(including_class.i_searcher_class).to eq(searcher_double)
+      expect(including_class.i_searcher).to eq(searcher_double)
     end
   end
 
@@ -47,17 +47,17 @@ RSpec.describe SnFoil::Contexts::IndexContextConcern do
     end
   end
 
-  describe '#searcher_class' do
-    before { including_class.searcher_class(searcher_double) }
+  describe '#searcher' do
+    before { including_class.searcher(searcher_double) }
 
     it 'returns the class internal searcher class' do
-      expect(including_class.new.searcher_class).to eq(searcher_double)
+      expect(including_class.new.searcher).to eq(searcher_double)
     end
   end
 
   describe '#index' do
     before do
-      including_class.searcher_class(searcher_double)
+      including_class.searcher(searcher_double)
       allow(instance).to receive(:setup_index).and_call_original
     end
 

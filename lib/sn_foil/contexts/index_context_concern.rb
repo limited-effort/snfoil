@@ -13,25 +13,25 @@ module SnFoil
       end
 
       class_methods do
-        attr_reader :i_searcher_class
+        attr_reader :i_searcher
 
         def index(params: {}, user: nil, **options)
           new(user).index(**options, params: params)
         end
 
-        def searcher_class(klass = nil)
-          @i_searcher_class = klass
+        def searcher(klass = nil)
+          @i_searcher = klass
         end
       end
 
-      def searcher_class
-        self.class.i_searcher_class
+      def searcher
+        self.class.i_searcher
       end
 
       def index(params:, **options)
         options[:action] = :index
         options = setup_index(**options)
-        options.fetch(:searcher) { searcher_class }
+        options.fetch(:searcher) { searcher }
                .new(scope: scope.resolve)
                .search(params: params)
       end

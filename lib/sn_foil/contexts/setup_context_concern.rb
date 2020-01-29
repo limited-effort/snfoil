@@ -9,23 +9,23 @@ module SnFoil
       extend ActiveSupport::Concern
 
       class_methods do
-        attr_reader :i_model_class, :i_policy_class
+        attr_reader :i_model, :i_policy
 
-        def model_class(klass = nil)
-          @i_model_class = klass
+        def model(klass = nil)
+          @i_model = klass
         end
 
-        def policy_class(klass = nil)
-          @i_policy_class = klass
+        def policy(klass = nil)
+          @i_policy = klass
         end
       end
 
-      def model_class
-        self.class.i_model_class
+      def model
+        self.class.i_model
       end
 
-      def policy_class
-        self.class.i_policy_class
+      def policy
+        self.class.i_policy
       end
 
       attr_reader :user
@@ -36,12 +36,12 @@ module SnFoil
       def authorize(object, action, **options)
         return unless user # Add logging
 
-        policy(object, options).send(action)
+        lookup_policy(object, options).send(action)
       end
 
       def scope(object_class = nil, **options)
-        object_class ||= model_class
-        policy_name = policy(object_class, options).class.name
+        object_class ||= model
+        policy_name = lookup_policy(object_class, options).class.name
         "#{policy_name}::Scope".safe_constantize.new(wrap_object(object_class), user)
       end
 
@@ -69,9 +69,9 @@ module SnFoil
 
       private
 
-      def policy(object, options)
+      def lookup_policy(object, options)
         return options[:policy].new(user, object) if options[:policy]
-        return policy_class.new(user, object) if policy_class
+        return policy.new(user, object) if policy
 
         Pundit.policy!(user, object)
       end

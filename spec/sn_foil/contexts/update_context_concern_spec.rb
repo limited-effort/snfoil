@@ -12,8 +12,8 @@ RSpec.describe SnFoil::Contexts::UpdateContextConcern do
   let(:params) { { first_name: 'John', last_name: 'Doe' } }
 
   before do
-    including_class.model_class(model_double)
-    including_class.policy_class(policy)
+    including_class.model(model_double)
+    including_class.policy(policy)
   end
 
   describe 'self#update' do

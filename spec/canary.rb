@@ -19,4 +19,8 @@ class Canary
   def song
     @callers
   end
+
+  def sung?(data)
+    @callers.map { |x| x[:data] }.include?(data)
+  end
 end
