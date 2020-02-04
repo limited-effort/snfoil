@@ -2,14 +2,14 @@ PATH
   remote: .
   specs:
     snfoil (0.1.0)
-      activesupport (~> 6.0)
+      activesupport (>= 5.1)
       logger (~> 1.0)
       pundit (~> 2.0)
 
 GEM
   remote: https://rubygems.org/
   specs:
-    activesupport (6.0.1)
+    activesupport (6.0.2.1)
       concurrent-ruby (~> 1.0, >= 1.0.2)
       i18n (>= 0.7, < 2)
       minitest (~> 5.1)
@@ -46,13 +46,13 @@ GEM
       dry-equalizer (~> 0.3)
       dry-inflector (~> 0.1, >= 0.1.2)
       dry-logic (~> 1.0, >= 1.0.2)
-    i18n (1.7.0)
+    i18n (1.8.2)
       concurrent-ruby (~> 1.0)
     ice_nine (0.11.2)
     jaro_winkler (1.5.4)
-    logger (1.4.1)
+    logger (1.4.2)
     method_source (0.9.2)
-    minitest (5.13.0)
+    minitest (5.14.0)
     parallel (1.19.0)
     parser (2.6.5.0)
       ast (~> 2.4.0)
@@ -65,7 +65,7 @@ GEM
     pundit (2.1.0)
       activesupport (>= 3.0.0)
     rainbow (3.0.0)
-    rake (10.5.0)
+    rake (13.0.1)
     rspec (3.9.0)
       rspec-core (~> 3.9.0)
       rspec-expectations (~> 3.9.0)
@@ -90,10 +90,10 @@ GEM
       rubocop (>= 0.68.1)
     ruby-progressbar (1.10.1)
     thread_safe (0.3.6)
-    tzinfo (1.2.5)
+    tzinfo (1.2.6)
       thread_safe (~> 0.1)
     unicode-display_width (1.6.0)
-    zeitwerk (2.2.1)
+    zeitwerk (2.2.2)
 
 PLATFORMS
   ruby
@@ -102,11 +102,11 @@ DEPENDENCIES
   bundler (~> 2.0)
   dry-struct (~> 1.0)
   pry-byebug (~> 3.0)
-  rake (~> 10.0)
+  rake (~> 13.0)
   rspec (~> 3.9)
   rubocop (~> 0.76.0)
   rubocop-rspec (~> 1.36.0)
   snfoil!
 
 BUNDLED WITH
-   2.0.1
+   2.0.2

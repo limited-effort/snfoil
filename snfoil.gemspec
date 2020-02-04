@@ -9,7 +9,6 @@ Gem::Specification.new do |spec| # rubocop:disable Metrics/BlockLength
   spec.version       = SnFoil::VERSION
   spec.authors       = ['Matthew Howes']
   spec.email         = ['howeszy@gmail.com']
-
   spec.summary       = 'A boilerplate gem for providing basic contexts'
   spec.homepage      = 'https://github.com/howeszy/snfoil'
   spec.license       = 'MIT'
@@ -21,7 +20,6 @@ Gem::Specification.new do |spec| # rubocop:disable Metrics/BlockLength
 
     spec.metadata['homepage_uri'] = spec.homepage
     spec.metadata['source_code_uri'] = 'https://github.com/howeszy/snfoil'
-    spec.metadata['changelog_uri'] = 'http://crakn.net'
   else
     raise 'RubyGems 2.0 or newer is required to protect against ' \
       'public gem pushes.'
@@ -42,7 +40,7 @@ Gem::Specification.new do |spec| # rubocop:disable Metrics/BlockLength
 
   spec.add_development_dependency 'bundler', '~> 2.0'
   spec.add_development_dependency 'pry-byebug', '~> 3.0'
-  spec.add_development_dependency 'rake', '~> 10.0'
+  spec.add_development_dependency 'rake', '~> 13.0'
   spec.add_development_dependency 'rspec', '~> 3.9'
   spec.add_development_dependency 'rubocop', '~> 0.76.0'
   spec.add_development_dependency 'rubocop-rspec', '~> 1.36.0'

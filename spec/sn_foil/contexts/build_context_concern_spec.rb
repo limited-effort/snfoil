@@ -13,7 +13,7 @@ RSpec.describe SnFoil::Contexts::BuildContextConcern do
   let(:instance) { including_class.new(user) }
 
   before do
-    including_class.model_class(model_double)
+    including_class.model(model_double)
     allow(model_double).to receive(:new).and_return(model_instance_double)
   end
 
@@ -41,7 +41,7 @@ RSpec.describe SnFoil::Contexts::BuildContextConcern do
       end
     end
 
-    context 'with options[:model_class]' do
+    context 'with options[:model]' do
       let(:other_model_double) { class_double(OpenStruct) }
       let(:other_model_instance_double) { instance_double(OpenStruct) }
 
@@ -50,14 +50,14 @@ RSpec.describe SnFoil::Contexts::BuildContextConcern do
       end
 
       it 'instantiates an object using the options model class' do
-        expect(instance.setup_build_object(params: {}, model_class: other_model_double)).to eq other_model_instance_double
+        expect(instance.setup_build_object(params: {}, model: other_model_double)[:object]).to eq other_model_instance_double
         expect(other_model_double).to have_received(:new)
       end
     end
 
-    context 'without options[:model_class]' do
+    context 'without options[:model]' do
       it 'instantiates an object using the contexts model class' do
-        expect(instance.setup_build_object(params: {})).to eq(model_instance_double)
+        expect(instance.setup_build_object(params: {})[:object]).to eq(model_instance_double)
         expect(model_double).to have_received(:new)
       end
     end

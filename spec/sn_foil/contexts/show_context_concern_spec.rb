@@ -11,8 +11,8 @@ RSpec.describe SnFoil::Contexts::ShowContextConcern do
   let(:instance) { including_class.new(user) }
 
   before do
-    including_class.model_class(model_double)
-    including_class.policy_class(policy)
+    including_class.model(model_double)
+    including_class.policy(policy)
   end
 
   describe 'self#show' do
@@ -41,7 +41,7 @@ RSpec.describe SnFoil::Contexts::ShowContextConcern do
     context 'with options[:object]' do
       it 'directly returns any object provided in the options' do
         object = instance_double(model_double)
-        expect(instance.setup_show_object(object: object)).to eq object
+        expect(instance.setup_show_object(object: object)[:object]).to eq object
       end
     end
 
@@ -57,7 +57,7 @@ RSpec.describe SnFoil::Contexts::ShowContextConcern do
       it 'directly returns any object provided in the options' do
         id = 1
         object = instance_double(model_double)
-        expect(instance.setup_show_object(id: id, object: object)).to eq object
+        expect(instance.setup_show_object(id: id, object: object)[:object]).to eq object
         expect(relation_double).not_to have_received(:find)
       end
     end

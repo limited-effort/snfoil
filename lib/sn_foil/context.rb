@@ -13,12 +13,12 @@ module SnFoil
     extend ActiveSupport::Concern
 
     included do
-      include BuildContextConcern
-      include IndexContextConcern
-      include ShowContextConcern
-      include CreateContextConcern
-      include UpdateContextConcern
-      include DestroyContextConcern
+      include Contexts::BuildContextConcern
+      include Contexts::IndexContextConcern
+      include Contexts::ShowContextConcern
+      include Contexts::CreateContextConcern
+      include Contexts::UpdateContextConcern
+      include Contexts::DestroyContextConcern
     end
   end
 end

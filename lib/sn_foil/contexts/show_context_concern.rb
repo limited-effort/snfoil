@@ -18,17 +18,17 @@ module SnFoil
         end
       end
 
-      def setup_show_object(id: nil, object: nil, **_options)
+      def setup_show_object(id: nil, object: nil, **options)
         raise ArgumentError, 'one of the following keywords is required: id, object' unless id || object
 
-        wrap_object(object || scope.resolve.find(id))
+        options.merge! object: wrap_object(object || scope.resolve.find(id))
       end
 
       def show(**options)
         options[:action] = :show
-        object = setup_show_object(**options)
-        authorize(object, :show?, **options)
-        object
+        options = setup_show_object(**options)
+        authorize(options[:object], :show?, **options)
+        unwrap_object options[:object]
       end
     end
   end

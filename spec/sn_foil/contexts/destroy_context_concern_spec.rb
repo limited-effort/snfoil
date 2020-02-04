@@ -14,8 +14,8 @@ RSpec.describe SnFoil::Contexts::DestroyContextConcern do
   let(:params) { {} }
 
   before do
-    including_class.model_class(model_double)
-    including_class.policy_class(FakePolicy)
+    including_class.model(model_double)
+    including_class.policy(FakePolicy)
   end
 
   describe 'self#destroy' do
@@ -46,15 +46,15 @@ RSpec.describe SnFoil::Contexts::DestroyContextConcern do
     context 'with options[:object]' do
       it 'directly returns any object provided in the options' do
         object = instance_double(model_double)
-        expect(instance.setup_destroy_object(params: {}, object: object)).to eq object
+        expect(instance.setup_destroy_object(params: {}, object: object)[:object]).to eq object
       end
     end
 
     context 'with options[:id]' do
-      let(:object) { instance_double(model_class) }
+      let(:object) { instance_double(model) }
 
       it 'lookups the object in the scope' do
-        expect(instance.setup_destroy_object(params: {}, id: 1)).to eq model_instance_double
+        expect(instance.setup_destroy_object(params: {}, id: 1)[:object]).to eq model_instance_double
         expect(relation_double).to have_received(:find).once
       end
     end
@@ -119,89 +119,85 @@ RSpec.describe SnFoil::Contexts::DestroyContextConcern do
   end
 
   context 'when hooks are provided' do
-    let(:canary) { double }
+    let(:canary) { Canary.new }
 
     before do
-      allow(canary).to receive(:ping).with(instance_of(Symbol))
-
       # Setup Action Hooks
-      including_class.before_destroy do |obj, opts|
-        opts[:canary].ping(:before_destroy)
-        obj
+      including_class.before_destroy do |opts|
+        opts[:canary].sing(:before_destroy)
+        opts
       end
-      including_class.before_change do |obj, opts|
-        opts[:canary].ping(:before_change)
-        obj
+      including_class.before_change do |opts|
+        opts[:canary].sing(:before_change)
+        opts
       end
-      including_class.after_destroy_success do |obj, opts|
-        opts[:canary].ping(:after_destroy_success)
-        obj
+      including_class.after_destroy_success do |opts|
+        opts[:canary].sing(:after_destroy_success)
+        opts
       end
-      including_class.after_change_success do |obj, opts|
-        opts[:canary].ping(:after_change_success)
-        obj
+      including_class.after_change_success do |opts|
+        opts[:canary].sing(:after_change_success)
+        opts
       end
-      including_class.after_destroy_failure do |obj, opts|
-        opts[:canary].ping(:after_destroy_failure)
-        obj
+      including_class.after_destroy_failure do |opts|
+        opts[:canary].sing(:after_destroy_failure)
+        opts
       end
-      including_class.after_change_failure do |obj, opts|
-        opts[:canary].ping(:after_change_failure)
-        obj
+      including_class.after_change_failure do |opts|
+        opts[:canary].sing(:after_change_failure)
+        opts
       end
-      including_class.after_destroy do |obj, opts|
-        opts[:canary].ping(:after_destroy)
-        obj
+      including_class.after_destroy do |opts|
+        opts[:canary].sing(:after_destroy)
+        opts
       end
-      including_class.after_change do |obj, opts|
-        opts[:canary].ping(:after_change)
-        obj
+      including_class.after_change do |opts|
+        opts[:canary].sing(:after_change)
+        opts
       end
     end
 
     describe 'self#before_destroy' do
-      before do
-        allow(SnFoil).to receive(:adapter).and_return(FakeErrorORMAdapter)
+      it 'gets called before any save' do
+        instance.destroy(params: params, id: 1, canary: canary)
+        expect(canary.song[0][:data]).to eq :before_destroy
+        expect(canary.song[2][:data]).to eq :after_destroy_success
       end
 
-      it 'gets called before any save' do
-        expect do
-          instance.destroy(params: params, id: 1, canary: canary)
-        end.to raise_error(StandardError)
-        expect(canary).to have_received(:ping).exactly(2).times
-        expect(canary).to have_received(:ping).with(:before_destroy).once
+      it 'gets called before :before_change' do
+        instance.destroy(params: params, id: 1, canary: canary)
+        expect(canary.song[0][:data]).to eq :before_destroy
+        expect(canary.song[1][:data]).to eq :before_change
       end
     end
 
     describe 'self#before_change' do
-      before do
-        allow(SnFoil).to receive(:adapter).and_return(FakeErrorORMAdapter)
-      end
-
       it 'gets called before any save' do
-        expect do
-          instance.destroy(params: params, id: 1, canary: canary)
-        end.to raise_error(StandardError)
-        expect(canary).to have_received(:ping).exactly(2).times
-        expect(canary).to have_received(:ping).with(:before_change).once
+        instance.destroy(params: params, id: 1, canary: canary)
+        expect(canary.song[1][:data]).to eq :before_change
+        expect(canary.song[2][:data]).to eq :after_destroy_success
       end
     end
 
     describe 'self#after_destroy_success' do
       it 'gets called after a successful save' do
         instance.destroy(params: params, id: 1, canary: canary)
-        expect(canary).to have_received(:ping).exactly(6).times
-        expect(canary).to have_received(:ping).with(:after_destroy_success).once
-        expect(canary).not_to have_received(:ping).with(:after_destroy_failure)
+        expect(canary.song[2][:data]).to eq :after_destroy_success
+        expect(canary.song.map { |x| x[:data] }).not_to include(:after_change_failure)
+      end
+
+      it 'gets called before after_destroy_success' do
+        instance.destroy(params: params, id: 1, canary: canary)
+        expect(canary.song[2][:data]).to eq :after_destroy_success
+        expect(canary.song[3][:data]).to eq :after_change_success
       end
     end
 
     describe 'self#after_change_success' do
       it 'gets called after a successful save' do
         instance.destroy(params: params, id: 1, canary: canary)
-        expect(canary).to have_received(:ping).exactly(6).times
-        expect(canary).to have_received(:ping).with(:after_change_success).once
-        expect(canary).not_to have_received(:ping).with(:after_change_failure)
+        expect(canary.song[3][:data]).to eq :after_change_success
+        expect(canary.song.map { |x| x[:data] }).not_to include(:after_change_failure)
       end
     end
 
@@ -212,9 +208,14 @@ RSpec.describe SnFoil::Contexts::DestroyContextConcern do
 
       it 'gets called after a failed save' do
         instance.destroy(params: params, id: 1, canary: canary)
-        expect(canary).to have_received(:ping).exactly(6).times
-        expect(canary).to have_received(:ping).with(:after_destroy_failure).once
-        expect(canary).not_to have_received(:ping).with(:after_destroy_success)
+        expect(canary.song[2][:data]).to eq :after_destroy_failure
+        expect(canary.song.map { |x| x[:data] }).not_to include(:after_destroy_success)
+      end
+
+      it 'gets called before after_change_failure' do
+        instance.destroy(params: params, id: 1, canary: canary)
+        expect(canary.song[2][:data]).to eq :after_destroy_failure
+        expect(canary.song[3][:data]).to eq :after_change_failure
       end
     end
 
@@ -225,9 +226,8 @@ RSpec.describe SnFoil::Contexts::DestroyContextConcern do
 
       it 'gets called after a failed save' do
         instance.destroy(params: params, id: 1, canary: canary)
-        expect(canary).to have_received(:ping).exactly(6).times
-        expect(canary).to have_received(:ping).with(:after_change_failure).once
-        expect(canary).not_to have_received(:ping).with(:after_change_success)
+        expect(canary.song[3][:data]).to eq :after_change_failure
+        expect(canary.song.map { |x| x[:data] }).not_to include(:after_change_success)
       end
     end
 
@@ -238,8 +238,13 @@ RSpec.describe SnFoil::Contexts::DestroyContextConcern do
 
       it 'gets called regardless of save success' do
         instance.destroy(params: params, id: 1, canary: canary)
-        expect(canary).to have_received(:ping).exactly(6).times
-        expect(canary).to have_received(:ping).with(:after_destroy).once
+        expect(canary.song[4][:data]).to eq :after_destroy
+      end
+
+      it 'gets called before after_change' do
+        instance.destroy(params: params, id: 1, canary: canary)
+        expect(canary.song[4][:data]).to eq :after_destroy
+        expect(canary.song[5][:data]).to eq :after_change
       end
     end
 
@@ -250,8 +255,67 @@ RSpec.describe SnFoil::Contexts::DestroyContextConcern do
 
       it 'gets called regardless of save success' do
         instance.destroy(params: params, id: 1, canary: canary)
-        expect(canary).to have_received(:ping).exactly(6).times
-        expect(canary).to have_received(:ping).with(:after_change).once
+        expect(canary.song[5][:data]).to eq :after_change
+      end
+    end
+
+    describe 'with options[:if]' do
+      context 'when the provided lamba returns true' do
+        before do
+          including_class.before_change(if: ->(_) { true }) do |opts|
+            opts[:canary].sing(:conditional)
+            opts
+          end
+        end
+
+        it 'runs the lambda' do
+          instance.destroy(params: params, id: 1, canary: canary)
+          expect(canary.song.map { |x| x[:data] }).to include :conditional
+        end
+      end
+
+      context 'when the provided lamba returns false' do
+        before do
+          including_class.before_change(if: ->(_) { false }) do |opts|
+            opts[:canary].sing(:conditional)
+            opts
+          end
+        end
+
+        it 'doesn\'t run the lambda' do
+          instance.destroy(params: params, id: 1, canary: canary)
+          expect(canary.song.map { |x| x[:data] }).not_to include :conditional
+        end
+      end
+    end
+
+    describe 'with options[:unless]' do
+      context 'when the provided lamba returns true' do
+        before do
+          including_class.before_change(unless: ->(_) { true }) do |opts|
+            opts[:canary].sing(:conditional)
+            opts
+          end
+        end
+
+        it 'doesn\'t run the lambda' do
+          instance.destroy(params: params, id: 1, canary: canary)
+          expect(canary.song.map { |x| x[:data] }).not_to include :conditional
+        end
+      end
+
+      context 'when the provided lamba returns false' do
+        before do
+          including_class.before_change(unless: ->(_) { false }) do |opts|
+            opts[:canary].sing(:conditional)
+            opts
+          end
+        end
+
+        it 'runs the lambda' do
+          instance.destroy(params: params, id: 1, canary: canary)
+          expect(canary.song.map { |x| x[:data] }).to include :conditional
+        end
       end
     end
   end

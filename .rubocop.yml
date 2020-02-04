@@ -1,6 +1,11 @@
 require:
   - rubocop-rspec
 
+# ================ Style ===============
+# TODO: Activate later
+Style/Documentation:
+  Enabled: false
+
 # ================ LINT ================
 Lint/AmbiguousBlockAssociation:
   Exclude:
@@ -21,8 +26,3 @@ RSpec/MultipleExpectations:
 
 Rspec/NestedGroups:
   Max: 5
-
-
-# TODO: Activate later
-Style/Documentation:
-  Enabled: false

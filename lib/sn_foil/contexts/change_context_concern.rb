@@ -53,20 +53,20 @@ module SnFoil
         options
       end
 
-      def before_change(object, **_options)
-        object
+      def before_change(**options)
+        options
       end
 
-      def after_change(object, **_options)
-        object
+      def after_change(**options)
+        options
       end
 
-      def after_change_success(object, **_options)
-        object
+      def after_change_success(**options)
+        options
       end
 
-      def after_change_failure(object, **_options)
-        object
+      def after_change_failure(**options)
+        options
       end
 
       def before_change_hooks
@@ -85,17 +85,17 @@ module SnFoil
         self.class.i_after_change_failure_hooks || []
       end
 
-      def run_hook(hook, object, **options)
-        return object unless hook_valid?(hook, object, **options)
+      def run_hook(hook, **options)
+        return options unless hook_valid?(hook, **options)
 
-        return send(hook[:method], object, **options) if hook[:method]
+        return send(hook[:method], **options) if hook[:method]
 
-        hook[:block].call(object, options)
+        hook[:block].call(options)
       end
 
-      def hook_valid?(hook, object, **options)
-        return false if !hook[:if].nil? && hook[:if].call(object, options) == false
-        return false if !hook[:unless].nil? && hook[:unless].call(object, options) == true
+      def hook_valid?(hook, **options)
+        return false if !hook[:if].nil? && hook[:if].call(options) == false
+        return false if !hook[:unless].nil? && hook[:unless].call(options) == true
 
         true
       end

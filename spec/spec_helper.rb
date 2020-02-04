@@ -2,6 +2,7 @@
 
 require 'sn_foil'
 require 'pry-byebug'
+require_relative 'canary'
 
 ENV['ISTEST'] = 'true'
 

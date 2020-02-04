@@ -10,7 +10,7 @@ RSpec.describe SnFoil::Contexts::ChangeContextConcern do
   let(:whitelisted_params) { %i[first_name last_name] }
 
   before do
-    including_class.model_class(OpenStruct)
+    including_class.model(OpenStruct)
   end
 
   describe '#self.params' do
