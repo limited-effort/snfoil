@@ -5,7 +5,7 @@ $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 require 'sn_foil/version'
 
 Gem::Specification.new do |spec| # rubocop:disable Metrics/BlockLength
-  spec.name          = 'sn-foil'
+  spec.name          = 'snfoil'
   spec.version       = SnFoil::VERSION
   spec.authors       = ['Matthew Howes']
   spec.email         = ['howeszy@gmail.com']
@@ -36,7 +36,7 @@ Gem::Specification.new do |spec| # rubocop:disable Metrics/BlockLength
   spec.executables   = spec.files.grep(%r{^exe/}) { |f| File.basename(f) }
   spec.require_paths = ['lib']
 
-  spec.add_dependency 'activesupport', '~> 6.0'
+  spec.add_dependency 'activesupport', '>= 5.1'
   spec.add_dependency 'logger', '~> 1.0'
   spec.add_dependency 'pundit', '~> 2.0'
 

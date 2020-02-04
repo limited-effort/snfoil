@@ -1,4 +1,4 @@
 source "https://rubygems.org"
 
-# Specify your gem's dependencies in sn-foil.gemspec
+# Specify your gem's dependencies in snfoil.gemspec
 gemspec
