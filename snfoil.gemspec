@@ -7,8 +7,8 @@ require 'sn_foil/version'
 Gem::Specification.new do |spec| # rubocop:disable Metrics/BlockLength
   spec.name          = 'snfoil'
   spec.version       = SnFoil::VERSION
-  spec.authors       = ['Matthew Howes']
-  spec.email         = ['howeszy@gmail.com']
+  spec.authors     = ['Matthew Howes', 'Danny Murphy']
+  spec.email       = ['howeszy@gmail.com', 'dmurph24@gmail.com']
   spec.summary       = 'A boilerplate gem for providing basic contexts'
   spec.homepage      = 'https://github.com/howeszy/snfoil'
   spec.license       = 'MIT'
