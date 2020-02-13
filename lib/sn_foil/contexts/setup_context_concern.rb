@@ -36,7 +36,9 @@ module SnFoil
       def authorize(object, action, **options)
         return unless user # Add logging
 
-        lookup_policy(object, options).send(action)
+        policy = lookup_policy(object, options)
+        raise Pundit::NotAuthorizedError, query: action, record: object, policy: policy unless policy.public_send(action)
+        true
       end
 
       def scope(object_class = nil, **options)
