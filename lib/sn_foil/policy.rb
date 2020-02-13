@@ -6,10 +6,11 @@ module SnFoil
   module Policy
     extend ActiveSupport::Concern
 
-    attr_reader :record, :entity
-    def initialize(record, entity = nil)
+    attr_reader :record, :entity, :options
+    def initialize(record, entity = nil, options = {})
       @record = record
       @entity = entity
+      @options = options
     end
 
     def index?
@@ -29,6 +30,10 @@ module SnFoil
     end
 
     def destroy?
+      false
+    end
+
+    def associate?
       false
     end
 

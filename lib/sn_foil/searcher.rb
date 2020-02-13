@@ -1,16 +1,10 @@
 # frozen_string_literal: true
 
 require 'active_support/concern'
-require 'active_support/core_ext/module/attribute_accessors'
 
 module SnFoil
   module Searcher
     extend ActiveSupport::Concern
-
-    included do
-      TRUECAST = 'true'
-      FALSECAST = 'false'
-    end
 
     class_methods do
       attr_reader :i_model, :i_setup, :i_filters, :i_search_step
@@ -96,9 +90,9 @@ module SnFoil
 
     def transform_params_booleans(params)
       params.map do |key, value|
-        value = if value == TRUECAST
+        value = if value == 'true'
                   true
-                elsif value == FALSECAST
+                elsif value == 'false'
                   false
                 else
                   value
