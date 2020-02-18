@@ -1,17 +1,17 @@
 # frozen_string_literal: true
 
 require 'active_support/concern'
-require_relative './setup_context_concern'
-require_relative './change_context_concern'
+require_relative './setup_context'
+require_relative './change_context'
 
 module SnFoil
   module Contexts
-    module UpdateContextConcern # rubocop:disable Metrics/ModuleLength
+    module UpdateContext # rubocop:disable Metrics/ModuleLength
       extend ActiveSupport::Concern
 
       included do
-        include SetupContextConcern
-        include ChangeContextConcern
+        include SetupContext
+        include ChangeContext
       end
 
       class_methods do

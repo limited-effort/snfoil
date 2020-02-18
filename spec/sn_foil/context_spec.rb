@@ -6,28 +6,28 @@ require 'sn_foil/context'
 RSpec.describe SnFoil::Context do
   let(:including_class) { Class.new ContextClass }
 
-  it 'includes BuildContextConcern' do
-    expect(including_class.ancestors).to include(SnFoil::Contexts::BuildContextConcern)
+  it 'includes BuildContext' do
+    expect(including_class.ancestors).to include(SnFoil::Contexts::BuildContext)
   end
 
-  it 'includes IndexContextConcern' do
-    expect(including_class.ancestors).to include(SnFoil::Contexts::IndexContextConcern)
+  it 'includes IndexContext' do
+    expect(including_class.ancestors).to include(SnFoil::Contexts::IndexContext)
   end
 
-  it 'includes ShowContextConcern' do
-    expect(including_class.ancestors).to include(SnFoil::Contexts::ShowContextConcern)
+  it 'includes ShowContext' do
+    expect(including_class.ancestors).to include(SnFoil::Contexts::ShowContext)
   end
 
-  it 'includes CreateContextConcern' do
-    expect(including_class.ancestors).to include(SnFoil::Contexts::CreateContextConcern)
+  it 'includes CreateContext' do
+    expect(including_class.ancestors).to include(SnFoil::Contexts::CreateContext)
   end
 
-  it 'includes UpdateContextConcern' do
-    expect(including_class.ancestors).to include(SnFoil::Contexts::UpdateContextConcern)
+  it 'includes UpdateContext' do
+    expect(including_class.ancestors).to include(SnFoil::Contexts::UpdateContext)
   end
 
-  it 'includes DestroyContextConcern' do
-    expect(including_class.ancestors).to include(SnFoil::Contexts::DestroyContextConcern)
+  it 'includes DestroyContext' do
+    expect(including_class.ancestors).to include(SnFoil::Contexts::DestroyContext)
   end
 end
 

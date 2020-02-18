@@ -1,11 +1,11 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
-require 'sn_foil/contexts/setup_context_concern'
+require 'sn_foil/contexts/setup_context'
 require_relative '../shared_contexts'
 require 'pundit'
 
-RSpec.describe SnFoil::Contexts::SetupContextConcern do
+RSpec.describe SnFoil::Contexts::SetupContext do
   include_context 'with fake policy'
   let(:including_class) { Class.new SetupContextClass }
 
@@ -121,5 +121,5 @@ RSpec.describe SnFoil::Contexts::SetupContextConcern do
 end
 
 class SetupContextClass
-  include SnFoil::Contexts::SetupContextConcern
+  include SnFoil::Contexts::SetupContext
 end

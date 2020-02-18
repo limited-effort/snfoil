@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
-require 'sn_foil/contexts/show_context_concern'
+require 'sn_foil/contexts/show_context'
 require_relative '../shared_contexts'
 
-RSpec.describe SnFoil::Contexts::ShowContextConcern do
+RSpec.describe SnFoil::Contexts::ShowContext do
   include_context 'with fake policy'
   let(:including_class) { Class.new ShowContextClass }
 
@@ -95,5 +95,5 @@ RSpec.describe SnFoil::Contexts::ShowContextConcern do
 end
 
 class ShowContextClass
-  include SnFoil::Contexts::ShowContextConcern
+  include SnFoil::Contexts::ShowContext
 end

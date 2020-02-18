@@ -1,24 +1,24 @@
 # frozen_string_literal: true
 
 require 'active_support/concern'
-require_relative 'contexts/build_context_concern'
-require_relative 'contexts/index_context_concern'
-require_relative 'contexts/show_context_concern'
-require_relative 'contexts/create_context_concern'
-require_relative 'contexts/update_context_concern'
-require_relative 'contexts/destroy_context_concern'
+require_relative 'contexts/build_context'
+require_relative 'contexts/index_context'
+require_relative 'contexts/show_context'
+require_relative 'contexts/create_context'
+require_relative 'contexts/update_context'
+require_relative 'contexts/destroy_context'
 
 module SnFoil
   module Context
     extend ActiveSupport::Concern
 
     included do
-      include Contexts::BuildContextConcern
-      include Contexts::IndexContextConcern
-      include Contexts::ShowContextConcern
-      include Contexts::CreateContextConcern
-      include Contexts::UpdateContextConcern
-      include Contexts::DestroyContextConcern
+      include Contexts::BuildContext
+      include Contexts::IndexContext
+      include Contexts::ShowContext
+      include Contexts::CreateContext
+      include Contexts::UpdateContext
+      include Contexts::DestroyContext
     end
   end
 end

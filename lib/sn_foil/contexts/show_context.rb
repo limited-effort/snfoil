@@ -1,15 +1,15 @@
 # frozen_string_literal: true
 
 require 'active_support/concern'
-require_relative './setup_context_concern'
+require_relative './setup_context'
 
 module SnFoil
   module Contexts
-    module ShowContextConcern
+    module ShowContext
       extend ActiveSupport::Concern
 
       included do
-        include SetupContextConcern
+        include SetupContext
       end
 
       class_methods do
