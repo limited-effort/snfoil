@@ -1,11 +1,11 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
-require 'sn_foil/contexts/index_context_concern'
+require 'sn_foil/contexts/index_context'
 require 'sn_foil/searcher'
 require_relative '../shared_contexts'
 
-RSpec.describe SnFoil::Contexts::IndexContextConcern do
+RSpec.describe SnFoil::Contexts::IndexContext do
   include_context 'with fake policy'
   let(:including_class) { Class.new IndexContextClass }
 
@@ -110,5 +110,5 @@ class TestSeacher
 end
 
 class IndexContextClass
-  include SnFoil::Contexts::IndexContextConcern
+  include SnFoil::Contexts::IndexContext
 end

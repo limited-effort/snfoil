@@ -2,6 +2,12 @@
 
 require 'logger'
 require 'active_support/core_ext/module/attribute_accessors'
+require 'sn_foil/contexts/build_context'
+require 'sn_foil/contexts/index_context'
+require 'sn_foil/contexts/show_context'
+require 'sn_foil/contexts/create_context'
+require 'sn_foil/contexts/update_context'
+require 'sn_foil/contexts/destroy_context'
 require 'sn_foil/context'
 require 'sn_foil/policy'
 require 'sn_foil/searcher'

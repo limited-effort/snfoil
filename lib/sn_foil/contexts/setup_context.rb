@@ -5,7 +5,7 @@ require 'active_support/core_ext/string/inflections'
 
 module SnFoil
   module Contexts
-    module SetupContextConcern
+    module SetupContext
       extend ActiveSupport::Concern
 
       class_methods do

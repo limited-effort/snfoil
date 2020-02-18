@@ -1,15 +1,15 @@
 # frozen_string_literal: true
 
 require 'active_support/concern'
-require_relative './setup_context_concern'
+require_relative './setup_context'
 
 module SnFoil
   module Contexts
-    module ChangeContextConcern
+    module ChangeContext
       extend ActiveSupport::Concern
 
       included do
-        include SetupContextConcern
+        include SetupContext
       end
 
       class_methods do
@@ -90,7 +90,7 @@ module SnFoil
 
         return send(hook[:method], **options) if hook[:method]
 
-        hook[:block].call(options)
+        instance_exec options, &hook[:block]
       end
 
       def hook_valid?(hook, **options)

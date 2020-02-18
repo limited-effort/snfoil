@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
-require 'sn_foil/contexts/change_context_concern'
+require 'sn_foil/contexts/change_context'
 require 'dry-struct'
 
-RSpec.describe SnFoil::Contexts::ChangeContextConcern do
+RSpec.describe SnFoil::Contexts::ChangeContext do
   let(:including_class) { Class.new ChangeContextClass }
 
   let(:whitelisted_params) { %i[first_name last_name] }
@@ -56,5 +56,5 @@ RSpec.describe SnFoil::Contexts::ChangeContextConcern do
 end
 
 class ChangeContextClass
-  include SnFoil::Contexts::ChangeContextConcern
+  include SnFoil::Contexts::ChangeContext
 end

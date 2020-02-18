@@ -14,10 +14,22 @@ Gem::Specification.new do |spec| # rubocop:disable Metrics/BlockLength
   spec.license       = 'MIT'
 
   # Specify which files should be added to the gem when it is released.
-  # The `git ls-files -z` loads the files in the RubyGem that have been added into git.
-  spec.files = Dir.chdir(File.expand_path(__dir__)) do
-    `git ls-files -z`.split("\x0").reject { |f| f.match(%r{^(test|spec|features)/}) }
-  end
+  spec.files = [
+    "lib/sn_foil/adapters/orms/base_adapter.rb",
+    "lib/sn_foil/adapters/orms/active_record.rb",
+    "lib/sn_foil/contexts/build_context.rb",
+    "lib/sn_foil/contexts/change_context.rb",
+    "lib/sn_foil/contexts/create_context.rb",
+    "lib/sn_foil/contexts/destroy_context.rb",
+    "lib/sn_foil/contexts/index_context.rb",
+    "lib/sn_foil/contexts/setup_context.rb",
+    "lib/sn_foil/contexts/show_context.rb",
+    "lib/sn_foil/contexts/update_context.rb",
+    "lib/sn_foil/context.rb",
+    "lib/sn_foil/policy.rb",
+    "lib/sn_foil/searcher.rb"
+  ]
+
   spec.bindir        = 'exe'
   spec.executables   = spec.files.grep(%r{^exe/}) { |f| File.basename(f) }
   spec.require_paths = ['lib']

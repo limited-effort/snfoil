@@ -1,11 +1,11 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
-require 'sn_foil/contexts/build_context_concern'
+require 'sn_foil/contexts/build_context'
 require 'ostruct'
 require_relative '../shared_contexts'
 
-RSpec.describe SnFoil::Contexts::BuildContextConcern do
+RSpec.describe SnFoil::Contexts::BuildContext do
   include_context 'with fake user'
   include_context 'with fake model'
 
@@ -94,5 +94,5 @@ RSpec.describe SnFoil::Contexts::BuildContextConcern do
 end
 
 class BuildContextClass
-  include SnFoil::Contexts::BuildContextConcern
+  include SnFoil::Contexts::BuildContext
 end
