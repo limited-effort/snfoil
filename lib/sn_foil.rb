@@ -1,17 +1,17 @@
 # frozen_string_literal: true
 
-require 'logger'
+require_relative 'sn_foil/version'
+require_relative 'sn_foil/contexts/build_context'
+require_relative 'sn_foil/contexts/index_context'
+require_relative 'sn_foil/contexts/show_context'
+require_relative 'sn_foil/contexts/create_context'
+require_relative 'sn_foil/contexts/update_context'
+require_relative 'sn_foil/contexts/destroy_context'
+require_relative 'sn_foil/context'
+require_relative 'sn_foil/policy'
+require_relative 'sn_foil/searcher'
 require 'active_support/core_ext/module/attribute_accessors'
-require 'sn_foil/contexts/build_context'
-require 'sn_foil/contexts/index_context'
-require 'sn_foil/contexts/show_context'
-require 'sn_foil/contexts/create_context'
-require 'sn_foil/contexts/update_context'
-require 'sn_foil/contexts/destroy_context'
-require 'sn_foil/context'
-require 'sn_foil/policy'
-require 'sn_foil/searcher'
-require 'sn_foil/version'
+require 'logger'
 
 module SnFoil
   class Error < StandardError; end
