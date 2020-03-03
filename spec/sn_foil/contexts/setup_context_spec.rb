@@ -72,9 +72,7 @@ RSpec.describe SnFoil::Contexts::SetupContext do
       end
 
       it 'calls the policy from the options' do
-        expect do
-          instance.authorize(model_double, action, policy: other_policy)
-        end.to raise_error Pundit::NotAuthorizedError
+        expect { instance.authorize(model_double, action, policy: other_policy) }.to raise_error Pundit::NotAuthorizedError
         expect(policy_double).not_to have_received(action)
         expect(other_policy).to have_received(:new).with(model_double, user)
         expect(other_policy_double).to have_received(action)

@@ -38,6 +38,7 @@ module SnFoil
 
         policy = lookup_policy(object, options)
         raise Pundit::NotAuthorizedError, query: action, record: object, policy: policy unless policy.public_send(action)
+
         true
       end
 
