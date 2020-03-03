@@ -72,10 +72,10 @@ module SnFoil
       private
 
       def lookup_policy(object, options)
-        return options[:policy].new(user, object) if options[:policy]
-        return policy.new(user, object) if policy
+        return options[:policy].new(object, user) if options[:policy]
+        return policy.new(object, user) if policy
 
-        Pundit.policy!(user, object)
+        Pundit.policy!(object, user)
       end
     end
   end
