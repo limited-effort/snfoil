@@ -69,7 +69,7 @@ RSpec.describe SnFoil::Contexts::DestroyContext do
 
     it 'authorizes the object' do
       instance.destroy(params: params, id: 1)
-      expect(policy).to have_received(:new).with(user, FakeSuccessORMAdapter)
+      expect(policy).to have_received(:new).with(FakeSuccessORMAdapter, user)
       expect(policy_double).to have_received(:destroy?).once
     end
 

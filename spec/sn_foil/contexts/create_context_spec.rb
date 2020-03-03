@@ -74,7 +74,7 @@ RSpec.describe SnFoil::Contexts::CreateContext do
 
     it 'authorizes the object' do
       instance.create(params: params)
-      expect(policy).to have_received(:new).with(user, FakeSuccessORMAdapter)
+      expect(policy).to have_received(:new).with(FakeSuccessORMAdapter, user)
       expect(policy_double).to have_received(:create?).once
     end
 
