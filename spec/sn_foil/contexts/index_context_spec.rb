@@ -61,6 +61,12 @@ RSpec.describe SnFoil::Contexts::IndexContext do
       allow(instance).to receive(:setup_index).and_call_original
     end
 
+    it 'calls #setup' do
+      allow(instance).to receive(:setup).and_call_original
+      instance.index(params: params)
+      expect(instance).to have_received(:setup).once
+    end
+
     it 'calls #setup_index' do
       instance.index(params: params)
       expect(instance).to have_received(:setup_index)
@@ -100,6 +106,39 @@ RSpec.describe SnFoil::Contexts::IndexContext do
         expect(model_double).to have_received(:all)
         expect(searcher_double).to have_received(:new).with(hash_including(scope: relation_double))
         expect(searcher_instance_double).to have_received(:search).with(hash_including(params: params))
+      end
+    end
+  end
+
+  context 'when hooks are provided' do
+    let(:canary) { Canary.new }
+
+    before do
+      including_class.searcher(searcher_double)
+
+      # Setup Action Hooks
+      including_class.setup do |opts|
+        opts[:canary].sing(:setup)
+        opts
+      end
+      including_class.setup_index do |opts|
+        opts[:canary].sing(:setup_index)
+        opts
+      end
+    end
+
+    describe 'self#setup_index' do
+      it 'gets called first' do
+        instance.index(params: params, canary: canary)
+        expect(canary.song[0][:data]).to eq :setup_index
+      end
+    end
+
+    describe 'self#setup' do
+      it 'gets called after setup_index' do
+        instance.index(params: params, canary: canary)
+        expect(canary.song[0][:data]).to eq :setup_index
+        expect(canary.song[1][:data]).to eq :setup
       end
     end
   end

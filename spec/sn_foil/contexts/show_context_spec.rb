@@ -72,6 +72,18 @@ RSpec.describe SnFoil::Contexts::ShowContext do
       expect(instance).to have_received(:setup_show_object).with(hash_including(action: :show))
     end
 
+    it 'calls #setup' do
+      allow(instance).to receive(:setup).and_call_original
+      instance.show(id: 1)
+      expect(instance).to have_received(:setup).once
+    end
+
+    it 'calls #setup_show' do
+      allow(instance).to receive(:setup_show).and_call_original
+      instance.show(id: 1)
+      expect(instance).to have_received(:setup_show)
+    end
+
     it 'calls #setup_show_object' do
       allow(instance).to receive(:setup_show_object).and_call_original
       instance.show(id: 1)

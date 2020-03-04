@@ -13,7 +13,7 @@ module SnFoil
       end
 
       class_methods do
-        attr_reader :i_searcher
+        attr_reader :i_searcher, :i_setup_index_hooks
 
         def index(params: {}, user: nil, **options)
           new(user).index(**options, params: params)
@@ -22,23 +22,42 @@ module SnFoil
         def searcher(klass = nil)
           @i_searcher = klass
         end
+
+        def setup_index(method = nil, **options, &block)
+          raise ArgumentError, '#setup_index requires either a method name or a block' if method.nil? && block.nil?
+
+          (@i_setup_index_hooks ||= []) << { method: method, block: block, if: options[:if], unless: options[:unless] }
+        end
       end
 
       def searcher
         self.class.i_searcher
       end
 
+      def setup_index_hooks
+        self.class.i_setup_index_hooks || []
+      end
+
       def index(params:, **options)
         options[:action] = :index
-        options = setup_index(**options)
+        options = before_setup_index(**options)
+        authorize(nil, :index?, **options)
         options.fetch(:searcher) { searcher }
                .new(scope: scope.resolve)
                .search(params: params)
       end
 
-      # Param manipulation based on User should be done here
       def setup_index(**options)
         options
+      end
+
+      private
+
+      def before_setup_index(**options)
+        options = setup_index(**options)
+        options = setup_index_hooks.reduce(options) { |opts, hook| run_hook(hook, opts) }
+        options = setup(**options)
+        setup_hooks.reduce(options) { |opts, hook| run_hook(hook, opts) }
       end
     end
   end

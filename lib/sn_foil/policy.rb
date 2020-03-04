@@ -6,8 +6,9 @@ module SnFoil
   module Policy
     extend ActiveSupport::Concern
 
-    attr_reader :record, :entity, :options
-    def initialize(record, entity = nil, options = {})
+    attr_reader :record, :entity
+    attr_accessor :options
+    def initialize(entity, record, options = {})
       @record = record
       @entity = entity
       @options = options

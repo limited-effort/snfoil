@@ -50,7 +50,7 @@ RSpec.describe SnFoil::Contexts::UpdateContext do
 
       it 'authorizes any (wrapped) object provided in the options' do
         instance.setup_update_object(params: {}, object: object)
-        expect(policy).to have_received(:new).with(FakeSuccessORMAdapter, user)
+        expect(policy).to have_received(:new).with(user, FakeSuccessORMAdapter)
         expect(policy_double).to have_received(:update?).once
       end
 
@@ -69,7 +69,7 @@ RSpec.describe SnFoil::Contexts::UpdateContext do
 
       it 'authorizes any object provided in the options' do
         instance.setup_update_object(params: {}, id: 1)
-        expect(policy).to have_received(:new).with(FakeSuccessORMAdapter, user)
+        expect(policy).to have_received(:new).with(user, FakeSuccessORMAdapter)
         expect(policy_double).to have_received(:update?).once
       end
 
@@ -90,8 +90,14 @@ RSpec.describe SnFoil::Contexts::UpdateContext do
 
     it 'authorizes the object before and after the changes' do
       instance.update(params: params, id: 1)
-      expect(policy).to have_received(:new).with(FakeSuccessORMAdapter, user).twice
+      expect(policy).to have_received(:new).with(user, FakeSuccessORMAdapter).twice
       expect(policy_double).to have_received(:update?).twice
+    end
+
+    it 'calls #setup' do
+      allow(instance).to receive(:setup).and_call_original
+      instance.update(params: params, id: 1)
+      expect(instance).to have_received(:setup).once
     end
 
     it 'calls #setup_update' do
@@ -144,6 +150,14 @@ RSpec.describe SnFoil::Contexts::UpdateContext do
 
     before do
       # Setup Action Hooks
+      including_class.setup do |opts|
+        opts[:canary].sing(:setup)
+        opts
+      end
+      including_class.setup_update do |opts|
+        opts[:canary].sing(:setup_update)
+        opts
+      end
       including_class.before_update do |opts|
         opts[:canary].sing(:before_update)
         opts
@@ -178,46 +192,61 @@ RSpec.describe SnFoil::Contexts::UpdateContext do
       end
     end
 
+    describe 'self#setup_update' do
+      it 'gets called first' do
+        instance.update(params: params, id: 1, canary: canary)
+        expect(canary.song[0][:data]).to eq :setup_update
+      end
+    end
+
+    describe 'self#setup' do
+      it 'gets called after setup_update' do
+        instance.update(params: params, id: 1, canary: canary)
+        expect(canary.song[0][:data]).to eq :setup_update
+        expect(canary.song[1][:data]).to eq :setup
+      end
+    end
+
     describe 'self#before_update' do
       it 'gets called before any save' do
         instance.update(params: params, id: 1, canary: canary)
-        expect(canary.song[0][:data]).to eq :before_update
-        expect(canary.song[2][:data]).to eq :after_update_success
+        expect(canary.song[2][:data]).to eq :before_update
+        expect(canary.song[4][:data]).to eq :after_update_success
       end
 
       it 'gets called before :before_change' do
         instance.update(params: params, id: 1, canary: canary)
-        expect(canary.song[0][:data]).to eq :before_update
-        expect(canary.song[1][:data]).to eq :before_change
+        expect(canary.song[2][:data]).to eq :before_update
+        expect(canary.song[3][:data]).to eq :before_change
       end
     end
 
     describe 'self#before_change' do
       it 'gets called before any save' do
         instance.update(params: params, id: 1, canary: canary)
-        expect(canary.song[1][:data]).to eq :before_change
-        expect(canary.song[2][:data]).to eq :after_update_success
+        expect(canary.song[3][:data]).to eq :before_change
+        expect(canary.song[4][:data]).to eq :after_update_success
       end
     end
 
     describe 'self#after_update_success' do
       it 'gets called after a successful save' do
         instance.update(params: params, id: 1, canary: canary)
-        expect(canary.song[2][:data]).to eq :after_update_success
+        expect(canary.song[4][:data]).to eq :after_update_success
         expect(canary.song.map { |x| x[:data] }).not_to include(:after_change_failure)
       end
 
       it 'gets called before after_update_success' do
         instance.update(params: params, id: 1, canary: canary)
-        expect(canary.song[2][:data]).to eq :after_update_success
-        expect(canary.song[3][:data]).to eq :after_change_success
+        expect(canary.song[4][:data]).to eq :after_update_success
+        expect(canary.song[5][:data]).to eq :after_change_success
       end
     end
 
     describe 'self#after_change_success' do
       it 'gets called after a successful save' do
         instance.update(params: params, id: 1, canary: canary)
-        expect(canary.song[3][:data]).to eq :after_change_success
+        expect(canary.song[5][:data]).to eq :after_change_success
         expect(canary.song.map { |x| x[:data] }).not_to include(:after_change_failure)
       end
     end
@@ -229,14 +258,14 @@ RSpec.describe SnFoil::Contexts::UpdateContext do
 
       it 'gets called after a failed save' do
         instance.update(params: params, id: 1, canary: canary)
-        expect(canary.song[2][:data]).to eq :after_update_failure
+        expect(canary.song[4][:data]).to eq :after_update_failure
         expect(canary.song.map { |x| x[:data] }).not_to include(:after_update_success)
       end
 
       it 'gets called before after_change_failure' do
         instance.update(params: params, id: 1, canary: canary)
-        expect(canary.song[2][:data]).to eq :after_update_failure
-        expect(canary.song[3][:data]).to eq :after_change_failure
+        expect(canary.song[4][:data]).to eq :after_update_failure
+        expect(canary.song[5][:data]).to eq :after_change_failure
       end
     end
 
@@ -247,7 +276,7 @@ RSpec.describe SnFoil::Contexts::UpdateContext do
 
       it 'gets called after a failed save' do
         instance.update(params: params, id: 1, canary: canary)
-        expect(canary.song[3][:data]).to eq :after_change_failure
+        expect(canary.song[5][:data]).to eq :after_change_failure
         expect(canary.song.map { |x| x[:data] }).not_to include(:after_change_success)
       end
     end
@@ -259,13 +288,13 @@ RSpec.describe SnFoil::Contexts::UpdateContext do
 
       it 'gets called regardless of save success' do
         instance.update(params: params, id: 1, canary: canary)
-        expect(canary.song[4][:data]).to eq :after_update
+        expect(canary.song[6][:data]).to eq :after_update
       end
 
       it 'gets called before after_change' do
         instance.update(params: params, id: 1, canary: canary)
-        expect(canary.song[4][:data]).to eq :after_update
-        expect(canary.song[5][:data]).to eq :after_change
+        expect(canary.song[6][:data]).to eq :after_update
+        expect(canary.song[7][:data]).to eq :after_change
       end
     end
 
@@ -276,7 +305,7 @@ RSpec.describe SnFoil::Contexts::UpdateContext do
 
       it 'gets called regardless of save success' do
         instance.update(params: params, id: 1, canary: canary)
-        expect(canary.song[5][:data]).to eq :after_change
+        expect(canary.song[7][:data]).to eq :after_change
       end
     end
 

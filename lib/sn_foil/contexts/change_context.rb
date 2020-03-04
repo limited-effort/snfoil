@@ -12,15 +12,22 @@ module SnFoil
         include SetupContext
       end
 
-      class_methods do
-        attr_reader :i_params, :i_before_change_hooks, :i_after_change_hooks, :i_after_change_success_hooks, :i_after_change_failure_hooks
+      class_methods do # rubocop:disable Metrics/BlockLength
+        attr_reader :i_params, :i_setup_change_hooks, :i_before_change_hooks, :i_after_change_hooks,
+                    :i_after_change_success_hooks, :i_after_change_failure_hooks
         def params(*whitelisted_params)
           @i_params ||= []
           @i_params |= whitelisted_params
         end
 
+        def setup_change(method = nil, **options, &block)
+          raise ArgumentError, '#setup_change requires either a method name or a block' if method.nil? && block.nil?
+
+          (@i_setup_change_hooks ||= []) << { method: method, block: block, if: options[:if], unless: options[:unless] }
+        end
+
         def before_change(method = nil, **options, &block)
-          raise ArgumentError, '#on_change requires either a method name or a block' if method.nil? && block.nil?
+          raise ArgumentError, '#before_change requires either a method name or a block' if method.nil? && block.nil?
 
           (@i_before_change_hooks ||= []) << { method: method, block: block, if: options[:if], unless: options[:unless] }
         end
@@ -69,6 +76,10 @@ module SnFoil
         options
       end
 
+      def setup_change_hooks
+        self.class.i_setup_change_hooks || []
+      end
+
       def before_change_hooks
         self.class.i_before_change_hooks || []
       end
@@ -83,21 +94,6 @@ module SnFoil
 
       def after_change_failure_hooks
         self.class.i_after_change_failure_hooks || []
-      end
-
-      def run_hook(hook, **options)
-        return options unless hook_valid?(hook, **options)
-
-        return send(hook[:method], **options) if hook[:method]
-
-        instance_exec options, &hook[:block]
-      end
-
-      def hook_valid?(hook, **options)
-        return false if !hook[:if].nil? && hook[:if].call(options) == false
-        return false if !hook[:unless].nil? && hook[:unless].call(options) == true
-
-        true
       end
     end
   end

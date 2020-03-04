@@ -6,7 +6,7 @@ require_relative './change_context'
 
 module SnFoil
   module Contexts
-    module DestroyContext
+    module DestroyContext # rubocop:disable Metrics/ModuleLength
       extend ActiveSupport::Concern
 
       included do
@@ -15,13 +15,20 @@ module SnFoil
       end
 
       class_methods do
-        attr_reader :i_before_destroy_hooks, :i_after_destroy_hooks, :i_after_destroy_success_hooks, :i_after_destroy_failure_hooks
+        attr_reader :i_setup_destroy_hooks, :i_before_destroy_hooks, :i_after_destroy_hooks,
+                    :i_after_destroy_success_hooks, :i_after_destroy_failure_hooks
         def destroy(id:, user: nil, **options)
           new(user).destroy(**options, id: id)
         end
 
+        def setup_destroy(method = nil, **options, &block)
+          raise ArgumentError, '#setup_destroy requires either a method name or a block' if method.nil? && block.nil?
+
+          (@i_setup_destroy_hooks ||= []) << { method: method, block: block, if: options[:if], unless: options[:unless] }
+        end
+
         def before_destroy(method = nil, **options, &block)
-          raise ArgumentError, '#on_destroy requires either a method name or a block' if method.nil? && block.nil?
+          raise ArgumentError, '#before_destroy requires either a method name or a block' if method.nil? && block.nil?
 
           (@i_before_destroy_hooks ||= []) << { method: method, block: block, if: options[:if], unless: options[:unless] }
         end
@@ -53,7 +60,7 @@ module SnFoil
 
       def destroy(**options)
         options[:action] = :destroy
-        options = setup_destroy(setup_change(**options))
+        options = before_setup_destroy_object(**options)
         options = setup_destroy_object(**options)
         authorize(options[:object], :destroy?, **options)
         options = destroy_hooks(**options)
@@ -80,6 +87,10 @@ module SnFoil
         options
       end
 
+      def setup_destroy_hooks
+        self.class.i_setup_destroy_hooks || []
+      end
+
       def before_destroy_hooks
         self.class.i_before_destroy_hooks || []
       end
@@ -97,6 +108,15 @@ module SnFoil
       end
 
       private
+
+      def before_setup_destroy_object(**options)
+        options = setup_destroy(**options)
+        options = setup_destroy_hooks.reduce(options) { |opts, hook| run_hook(hook, opts) }
+        options = setup_change(**options)
+        options = setup_change_hooks.reduce(options) { |opts, hook| run_hook(hook, opts) }
+        options = setup(**options)
+        setup_hooks.reduce(options) { |opts, hook| run_hook(hook, opts) }
+      end
 
       # This method is private to help protect the order of execution of hooks
       def destroy_hooks(options)

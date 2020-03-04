@@ -9,7 +9,7 @@ module SnFoil
       extend ActiveSupport::Concern
 
       class_methods do
-        attr_reader :i_model, :i_policy
+        attr_reader :i_model, :i_policy, :i_setup_hooks
 
         def model(klass = nil)
           @i_model = klass
@@ -17,6 +17,12 @@ module SnFoil
 
         def policy(klass = nil)
           @i_policy = klass
+        end
+
+        def setup(method = nil, **options, &block)
+          raise ArgumentError, '#setup requires either a method name or a block' if method.nil? && block.nil?
+
+          (@i_setup_hooks ||= []) << { method: method, block: block, if: options[:if], unless: options[:unless] }
         end
       end
 
@@ -26,6 +32,14 @@ module SnFoil
 
       def policy
         self.class.i_policy
+      end
+
+      def setup(**options)
+        options
+      end
+
+      def setup_hooks
+        self.class.i_setup_hooks || []
       end
 
       attr_reader :user
@@ -70,13 +84,34 @@ module SnFoil
         @adapter ||= SnFoil.adapter
       end
 
+      def run_hook(hook, **options)
+        return options unless hook_valid?(hook, **options)
+
+        return send(hook[:method], **options) if hook[:method]
+
+        instance_exec options, &hook[:block]
+      end
+
+      def hook_valid?(hook, **options)
+        return false if !hook[:if].nil? && hook[:if].call(options) == false
+        return false if !hook[:unless].nil? && hook[:unless].call(options) == true
+
+        true
+      end
+
       private
 
       def lookup_policy(object, options)
-        return options[:policy].new(object, user) if options[:policy]
-        return policy.new(object, user) if policy
+        lookup = if options[:policy]
+                   options[:policy].new(user, object)
+                 elsif policy
+                   policy.new(user, object)
+                 else
+                   Pundit.policy!(user, object)
+                 end
 
-        Pundit.policy!(object, user)
+        lookup.options = options if lookup.respond_to? :options=
+        lookup
       end
     end
   end

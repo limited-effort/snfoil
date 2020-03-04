@@ -69,8 +69,14 @@ RSpec.describe SnFoil::Contexts::DestroyContext do
 
     it 'authorizes the object' do
       instance.destroy(params: params, id: 1)
-      expect(policy).to have_received(:new).with(FakeSuccessORMAdapter, user)
+      expect(policy).to have_received(:new).with(user, FakeSuccessORMAdapter)
       expect(policy_double).to have_received(:destroy?).once
+    end
+
+    it 'calls #setup' do
+      allow(instance).to receive(:setup).and_call_original
+      instance.destroy(params: params, id: 1)
+      expect(instance).to have_received(:setup).once
     end
 
     it 'calls #setup_destroy' do
@@ -123,6 +129,14 @@ RSpec.describe SnFoil::Contexts::DestroyContext do
 
     before do
       # Setup Action Hooks
+      including_class.setup do |opts|
+        opts[:canary].sing(:setup)
+        opts
+      end
+      including_class.setup_destroy do |opts|
+        opts[:canary].sing(:setup_destroy)
+        opts
+      end
       including_class.before_destroy do |opts|
         opts[:canary].sing(:before_destroy)
         opts
@@ -157,46 +171,61 @@ RSpec.describe SnFoil::Contexts::DestroyContext do
       end
     end
 
+    describe 'self#setup_destroy' do
+      it 'gets called first' do
+        instance.destroy(params: params, id: 1, canary: canary)
+        expect(canary.song[0][:data]).to eq :setup_destroy
+      end
+    end
+
+    describe 'self#setup' do
+      it 'gets called after setup_destroy' do
+        instance.destroy(params: params, id: 1, canary: canary)
+        expect(canary.song[0][:data]).to eq :setup_destroy
+        expect(canary.song[1][:data]).to eq :setup
+      end
+    end
+
     describe 'self#before_destroy' do
       it 'gets called before any save' do
         instance.destroy(params: params, id: 1, canary: canary)
-        expect(canary.song[0][:data]).to eq :before_destroy
-        expect(canary.song[2][:data]).to eq :after_destroy_success
+        expect(canary.song[2][:data]).to eq :before_destroy
+        expect(canary.song[4][:data]).to eq :after_destroy_success
       end
 
       it 'gets called before :before_change' do
         instance.destroy(params: params, id: 1, canary: canary)
-        expect(canary.song[0][:data]).to eq :before_destroy
-        expect(canary.song[1][:data]).to eq :before_change
+        expect(canary.song[2][:data]).to eq :before_destroy
+        expect(canary.song[3][:data]).to eq :before_change
       end
     end
 
     describe 'self#before_change' do
       it 'gets called before any save' do
         instance.destroy(params: params, id: 1, canary: canary)
-        expect(canary.song[1][:data]).to eq :before_change
-        expect(canary.song[2][:data]).to eq :after_destroy_success
+        expect(canary.song[3][:data]).to eq :before_change
+        expect(canary.song[4][:data]).to eq :after_destroy_success
       end
     end
 
     describe 'self#after_destroy_success' do
       it 'gets called after a successful save' do
         instance.destroy(params: params, id: 1, canary: canary)
-        expect(canary.song[2][:data]).to eq :after_destroy_success
+        expect(canary.song[4][:data]).to eq :after_destroy_success
         expect(canary.song.map { |x| x[:data] }).not_to include(:after_change_failure)
       end
 
       it 'gets called before after_destroy_success' do
         instance.destroy(params: params, id: 1, canary: canary)
-        expect(canary.song[2][:data]).to eq :after_destroy_success
-        expect(canary.song[3][:data]).to eq :after_change_success
+        expect(canary.song[4][:data]).to eq :after_destroy_success
+        expect(canary.song[5][:data]).to eq :after_change_success
       end
     end
 
     describe 'self#after_change_success' do
       it 'gets called after a successful save' do
         instance.destroy(params: params, id: 1, canary: canary)
-        expect(canary.song[3][:data]).to eq :after_change_success
+        expect(canary.song[5][:data]).to eq :after_change_success
         expect(canary.song.map { |x| x[:data] }).not_to include(:after_change_failure)
       end
     end
@@ -208,14 +237,14 @@ RSpec.describe SnFoil::Contexts::DestroyContext do
 
       it 'gets called after a failed save' do
         instance.destroy(params: params, id: 1, canary: canary)
-        expect(canary.song[2][:data]).to eq :after_destroy_failure
+        expect(canary.song[4][:data]).to eq :after_destroy_failure
         expect(canary.song.map { |x| x[:data] }).not_to include(:after_destroy_success)
       end
 
       it 'gets called before after_change_failure' do
         instance.destroy(params: params, id: 1, canary: canary)
-        expect(canary.song[2][:data]).to eq :after_destroy_failure
-        expect(canary.song[3][:data]).to eq :after_change_failure
+        expect(canary.song[4][:data]).to eq :after_destroy_failure
+        expect(canary.song[5][:data]).to eq :after_change_failure
       end
     end
 
@@ -226,7 +255,7 @@ RSpec.describe SnFoil::Contexts::DestroyContext do
 
       it 'gets called after a failed save' do
         instance.destroy(params: params, id: 1, canary: canary)
-        expect(canary.song[3][:data]).to eq :after_change_failure
+        expect(canary.song[5][:data]).to eq :after_change_failure
         expect(canary.song.map { |x| x[:data] }).not_to include(:after_change_success)
       end
     end
@@ -238,13 +267,13 @@ RSpec.describe SnFoil::Contexts::DestroyContext do
 
       it 'gets called regardless of save success' do
         instance.destroy(params: params, id: 1, canary: canary)
-        expect(canary.song[4][:data]).to eq :after_destroy
+        expect(canary.song[6][:data]).to eq :after_destroy
       end
 
       it 'gets called before after_change' do
         instance.destroy(params: params, id: 1, canary: canary)
-        expect(canary.song[4][:data]).to eq :after_destroy
-        expect(canary.song[5][:data]).to eq :after_change
+        expect(canary.song[6][:data]).to eq :after_destroy
+        expect(canary.song[7][:data]).to eq :after_change
       end
     end
 
@@ -255,7 +284,7 @@ RSpec.describe SnFoil::Contexts::DestroyContext do
 
       it 'gets called regardless of save success' do
         instance.destroy(params: params, id: 1, canary: canary)
-        expect(canary.song[5][:data]).to eq :after_change
+        expect(canary.song[7][:data]).to eq :after_change
       end
     end
 

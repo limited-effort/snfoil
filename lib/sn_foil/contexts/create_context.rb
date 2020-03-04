@@ -15,13 +15,20 @@ module SnFoil
       end
 
       class_methods do
-        attr_reader :i_before_create_hooks, :i_after_create_hooks, :i_after_create_success_hooks, :i_after_create_failure_hooks
+        attr_reader :i_setup_create_hooks, :i_before_create_hooks, :i_after_create_hooks,
+                    :i_after_create_success_hooks, :i_after_create_failure_hooks
         def create(params:, user: nil, **options)
           new(user).create(**options, params: params)
         end
 
+        def setup_create(method = nil, **options, &block)
+          raise ArgumentError, '#setup_create requires either a method name or a block' if method.nil? && block.nil?
+
+          (@i_setup_create_hooks ||= []) << { method: method, block: block, if: options[:if], unless: options[:unless] }
+        end
+
         def before_create(method = nil, **options, &block)
-          raise ArgumentError, '#on_create requires either a method name or a block' if method.nil? && block.nil?
+          raise ArgumentError, '#before_create requires either a method name or a block' if method.nil? && block.nil?
 
           (@i_before_create_hooks ||= []) << { method: method, block: block, if: options[:if], unless: options[:unless] }
         end
@@ -59,7 +66,7 @@ module SnFoil
 
       def create(**options)
         options[:action] = :create
-        options = setup_change(setup_create(**options))
+        options = before_setup_create_object(**options)
         options = setup_create_object(**options)
         authorize(options[:object], :create?, **options)
         options = create_hooks(**options)
@@ -86,6 +93,10 @@ module SnFoil
         options
       end
 
+      def setup_create_hooks
+        self.class.i_setup_create_hooks || []
+      end
+
       def before_create_hooks
         self.class.i_before_create_hooks || []
       end
@@ -103,6 +114,15 @@ module SnFoil
       end
 
       private
+
+      def before_setup_create_object(**options)
+        options = setup_create(**options)
+        options = setup_create_hooks.reduce(options) { |opts, hook| run_hook(hook, opts) }
+        options = setup_change(**options)
+        options = setup_change_hooks.reduce(options) { |opts, hook| run_hook(hook, opts) }
+        options = setup(**options)
+        setup_hooks.reduce(options) { |opts, hook| run_hook(hook, opts) }
+      end
 
       # This method is private to help protect the order of execution of hooks
       def create_hooks(options)

@@ -15,13 +15,20 @@ module SnFoil
       end
 
       class_methods do
-        attr_reader :i_before_update_hooks, :i_after_update_hooks, :i_after_update_success_hooks, :i_after_update_failure_hooks
+        attr_reader :i_setup_update_hooks, :i_before_update_hooks, :i_after_update_hooks,
+                    :i_after_update_success_hooks, :i_after_update_failure_hooks
         def update(id:, params:, user: nil, **options)
           new(user).update(**options, id: id, params: params)
         end
 
+        def setup_update(method = nil, **options, &block)
+          raise ArgumentError, '#setup_update requires either a method name or a block' if method.nil? && block.nil?
+
+          (@i_setup_update_hooks ||= []) << { method: method, block: block, if: options[:if], unless: options[:unless] }
+        end
+
         def before_update(method = nil, **options, &block)
-          raise ArgumentError, '#on_update requires either a method name or a block' if method.nil? && block.nil?
+          raise ArgumentError, '#before_update requires either a method name or a block' if method.nil? && block.nil?
 
           (@i_before_update_hooks ||= []) << { method: method, block: block, if: options[:if], unless: options[:unless] }
         end
@@ -56,7 +63,7 @@ module SnFoil
 
       def update(**options)
         options[:action] = :update
-        options = setup_change(setup_update(**options))
+        options = before_setup_update_object(**options)
         options = setup_update_object(**options)
         authorize(options[:object], :update?, **options)
         options = update_hooks(**options)
@@ -83,6 +90,10 @@ module SnFoil
         options
       end
 
+      def setup_update_hooks
+        self.class.i_setup_update_hooks || []
+      end
+
       def before_update_hooks
         self.class.i_before_update_hooks || []
       end
@@ -100,6 +111,15 @@ module SnFoil
       end
 
       private
+
+      def before_setup_update_object(**options)
+        options = setup_update(**options)
+        options = setup_update_hooks.reduce(options) { |opts, hook| run_hook(hook, opts) }
+        options = setup_change(**options)
+        options = setup_change_hooks.reduce(options) { |opts, hook| run_hook(hook, opts) }
+        options = setup(**options)
+        setup_hooks.reduce(options) { |opts, hook| run_hook(hook, opts) }
+      end
 
       # This method is private to help protect the order of execution of hooks
       def update_hooks(options)
