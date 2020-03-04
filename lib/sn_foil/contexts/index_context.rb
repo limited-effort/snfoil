@@ -38,13 +38,13 @@ module SnFoil
         self.class.i_setup_index_hooks || []
       end
 
-      def index(params:, **options)
+      def index(**options)
         options[:action] = :index
         options = before_setup_index(**options)
         authorize(nil, :index?, **options)
         options.fetch(:searcher) { searcher }
                .new(scope: scope.resolve)
-               .search(params: params)
+               .search(options.fetch(:params) { {} })
       end
 
       def setup_index(**options)
