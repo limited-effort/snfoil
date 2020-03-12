@@ -46,7 +46,7 @@ RSpec.describe SnFoil::Searcher do
     let(:params) { { canary: canary } }
 
     before do
-      searcher.filter do |scope, _|
+      searcher.filter do |scope, params|
         params[:canary].sing(:filter)
         scope
       end

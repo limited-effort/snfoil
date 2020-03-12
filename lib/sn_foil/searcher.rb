@@ -63,7 +63,7 @@ module SnFoil
       if setup.is_a?(Symbol) || setup.is_a?(String)
         send(setup, filtered_scope, params)
       else
-        setup.call(filtered_scope, params)
+        instance_exec filtered_scope, params, &setup
       end
     end
 
@@ -78,7 +78,7 @@ module SnFoil
 
       return send(i_filter[:method], filtered_scope, params) if i_filter[:method]
 
-      i_filter[:block].call(filtered_scope, params)
+      instance_exec filtered_scope, params, &i_filter[:block]
     end
 
     def filter_valid?(i_filter, params)

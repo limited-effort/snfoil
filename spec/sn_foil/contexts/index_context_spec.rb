@@ -91,7 +91,7 @@ RSpec.describe SnFoil::Contexts::IndexContext do
         instance.index(params: params, searcher: other_searcher_double)
         expect(model_double).to have_received(:all)
         expect(other_searcher_double).to have_received(:new).with(hash_including(scope: relation_double))
-        expect(other_searcher_instance_double).to have_received(:search).with(hash_including(params: params))
+        expect(other_searcher_instance_double).to have_received(:search).with(params)
       end
     end
 
@@ -105,7 +105,7 @@ RSpec.describe SnFoil::Contexts::IndexContext do
         instance.index(params: params)
         expect(model_double).to have_received(:all)
         expect(searcher_double).to have_received(:new).with(hash_including(scope: relation_double))
-        expect(searcher_instance_double).to have_received(:search).with(hash_including(params: params))
+        expect(searcher_instance_double).to have_received(:search).with(params)
       end
     end
   end
