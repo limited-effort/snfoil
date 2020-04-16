@@ -8,7 +8,7 @@ RSpec.describe SnFoil::Contexts::ShowContext do
   include_context 'with fake policy'
   let(:including_class) { Class.new ShowContextClass }
 
-  let(:instance) { including_class.new(user) }
+  let(:instance) { including_class.new(entity) }
 
   before do
     including_class.model(model_double)

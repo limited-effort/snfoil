@@ -15,8 +15,8 @@ module SnFoil
       end
 
       class_methods do
-        def build(params:, user: nil, **options)
-          new(user).build(**options, params: params)
+        def build(params:, entity: nil, **options)
+          new(entity).build(**options, params: params)
         end
       end
 

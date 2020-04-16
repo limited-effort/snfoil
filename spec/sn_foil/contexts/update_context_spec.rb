@@ -8,7 +8,7 @@ RSpec.describe SnFoil::Contexts::UpdateContext do
   include_context 'with fake policy'
   let(:including_class) { Class.new UpdateContextClass }
 
-  let(:instance) { including_class.new(user) }
+  let(:instance) { including_class.new(entity) }
   let(:params) { { first_name: 'John', last_name: 'Doe' } }
 
   before do
@@ -50,7 +50,7 @@ RSpec.describe SnFoil::Contexts::UpdateContext do
 
       it 'authorizes any (wrapped) object provided in the options' do
         instance.setup_update_object(params: {}, object: object)
-        expect(policy).to have_received(:new).with(user, FakeSuccessORMAdapter)
+        expect(policy).to have_received(:new).with(entity, FakeSuccessORMAdapter)
         expect(policy_double).to have_received(:update?).once
       end
 
@@ -69,7 +69,7 @@ RSpec.describe SnFoil::Contexts::UpdateContext do
 
       it 'authorizes any object provided in the options' do
         instance.setup_update_object(params: {}, id: 1)
-        expect(policy).to have_received(:new).with(user, FakeSuccessORMAdapter)
+        expect(policy).to have_received(:new).with(entity, FakeSuccessORMAdapter)
         expect(policy_double).to have_received(:update?).once
       end
 
@@ -90,7 +90,7 @@ RSpec.describe SnFoil::Contexts::UpdateContext do
 
     it 'authorizes the object before and after the changes' do
       instance.update(params: params, id: 1)
-      expect(policy).to have_received(:new).with(user, FakeSuccessORMAdapter).twice
+      expect(policy).to have_received(:new).with(entity, FakeSuccessORMAdapter).twice
       expect(policy_double).to have_received(:update?).twice
     end
 

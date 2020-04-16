@@ -42,13 +42,13 @@ module SnFoil
         self.class.i_setup_hooks || []
       end
 
-      attr_reader :user
-      def initialize(user = nil)
-        @user = user
+      attr_reader :entity
+      def initialize(entity = nil)
+        @entity = entity
       end
 
       def authorize(object, action, **options)
-        return unless user # Add logging
+        return unless entity # Add logging
 
         policy = lookup_policy(object, options)
         raise Pundit::NotAuthorizedError, query: action, record: object, policy: policy unless policy.public_send(action)
@@ -59,7 +59,7 @@ module SnFoil
       def scope(object_class = nil, **options)
         object_class ||= model
         policy_name = lookup_policy(object_class, options).class.name
-        "#{policy_name}::Scope".safe_constantize.new(wrap_object(object_class), user)
+        "#{policy_name}::Scope".safe_constantize.new(wrap_object(object_class), entity)
       end
 
       def wrap_object(object)
@@ -103,11 +103,11 @@ module SnFoil
 
       def lookup_policy(object, options)
         lookup = if options[:policy]
-                   options[:policy].new(user, object)
+                   options[:policy].new(entity, object)
                  elsif policy
-                   policy.new(user, object)
+                   policy.new(entity, object)
                  else
-                   Pundit.policy!(user, object)
+                   Pundit.policy!(entity, object)
                  end
 
         lookup.options = options if lookup.respond_to? :options=

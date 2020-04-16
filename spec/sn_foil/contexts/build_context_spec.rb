@@ -6,11 +6,11 @@ require 'ostruct'
 require_relative '../shared_contexts'
 
 RSpec.describe SnFoil::Contexts::BuildContext do
-  include_context 'with fake user'
+  include_context 'with fake entity'
   include_context 'with fake model'
 
   let(:including_class) { Class.new BuildContextClass }
-  let(:instance) { including_class.new(user) }
+  let(:instance) { including_class.new(entity) }
 
   before do
     including_class.model(model_double)

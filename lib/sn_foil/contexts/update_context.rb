@@ -17,8 +17,8 @@ module SnFoil
       class_methods do
         attr_reader :i_setup_update_hooks, :i_before_update_hooks, :i_after_update_hooks,
                     :i_after_update_success_hooks, :i_after_update_failure_hooks
-        def update(id:, params:, user: nil, **options)
-          new(user).update(**options, id: id, params: params)
+        def update(id:, params:, entity: nil, **options)
+          new(entity).update(**options, id: id, params: params)
         end
 
         def setup_update(method = nil, **options, &block)

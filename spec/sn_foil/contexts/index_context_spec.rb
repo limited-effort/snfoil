@@ -9,7 +9,7 @@ RSpec.describe SnFoil::Contexts::IndexContext do
   include_context 'with fake policy'
   let(:including_class) { Class.new IndexContextClass }
 
-  let(:instance) { including_class.new(user) }
+  let(:instance) { including_class.new(entity) }
   let(:searcher) { TestSeacher }
   let(:searcher_double) { class_double(searcher) }
   let(:searcher_instance_double) { instance_double(searcher) }

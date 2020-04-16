@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    snfoil (0.4.3)
+    snfoil (0.5.0)
       activesupport (>= 5.1)
       logger (~> 1.0)
       pundit (~> 2.0)

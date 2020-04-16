@@ -17,8 +17,8 @@ module SnFoil
       class_methods do
         attr_reader :i_setup_create_hooks, :i_before_create_hooks, :i_after_create_hooks,
                     :i_after_create_success_hooks, :i_after_create_failure_hooks
-        def create(params:, user: nil, **options)
-          new(user).create(**options, params: params)
+        def create(params:, entity: nil, **options)
+          new(entity).create(**options, params: params)
         end
 
         def setup_create(method = nil, **options, &block)

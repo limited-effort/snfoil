@@ -42,8 +42,8 @@ RSpec.describe SnFoil::Contexts::SetupContext do
   end
 
   describe '#authorize' do
-    let(:user) { double }
-    let(:instance) { including_class.new(user) }
+    let(:entity) { double }
+    let(:instance) { including_class.new(entity) }
     let(:action) { :create? }
 
     before do
@@ -51,8 +51,8 @@ RSpec.describe SnFoil::Contexts::SetupContext do
       including_class.policy(FakePolicy)
     end
 
-    context 'when there is no user in the context' do
-      let(:user) { nil }
+    context 'when there is no entity in the context' do
+      let(:entity) { nil }
 
       it 'returns nil' do
         allow(FakePolicy).to receive(:new).and_call_original
@@ -74,7 +74,7 @@ RSpec.describe SnFoil::Contexts::SetupContext do
       it 'calls the policy from the options' do
         expect { instance.authorize(model_double, action, policy: other_policy) }.to raise_error Pundit::NotAuthorizedError
         expect(policy_double).not_to have_received(action)
-        expect(other_policy).to have_received(:new).with(user, model_double)
+        expect(other_policy).to have_received(:new).with(entity, model_double)
         expect(other_policy_double).to have_received(action)
       end
     end
@@ -82,12 +82,12 @@ RSpec.describe SnFoil::Contexts::SetupContext do
     context 'when the context has a policy configured' do
       it 'calls the policy from the context' do
         expect(instance.authorize(model_double, action)).to eq true
-        expect(policy).to have_received(:new).with(user, model_double)
+        expect(policy).to have_received(:new).with(entity, model_double)
         expect(policy_double).to have_received(action)
       end
     end
 
-    context 'with a user, no options, and no context' do
+    context 'with a entity, no options, and no context' do
       before do
         including_class.policy(nil)
         allow(Pundit).to receive(:policy!).and_return(policy_double)
@@ -96,14 +96,14 @@ RSpec.describe SnFoil::Contexts::SetupContext do
       it 'lookups the policy through pundit' do
         expect(instance.authorize(model_double, action)).to eq true
         expect(policy_double).to have_received(action)
-        expect(Pundit).to have_received(:policy!).with(user, model_double)
+        expect(Pundit).to have_received(:policy!).with(entity, model_double)
       end
     end
   end
 
   describe '#scope' do
-    let(:user) { double }
-    let(:instance) { including_class.new(user) }
+    let(:entity) { double }
+    let(:instance) { including_class.new(entity) }
 
     before do
       including_class.model(model_double)
@@ -114,8 +114,8 @@ RSpec.describe SnFoil::Contexts::SetupContext do
       expect(instance.scope).to be_a(FakePolicy::Scope)
     end
 
-    it 'instantiates the scope with the user' do
-      expect(instance.scope.entity).to be(user)
+    it 'instantiates the scope with the entity' do
+      expect(instance.scope.entity).to be(entity)
     end
   end
 end

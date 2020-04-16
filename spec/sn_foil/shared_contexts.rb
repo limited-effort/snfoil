@@ -5,8 +5,8 @@ require 'dry-struct'
 require 'sn_foil/policy'
 require 'sn_foil/adapters/orms/base_adapter'
 
-RSpec.shared_context('with fake user') do
-  let(:user) { OpenStruct.new }
+RSpec.shared_context('with fake entity') do
+  let(:entity) { OpenStruct.new }
 end
 
 RSpec.shared_context('with fake model') do
@@ -24,10 +24,10 @@ end
 
 RSpec.shared_context('with fake policy') do
   include_context 'with fake model'
-  include_context 'with fake user'
+  include_context 'with fake entity'
 
   let(:policy) { FakePolicy }
-  let(:policy_double) { FakePolicy.new(model_double, user) }
+  let(:policy_double) { FakePolicy.new(model_double, entity) }
   let(:policy_scope) { FakePolicy::Scope }
   let(:policy_success) { true }
 

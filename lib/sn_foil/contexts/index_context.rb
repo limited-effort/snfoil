@@ -15,8 +15,8 @@ module SnFoil
       class_methods do
         attr_reader :i_searcher, :i_setup_index_hooks
 
-        def index(params: {}, user: nil, **options)
-          new(user).index(**options, params: params)
+        def index(params: {}, entity: nil, **options)
+          new(entity).index(**options, params: params)
         end
 
         def searcher(klass = nil)

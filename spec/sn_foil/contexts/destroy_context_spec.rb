@@ -9,8 +9,8 @@ RSpec.describe SnFoil::Contexts::DestroyContext do
   include_context 'with fake policy'
   let(:including_class) { Class.new DestroyContextClass }
 
-  let(:instance) { including_class.new(user) }
-  let(:user) { double }
+  let(:instance) { including_class.new(entity) }
+  let(:entity) { double }
   let(:params) { {} }
 
   before do
@@ -69,7 +69,7 @@ RSpec.describe SnFoil::Contexts::DestroyContext do
 
     it 'authorizes the object' do
       instance.destroy(params: params, id: 1)
-      expect(policy).to have_received(:new).with(user, FakeSuccessORMAdapter)
+      expect(policy).to have_received(:new).with(entity, FakeSuccessORMAdapter)
       expect(policy_double).to have_received(:destroy?).once
     end
 

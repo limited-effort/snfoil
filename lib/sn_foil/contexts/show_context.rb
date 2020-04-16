@@ -15,8 +15,8 @@ module SnFoil
       class_methods do
         attr_reader :i_setup_show_hooks
 
-        def show(id:, user: nil, **options)
-          new(user).show(**options, id: id)
+        def show(id:, entity: nil, **options)
+          new(entity).show(**options, id: id)
         end
 
         def setup_show(method = nil, **options, &block)
