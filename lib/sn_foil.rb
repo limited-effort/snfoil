@@ -10,6 +10,8 @@ require_relative 'sn_foil/contexts/destroy_context'
 require_relative 'sn_foil/context'
 require_relative 'sn_foil/policy'
 require_relative 'sn_foil/searcher'
+require_relative 'sn_foil/adapters/orms/base_adapter'
+require_relative 'sn_foil/adapters/orms/active_record'
 require 'active_support/core_ext/module/attribute_accessors'
 require 'logger'
 

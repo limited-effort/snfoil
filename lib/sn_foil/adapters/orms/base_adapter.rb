@@ -4,7 +4,7 @@ module SnFoil
   module Adapters
     module ORMs
       class BaseAdapter < SimpleDelegator
-        def new(*_params)
+        def new(**_params)
           raise NotImplementedError, '#new not implemented in adapter'
         end
 
@@ -20,7 +20,7 @@ module SnFoil
           raise NotImplementedError, '#destroy not implemented in adapter'
         end
 
-        def attributes=(**_attributes)
+        def attributes=(_attributes)
           raise NotImplementedError, '#attributes= not implemented in adapter'
         end
       end
