@@ -26,6 +26,10 @@ module SnFoil
         def attributes=(attributes)
           __getobj__.attributes = attributes
         end
+
+        def is_a?(klass)
+          __getobj__.class.object_id == klass.object_id
+        end
       end
     end
   end
