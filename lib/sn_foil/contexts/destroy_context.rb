@@ -121,7 +121,9 @@ module SnFoil
       # This method is private to help protect the order of execution of hooks
       def destroy_hooks(options)
         options = before_destroy_save(options)
-        options = if options[:object].destroy
+        destroy_successful = options[:object].destroy
+        options.merge!(object: unwrap_object(options[:object]))
+        options = if destroy_successful
                     after_destroy_save_success(options)
                   else
                     after_destroy_save_failure(options)

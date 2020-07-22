@@ -70,7 +70,7 @@ module SnFoil
         options = setup_create_object(**options)
         authorize(options[:object], :create?, **options)
         options = create_hooks(**options)
-        unwrap_object(options[:object])
+        options[:object]
       end
 
       def setup_create(**options)
@@ -127,7 +127,9 @@ module SnFoil
       # This method is private to help protect the order of execution of hooks
       def create_hooks(options)
         options = before_create_save(**options)
-        options = if options[:object].save
+        save_successful = options[:object].save
+        options.merge!(object: unwrap_object(options[:object]))
+        options = if save_successful
                     after_create_save_success(**options)
                   else
                     after_create_save_failure(**options)
