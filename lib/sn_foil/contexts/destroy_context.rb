@@ -62,7 +62,7 @@ module SnFoil
         options[:action] = :destroy
         options = before_setup_destroy_object(**options)
         options = setup_destroy_object(**options)
-        authorize(options[:object], :destroy?, **options)
+        authorize(options[:object], options.fetch(:authorize) { :destroy? }, **options)
         options = destroy_hooks(**options)
         unwrap_object(options[:object])
       end
@@ -110,12 +110,12 @@ module SnFoil
       private
 
       def before_setup_destroy_object(**options)
-        options = setup_destroy(**options)
-        options = setup_destroy_hooks.reduce(options) { |opts, hook| run_hook(hook, opts) }
+        options = setup(**options)
+        options = setup_hooks.reduce(options) { |opts, hook| run_hook(hook, opts) }
         options = setup_change(**options)
         options = setup_change_hooks.reduce(options) { |opts, hook| run_hook(hook, opts) }
-        options = setup(**options)
-        setup_hooks.reduce(options) { |opts, hook| run_hook(hook, opts) }
+        options = setup_destroy(**options)
+        setup_destroy_hooks.reduce(options) { |opts, hook| run_hook(hook, opts) }
       end
 
       # This method is private to help protect the order of execution of hooks
@@ -132,31 +132,31 @@ module SnFoil
       end
 
       def before_destroy_save(options)
-        options = before_destroy(**options)
-        options = before_destroy_hooks.reduce(options) { |opts, hook| run_hook(hook, **opts) }
         options = before_change(**options)
-        before_change_hooks.reduce(options) { |opts, hook| run_hook(hook, **opts) }
+        options = before_change_hooks.reduce(options) { |opts, hook| run_hook(hook, **opts) }
+        options = before_destroy(**options)
+        before_destroy_hooks.reduce(options) { |opts, hook| run_hook(hook, **opts) }
       end
 
       def after_destroy_save(options)
-        options = after_destroy(**options)
-        options = after_destroy_hooks.reduce(options) { |opts, hook| run_hook(hook, **opts) }
         options = after_change(**options)
-        after_change_hooks.reduce(options) { |opts, hook| run_hook(hook, **opts) }
+        options = after_change_hooks.reduce(options) { |opts, hook| run_hook(hook, **opts) }
+        options = after_destroy(**options)
+        after_destroy_hooks.reduce(options) { |opts, hook| run_hook(hook, **opts) }
       end
 
       def after_destroy_save_success(options)
-        options = after_destroy_success(**options)
-        options = after_destroy_success_hooks.reduce(options) { |opts, hook| run_hook(hook, **opts) }
         options = after_change_success(**options)
-        after_change_success_hooks.reduce(options) { |opts, hook| run_hook(hook, **opts) }
+        options = after_change_success_hooks.reduce(options) { |opts, hook| run_hook(hook, **opts) }
+        options = after_destroy_success(**options)
+        after_destroy_success_hooks.reduce(options) { |opts, hook| run_hook(hook, **opts) }
       end
 
       def after_destroy_save_failure(options)
-        options = after_destroy_failure(**options)
-        options = after_destroy_failure_hooks.reduce(options) { |opts, hook| run_hook(hook, **opts) }
         options = after_change_failure(**options)
-        after_change_failure_hooks.reduce(options) { |opts, hook| run_hook(hook, **opts) }
+        options = after_change_failure_hooks.reduce(options) { |opts, hook| run_hook(hook, **opts) }
+        options = after_destroy_failure(**options)
+        after_destroy_failure_hooks.reduce(options) { |opts, hook| run_hook(hook, **opts) }
       end
     end
   end

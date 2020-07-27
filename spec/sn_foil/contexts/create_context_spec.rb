@@ -84,6 +84,12 @@ RSpec.describe SnFoil::Contexts::CreateContext do
       expect(instance).to have_received(:setup).once
     end
 
+    it 'calls #setup_build' do
+      allow(instance).to receive(:setup_build).and_call_original
+      instance.create(params: params)
+      expect(instance).to have_received(:setup_build).once
+    end
+
     it 'calls #setup_create' do
       allow(instance).to receive(:setup_create).and_call_original
       instance.create(params: params)
@@ -138,6 +144,10 @@ RSpec.describe SnFoil::Contexts::CreateContext do
         opts[:canary].sing(:setup)
         opts
       end
+      including_class.setup_build do |opts|
+        opts[:canary].sing(:setup_build)
+        opts
+      end
       including_class.setup_create do |opts|
         opts[:canary].sing(:setup_create)
         opts
@@ -176,32 +186,26 @@ RSpec.describe SnFoil::Contexts::CreateContext do
       end
     end
 
-    describe 'self#setup_create' do
+    describe 'self#setup' do
       it 'gets called first' do
         instance.create(params: params, id: 1, canary: canary)
-        expect(canary.song[0][:data]).to eq :setup_create
+        expect(canary.song[0][:data]).to eq :setup
       end
     end
 
-    describe 'self#setup' do
-      it 'gets called after setup_create' do
+    describe 'self#setup_build' do
+      it 'gets called after setup' do
         instance.create(params: params, id: 1, canary: canary)
-        expect(canary.song[0][:data]).to eq :setup_create
-        expect(canary.song[1][:data]).to eq :setup
+        expect(canary.song[0][:data]).to eq :setup
+        expect(canary.song[1][:data]).to eq :setup_build
       end
     end
 
-    describe 'self#before_create' do
-      it 'gets called before any save' do
-        instance.create(params: params, canary: canary)
-        expect(canary.song[2][:data]).to eq :before_create
-        expect(canary.song[4][:data]).to eq :after_create_success
-      end
-
-      it 'gets called before :before_change' do
-        instance.create(params: params, canary: canary)
-        expect(canary.song[2][:data]).to eq :before_create
-        expect(canary.song[3][:data]).to eq :before_change
+    describe 'self#setup_create' do
+      it 'gets called after setup_build' do
+        instance.create(params: params, id: 1, canary: canary)
+        expect(canary.song[1][:data]).to eq :setup_build
+        expect(canary.song[2][:data]).to eq :setup_create
       end
     end
 
@@ -209,20 +213,20 @@ RSpec.describe SnFoil::Contexts::CreateContext do
       it 'gets called before any save' do
         instance.create(params: params, canary: canary)
         expect(canary.song[3][:data]).to eq :before_change
-        expect(canary.song[4][:data]).to eq :after_create_success
+        expect(canary.song[5][:data]).to eq :after_change_success
+      end
+
+      it 'gets called before :before_create' do
+        instance.create(params: params, canary: canary)
+        expect(canary.song[3][:data]).to eq :before_change
+        expect(canary.song[4][:data]).to eq :before_create
       end
     end
 
-    describe 'self#after_create_success' do
-      it 'gets called after a successful save' do
+    describe 'self#before_create' do
+      it 'gets called before any save' do
         instance.create(params: params, canary: canary)
-        expect(canary.song[4][:data]).to eq :after_create_success
-        expect(canary.song.map { |x| x[:data] }).not_to include(:after_change_failure)
-      end
-
-      it 'gets called before after_create_success' do
-        instance.create(params: params, canary: canary)
-        expect(canary.song[4][:data]).to eq :after_create_success
+        expect(canary.song[4][:data]).to eq :before_create
         expect(canary.song[5][:data]).to eq :after_change_success
       end
     end
@@ -233,23 +237,19 @@ RSpec.describe SnFoil::Contexts::CreateContext do
         expect(canary.song[5][:data]).to eq :after_change_success
         expect(canary.song.map { |x| x[:data] }).not_to include(:after_change_failure)
       end
+
+      it 'gets called before after_create_success' do
+        instance.create(params: params, canary: canary)
+        expect(canary.song[5][:data]).to eq :after_change_success
+        expect(canary.song[6][:data]).to eq :after_create_success
+      end
     end
 
-    describe 'self#after_create_failure' do
-      before do
-        allow(SnFoil).to receive(:adapter).and_return(FakeFailureORMAdapter)
-      end
-
-      it 'gets called after a failed save' do
+    describe 'self#after_create_success' do
+      it 'gets called after a successful save' do
         instance.create(params: params, canary: canary)
-        expect(canary.song[4][:data]).to eq :after_create_failure
-        expect(canary.song.map { |x| x[:data] }).not_to include(:after_create_success)
-      end
-
-      it 'gets called before after_change_failure' do
-        instance.create(params: params, canary: canary)
-        expect(canary.song[4][:data]).to eq :after_create_failure
-        expect(canary.song[5][:data]).to eq :after_change_failure
+        expect(canary.song[6][:data]).to eq :after_create_success
+        expect(canary.song.map { |x| x[:data] }).not_to include(:after_create_failure)
       end
     end
 
@@ -263,22 +263,23 @@ RSpec.describe SnFoil::Contexts::CreateContext do
         expect(canary.song[5][:data]).to eq :after_change_failure
         expect(canary.song.map { |x| x[:data] }).not_to include(:after_change_success)
       end
+
+      it 'gets called before after_change_failure' do
+        instance.create(params: params, canary: canary)
+        expect(canary.song[5][:data]).to eq :after_change_failure
+        expect(canary.song[6][:data]).to eq :after_create_failure
+      end
     end
 
-    describe 'self#after_create' do
+    describe 'self#after_create_failure' do
       before do
         allow(SnFoil).to receive(:adapter).and_return(FakeFailureORMAdapter)
       end
 
-      it 'gets called regardless of save success' do
+      it 'gets called after a failed save' do
         instance.create(params: params, canary: canary)
-        expect(canary.song[6][:data]).to eq :after_create
-      end
-
-      it 'gets called before after_change' do
-        instance.create(params: params, canary: canary)
-        expect(canary.song[6][:data]).to eq :after_create
-        expect(canary.song[7][:data]).to eq :after_change
+        expect(canary.song[6][:data]).to eq :after_create_failure
+        expect(canary.song.map { |x| x[:data] }).not_to include(:after_create_success)
       end
     end
 
@@ -290,6 +291,23 @@ RSpec.describe SnFoil::Contexts::CreateContext do
       it 'gets called regardless of save success' do
         instance.create(params: params, canary: canary)
         expect(canary.song[7][:data]).to eq :after_change
+      end
+
+      it 'gets called before after_create' do
+        instance.create(params: params, canary: canary)
+        expect(canary.song[7][:data]).to eq :after_change
+        expect(canary.song[8][:data]).to eq :after_create
+      end
+    end
+
+    describe 'self#after_create' do
+      before do
+        allow(SnFoil).to receive(:adapter).and_return(FakeFailureORMAdapter)
+      end
+
+      it 'gets called regardless of save success' do
+        instance.create(params: params, canary: canary)
+        expect(canary.song[8][:data]).to eq :after_create
       end
     end
 

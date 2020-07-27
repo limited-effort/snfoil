@@ -127,18 +127,18 @@ RSpec.describe SnFoil::Contexts::IndexContext do
       end
     end
 
-    describe 'self#setup_index' do
+    describe 'self#setup' do
       it 'gets called first' do
         instance.index(params: params, canary: canary)
-        expect(canary.song[0][:data]).to eq :setup_index
+        expect(canary.song[0][:data]).to eq :setup
       end
     end
 
-    describe 'self#setup' do
-      it 'gets called after setup_index' do
+    describe 'self#setup_index' do
+      it 'gets called after setup' do
         instance.index(params: params, canary: canary)
-        expect(canary.song[0][:data]).to eq :setup_index
-        expect(canary.song[1][:data]).to eq :setup
+        expect(canary.song[0][:data]).to eq :setup
+        expect(canary.song[1][:data]).to eq :setup_index
       end
     end
   end

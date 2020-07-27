@@ -171,80 +171,62 @@ RSpec.describe SnFoil::Contexts::DestroyContext do
       end
     end
 
-    describe 'self#setup_destroy' do
+    describe 'self#setup' do
       it 'gets called first' do
         instance.destroy(params: params, id: 1, canary: canary)
-        expect(canary.song[0][:data]).to eq :setup_destroy
+        expect(canary.song[0][:data]).to eq :setup
       end
     end
 
-    describe 'self#setup' do
-      it 'gets called after setup_destroy' do
+    describe 'self#setup_destroy' do
+      it 'gets called after setup' do
         instance.destroy(params: params, id: 1, canary: canary)
-        expect(canary.song[0][:data]).to eq :setup_destroy
-        expect(canary.song[1][:data]).to eq :setup
-      end
-    end
-
-    describe 'self#before_destroy' do
-      it 'gets called before any save' do
-        instance.destroy(params: params, id: 1, canary: canary)
-        expect(canary.song[2][:data]).to eq :before_destroy
-        expect(canary.song[4][:data]).to eq :after_destroy_success
-      end
-
-      it 'gets called before :before_change' do
-        instance.destroy(params: params, id: 1, canary: canary)
-        expect(canary.song[2][:data]).to eq :before_destroy
-        expect(canary.song[3][:data]).to eq :before_change
+        expect(canary.song[0][:data]).to eq :setup
+        expect(canary.song[1][:data]).to eq :setup_destroy
       end
     end
 
     describe 'self#before_change' do
-      it 'gets called before any save' do
+      it 'gets called before any destroy' do
         instance.destroy(params: params, id: 1, canary: canary)
-        expect(canary.song[3][:data]).to eq :before_change
-        expect(canary.song[4][:data]).to eq :after_destroy_success
+        expect(canary.song[2][:data]).to eq :before_change
+        expect(canary.song[4][:data]).to eq :after_change_success
+      end
+
+      it 'gets called before :before_change' do
+        instance.destroy(params: params, id: 1, canary: canary)
+        expect(canary.song[2][:data]).to eq :before_change
+        expect(canary.song[3][:data]).to eq :before_destroy
       end
     end
 
-    describe 'self#after_destroy_success' do
-      it 'gets called after a successful save' do
+    describe 'self#before_destroy' do
+      it 'gets called before any destroy' do
         instance.destroy(params: params, id: 1, canary: canary)
-        expect(canary.song[4][:data]).to eq :after_destroy_success
-        expect(canary.song.map { |x| x[:data] }).not_to include(:after_change_failure)
-      end
-
-      it 'gets called before after_destroy_success' do
-        instance.destroy(params: params, id: 1, canary: canary)
-        expect(canary.song[4][:data]).to eq :after_destroy_success
-        expect(canary.song[5][:data]).to eq :after_change_success
+        expect(canary.song[3][:data]).to eq :before_destroy
+        expect(canary.song[4][:data]).to eq :after_change_success
       end
     end
 
     describe 'self#after_change_success' do
-      it 'gets called after a successful save' do
+      it 'gets called after a successful destroy' do
         instance.destroy(params: params, id: 1, canary: canary)
-        expect(canary.song[5][:data]).to eq :after_change_success
+        expect(canary.song[4][:data]).to eq :after_change_success
         expect(canary.song.map { |x| x[:data] }).not_to include(:after_change_failure)
+      end
+
+      it 'gets called before after_change_success' do
+        instance.destroy(params: params, id: 1, canary: canary)
+        expect(canary.song[4][:data]).to eq :after_change_success
+        expect(canary.song[5][:data]).to eq :after_destroy_success
       end
     end
 
-    describe 'self#after_destroy_failure' do
-      before do
-        allow(SnFoil).to receive(:adapter).and_return(FakeFailureORMAdapter)
-      end
-
-      it 'gets called after a failed save' do
+    describe 'self#after_destroy_success' do
+      it 'gets called after a successful destroy' do
         instance.destroy(params: params, id: 1, canary: canary)
-        expect(canary.song[4][:data]).to eq :after_destroy_failure
-        expect(canary.song.map { |x| x[:data] }).not_to include(:after_destroy_success)
-      end
-
-      it 'gets called before after_change_failure' do
-        instance.destroy(params: params, id: 1, canary: canary)
-        expect(canary.song[4][:data]).to eq :after_destroy_failure
-        expect(canary.song[5][:data]).to eq :after_change_failure
+        expect(canary.song[5][:data]).to eq :after_destroy_success
+        expect(canary.song.map { |x| x[:data] }).not_to include(:after_destroy_failure)
       end
     end
 
@@ -253,27 +235,28 @@ RSpec.describe SnFoil::Contexts::DestroyContext do
         allow(SnFoil).to receive(:adapter).and_return(FakeFailureORMAdapter)
       end
 
-      it 'gets called after a failed save' do
+      it 'gets called after a failed destroy' do
         instance.destroy(params: params, id: 1, canary: canary)
-        expect(canary.song[5][:data]).to eq :after_change_failure
+        expect(canary.song[4][:data]).to eq :after_change_failure
         expect(canary.song.map { |x| x[:data] }).not_to include(:after_change_success)
+      end
+
+      it 'gets called before after_destroy_failure' do
+        instance.destroy(params: params, id: 1, canary: canary)
+        expect(canary.song[4][:data]).to eq :after_change_failure
+        expect(canary.song[5][:data]).to eq :after_destroy_failure
       end
     end
 
-    describe 'self#after_destroy' do
+    describe 'self#after_destroy_failure' do
       before do
         allow(SnFoil).to receive(:adapter).and_return(FakeFailureORMAdapter)
       end
 
-      it 'gets called regardless of save success' do
+      it 'gets called after a failed destroy' do
         instance.destroy(params: params, id: 1, canary: canary)
-        expect(canary.song[6][:data]).to eq :after_destroy
-      end
-
-      it 'gets called before after_change' do
-        instance.destroy(params: params, id: 1, canary: canary)
-        expect(canary.song[6][:data]).to eq :after_destroy
-        expect(canary.song[7][:data]).to eq :after_change
+        expect(canary.song[5][:data]).to eq :after_destroy_failure
+        expect(canary.song.map { |x| x[:data] }).not_to include(:after_destroy_success)
       end
     end
 
@@ -282,9 +265,26 @@ RSpec.describe SnFoil::Contexts::DestroyContext do
         allow(SnFoil).to receive(:adapter).and_return(FakeFailureORMAdapter)
       end
 
-      it 'gets called regardless of save success' do
+      it 'gets called regardless of destroy success' do
         instance.destroy(params: params, id: 1, canary: canary)
-        expect(canary.song[7][:data]).to eq :after_change
+        expect(canary.song[6][:data]).to eq :after_change
+      end
+
+      it 'gets called before after_change' do
+        instance.destroy(params: params, id: 1, canary: canary)
+        expect(canary.song[6][:data]).to eq :after_change
+        expect(canary.song[7][:data]).to eq :after_destroy
+      end
+    end
+
+    describe 'self#after_destroy' do
+      before do
+        allow(SnFoil).to receive(:adapter).and_return(FakeFailureORMAdapter)
+      end
+
+      it 'gets called regardless of destroy success' do
+        instance.destroy(params: params, id: 1, canary: canary)
+        expect(canary.song[7][:data]).to eq :after_destroy
       end
     end
 

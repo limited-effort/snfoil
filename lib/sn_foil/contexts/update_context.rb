@@ -56,7 +56,8 @@ module SnFoil
         raise ArgumentError, 'one of the following keywords is required: id, object' unless id || object
 
         object = wrap_object(object || scope.resolve.find(id))
-        authorize(object, :update?, **options)
+        authorize(object, options.fetch(:authorize) { :update? }, **options)
+
         object.attributes = params
         options.merge! object: object
       end
@@ -65,7 +66,7 @@ module SnFoil
         options[:action] = :update
         options = before_setup_update_object(**options)
         options = setup_update_object(**options)
-        authorize(options[:object], :update?, **options)
+        authorize(options[:object], options.fetch(:authorize) { :update? }, **options)
         options = update_hooks(**options)
         unwrap_object(options[:object])
       end
@@ -113,12 +114,12 @@ module SnFoil
       private
 
       def before_setup_update_object(**options)
-        options = setup_update(**options)
-        options = setup_update_hooks.reduce(options) { |opts, hook| run_hook(hook, opts) }
+        options = setup(**options)
+        options = setup_hooks.reduce(options) { |opts, hook| run_hook(hook, opts) }
         options = setup_change(**options)
         options = setup_change_hooks.reduce(options) { |opts, hook| run_hook(hook, opts) }
-        options = setup(**options)
-        setup_hooks.reduce(options) { |opts, hook| run_hook(hook, opts) }
+        options = setup_update(**options)
+        setup_update_hooks.reduce(options) { |opts, hook| run_hook(hook, opts) }
       end
 
       # This method is private to help protect the order of execution of hooks
@@ -135,31 +136,31 @@ module SnFoil
       end
 
       def before_update_save(options)
-        options = before_update(**options)
-        options = before_update_hooks.reduce(options) { |opts, hook| run_hook(hook, **opts) }
         options = before_change(**options)
-        before_change_hooks.reduce(options) { |opts, hook| run_hook(hook, **opts) }
+        options = before_change_hooks.reduce(options) { |opts, hook| run_hook(hook, **opts) }
+        options = before_update(**options)
+        before_update_hooks.reduce(options) { |opts, hook| run_hook(hook, **opts) }
       end
 
       def after_update_save(options)
-        options = after_update(**options)
-        options = after_update_hooks.reduce(options) { |opts, hook| run_hook(hook, **opts) }
         options = after_change(**options)
-        after_change_hooks.reduce(options) { |opts, hook| run_hook(hook, **opts) }
+        options = after_change_hooks.reduce(options) { |opts, hook| run_hook(hook, **opts) }
+        options = after_update(**options)
+        after_update_hooks.reduce(options) { |opts, hook| run_hook(hook, **opts) }
       end
 
       def after_update_save_success(options)
-        options = after_update_success(**options)
-        options = after_update_success_hooks.reduce(options) { |opts, hook| run_hook(hook, **opts) }
         options = after_change_success(**options)
-        after_change_success_hooks.reduce(options) { |opts, hook| run_hook(hook, **opts) }
+        options = after_change_success_hooks.reduce(options) { |opts, hook| run_hook(hook, **opts) }
+        options = after_update_success(**options)
+        after_update_success_hooks.reduce(options) { |opts, hook| run_hook(hook, **opts) }
       end
 
       def after_update_save_failure(options)
-        options = after_update_failure(**options)
-        options = after_update_failure_hooks.reduce(options) { |opts, hook| run_hook(hook, **opts) }
         options = after_change_failure(**options)
-        after_change_failure_hooks.reduce(options) { |opts, hook| run_hook(hook, **opts) }
+        options = after_change_failure_hooks.reduce(options) { |opts, hook| run_hook(hook, **opts) }
+        options = after_update_failure(**options)
+        after_update_failure_hooks.reduce(options) { |opts, hook| run_hook(hook, **opts) }
       end
     end
   end
