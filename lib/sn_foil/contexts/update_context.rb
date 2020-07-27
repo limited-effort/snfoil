@@ -68,7 +68,7 @@ module SnFoil
         options = setup_update_object(**options)
         authorize(options[:object], options.fetch(:authorize) { :update? }, **options)
         options = update_hooks(**options)
-        unwrap_object(options[:object])
+        options[:object]
       end
 
       def setup_update(**options)

@@ -64,7 +64,7 @@ module SnFoil
         options = setup_destroy_object(**options)
         authorize(options[:object], options.fetch(:authorize) { :destroy? }, **options)
         options = destroy_hooks(**options)
-        unwrap_object(options[:object])
+        options[:object]
       end
 
       def setup_destroy(**options)

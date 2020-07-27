@@ -60,7 +60,7 @@ module SnFoil
         options = setup_create_object(**options)
         authorize(options[:object], options.fetch(:authorize) { :create? }, **options)
         options = create_hooks(**options)
-        unwrap_object(options[:object])
+        options[:object]
       end
 
       def setup_create(**options)
