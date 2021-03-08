@@ -7,7 +7,7 @@ module SnFoil
     extend ActiveSupport::Concern
 
     class_methods do
-      attr_reader :i_model, :i_setup, :i_filters, :i_search_step
+      attr_reader :i_model, :i_setup, :i_filters, :i_search_step, :i_booleans
 
       def model(klass = nil)
         @i_model = klass
@@ -26,6 +26,11 @@ module SnFoil
           if: options[:if],
           unless: options[:unless]
         }
+      end
+
+      def booleans(*fields)
+        @i_booleans ||= []
+        @i_booleans |= fields.map(&:to_sym)
       end
     end
 
@@ -53,6 +58,10 @@ module SnFoil
 
     def filters
       self.class.i_filters || []
+    end
+
+    def booleans
+      self.class.i_booleans || []
     end
 
     private
@@ -90,15 +99,24 @@ module SnFoil
 
     def transform_params_booleans(params)
       params.map do |key, value|
-        value = if value == 'true'
-                  true
-                elsif value == 'false'
-                  false
+        value = if booleans.include?(key.to_sym)
+                  value_to_boolean(value)
                 else
                   value
                 end
         [key, value]
       end.to_h
+    end
+
+    def value_to_boolean(value)
+      string_val = value.to_s
+      if value == true || %w[true 1].include?(string_val)
+        true
+      elsif value == false || %w[false 0].include?(string_val)
+        false
+      else
+        value
+      end
     end
   end
 end
