@@ -190,111 +190,111 @@ The call order for actions is extremely important because SnFoil passes the opti
         <tr>
             <td>Build</td>
             <td>
-                <div><u>method</u> setup</div>
-                <div><u>hooks</u>&nbsp;&nbsp; setup</div>
-                <div><u>method</u> setup_build</div>
-                <div><u>hooks</u>&nbsp;&nbsp; setup_build</div>
+                <div><b>method</b> setup</div>
+                <div><b>hooks</b>&nbsp;&nbsp; setup</div>
+                <div><b>method</b> setup_build</div>
+                <div><b>hooks</b>&nbsp;&nbsp; setup_build</div>
             </td>
         </tr>
         <tr>
             <td>Create</td>
             <td>
-                <div><u>method</u> setup</div>
-                <div><u>hooks</u>&nbsp;&nbsp; setup</div>
-                <div><u>method</u> setup_build</div>
-                <div><u>hooks</u>&nbsp;&nbsp; setup_build</div>
-                <div><u>method</u> setup_change</div>
-                <div><u>hooks</u>&nbsp;&nbsp; setup_change</div>
-                <div><u>method</u> setup_create</div>
-                <div><u>hooks</u>&nbsp;&nbsp; setup_create</div>
-                <div><u>method</u> before_change</div>
-                <div><u>hooks</u>&nbsp;&nbsp; before_change</div>
-                <div><u>method</u> before_create</div>
-                <div><u>hooks</u>&nbsp;&nbsp; before_create</div>
-                <div><u>method</u> <i>*after_change_success</i></div>
-                <div><u>hooks</u>&nbsp;&nbsp; <i>*after_change_success</i></div>
-                <div><u>method</u> <i>*after_create_success</i></div>
-                <div><u>hooks</u>&nbsp;&nbsp; <i>*after_create_success</i></div>
-                <div><u>method</u> <i>*after_change_failure</i></div>
-                <div><u>hooks</u>&nbsp;&nbsp; <i>*after_change_failure</i></div>
-                <div><u>method</u> <i>*after_create_failure</i></div>
-                <div><u>hooks</u>&nbsp;&nbsp; <i>*after_create_failure</i></div>
-                <div><u>method</u> after_change</div>
-                <div><u>hooks</u>&nbsp;&nbsp; after_change</div>
-                <div><u>method</u> after_create</div>
-                <div><u>hooks</u>&nbsp;&nbsp; after_create</div>
+                <div><b>method</b> setup</div>
+                <div><b>hooks</b>&nbsp;&nbsp; setup</div>
+                <div><b>method</b> setup_build</div>
+                <div><b>hooks</b>&nbsp;&nbsp; setup_build</div>
+                <div><b>method</b> setup_change</div>
+                <div><b>hooks</b>&nbsp;&nbsp; setup_change</div>
+                <div><b>method</b> setup_create</div>
+                <div><b>hooks</b>&nbsp;&nbsp; setup_create</div>
+                <div><b>method</b> before_change</div>
+                <div><b>hooks</b>&nbsp;&nbsp; before_change</div>
+                <div><b>method</b> before_create</div>
+                <div><b>hooks</b>&nbsp;&nbsp; before_create</div>
+                <div><b>method</b> <i>*after_change_success</i></div>
+                <div><b>hooks</b>&nbsp;&nbsp; <i>*after_change_success</i></div>
+                <div><b>method</b> <i>*after_create_success</i></div>
+                <div><b>hooks</b>&nbsp;&nbsp; <i>*after_create_success</i></div>
+                <div><b>method</b> <i>*after_change_failure</i></div>
+                <div><b>hooks</b>&nbsp;&nbsp; <i>*after_change_failure</i></div>
+                <div><b>method</b> <i>*after_create_failure</i></div>
+                <div><b>hooks</b>&nbsp;&nbsp; <i>*after_create_failure</i></div>
+                <div><b>method</b> after_change</div>
+                <div><b>hooks</b>&nbsp;&nbsp; after_change</div>
+                <div><b>method</b> after_create</div>
+                <div><b>hooks</b>&nbsp;&nbsp; after_create</div>
             </td>
         </tr>
         <tr>
             <td>Update</td>
             <td>
-                <div><u>method</u> setup</div>
-                <div><u>hooks</u>&nbsp;&nbsp; setup</div>
-                <div><u>method</u> setup_change</div>
-                <div><u>hooks</u>&nbsp;&nbsp; setup_change</div>
-                <div><u>method</u> setup_update</div>
-                <div><u>hooks</u>&nbsp;&nbsp; setup_update</div>
-                <div><u>method</u> before_change</div>
-                <div><u>hooks</u>&nbsp;&nbsp; before_change</div>
-                <div><u>method</u> before_update</div>
-                <div><u>hooks</u>&nbsp;&nbsp; before_update</div>
-                <div><u>method</u> <i>*after_change_success</i></div>
-                <div><u>hooks</u>&nbsp;&nbsp; <i>*after_change_success</i></div>
-                <div><u>method</u> <i>*after_update_success</i></div>
-                <div><u>hooks</u>&nbsp;&nbsp; <i>*after_update_success</i></div>
-                <div><u>method</u> <i>*after_change_failure</i></div>
-                <div><u>hooks</u>&nbsp;&nbsp; <i>*after_change_failure</i></div>
-                <div><u>method</u> <i>*after_update_failure</i></div>
-                <div><u>hooks</u>&nbsp;&nbsp; <i>*after_update_failure</i></div>
-                <div><u>method</u> after_change</div>
-                <div><u>hooks</u>&nbsp;&nbsp; after_change</div>
-                <div><u>method</u> after_update</div>
-                <div><u>hooks</u>&nbsp;&nbsp; after_update</div>
+                <div><b>method</b> setup</div>
+                <div><b>hooks</b>&nbsp;&nbsp; setup</div>
+                <div><b>method</b> setup_change</div>
+                <div><b>hooks</b>&nbsp;&nbsp; setup_change</div>
+                <div><b>method</b> setup_update</div>
+                <div><b>hooks</b>&nbsp;&nbsp; setup_update</div>
+                <div><b>method</b> before_change</div>
+                <div><b>hooks</b>&nbsp;&nbsp; before_change</div>
+                <div><b>method</b> before_update</div>
+                <div><b>hooks</b>&nbsp;&nbsp; before_update</div>
+                <div><b>method</b> <i>*after_change_success</i></div>
+                <div><b>hooks</b>&nbsp;&nbsp; <i>*after_change_success</i></div>
+                <div><b>method</b> <i>*after_update_success</i></div>
+                <div><b>hooks</b>&nbsp;&nbsp; <i>*after_update_success</i></div>
+                <div><b>method</b> <i>*after_change_failure</i></div>
+                <div><b>hooks</b>&nbsp;&nbsp; <i>*after_change_failure</i></div>
+                <div><b>method</b> <i>*after_update_failure</i></div>
+                <div><b>hooks</b>&nbsp;&nbsp; <i>*after_update_failure</i></div>
+                <div><b>method</b> after_change</div>
+                <div><b>hooks</b>&nbsp;&nbsp; after_change</div>
+                <div><b>method</b> after_update</div>
+                <div><b>hooks</b>&nbsp;&nbsp; after_update</div>
             </td>
         </tr>
         <tr>
             <td>Destroy</td>
             <td>
-                <div><u>method</u> setup</div>
-                <div><u>hooks</u>&nbsp;&nbsp; setup</div>
-                <div><u>method</u> setup_change</div>
-                <div><u>hooks</u>&nbsp;&nbsp; setup_change</div>
-                <div><u>method</u> setup_destroy</div>
-                <div><u>hooks</u>&nbsp;&nbsp; setup_destroy</div>
-                <div><u>method</u> before_change</div>
-                <div><u>hooks</u>&nbsp;&nbsp; before_change</div>
-                <div><u>method</u> before_destroy</div>
-                <div><u>hooks</u>&nbsp;&nbsp; before_destroy</div>
-                <div><u>method</u> <i>*after_change_success</i></div>
-                <div><u>hooks</u>&nbsp;&nbsp; <i>*after_change_success</i></div>
-                <div><u>method</u> <i>*after_destroy_success</i></div>
-                <div><u>hooks</u>&nbsp;&nbsp; <i>*after_destroy_success</i></div>
-                <div><u>method</u> <i>*after_change_failure</i></div>
-                <div><u>hooks</u>&nbsp;&nbsp; <i>*after_change_failure</i></div>
-                <div><u>method</u> <i>*after_destroy_failure</i></div>
-                <div><u>hooks</u>&nbsp;&nbsp; <i>*after_destroy_failure</i></div>
-                <div><u>method</u> after_change</div>
-                <div><u>hooks</u>&nbsp;&nbsp; after_change</div>
-                <div><u>method</u> after_destroy</div>
-                <div><u>hooks</u>&nbsp;&nbsp; after_destroy</div>
+                <div><b>method</b> setup</div>
+                <div><b>hooks</b>&nbsp;&nbsp; setup</div>
+                <div><b>method</b> setup_change</div>
+                <div><b>hooks</b>&nbsp;&nbsp; setup_change</div>
+                <div><b>method</b> setup_destroy</div>
+                <div><b>hooks</b>&nbsp;&nbsp; setup_destroy</div>
+                <div><b>method</b> before_change</div>
+                <div><b>hooks</b>&nbsp;&nbsp; before_change</div>
+                <div><b>method</b> before_destroy</div>
+                <div><b>hooks</b>&nbsp;&nbsp; before_destroy</div>
+                <div><b>method</b> <i>*after_change_success</i></div>
+                <div><b>hooks</b>&nbsp;&nbsp; <i>*after_change_success</i></div>
+                <div><b>method</b> <i>*after_destroy_success</i></div>
+                <div><b>hooks</b>&nbsp;&nbsp; <i>*after_destroy_success</i></div>
+                <div><b>method</b> <i>*after_change_failure</i></div>
+                <div><b>hooks</b>&nbsp;&nbsp; <i>*after_change_failure</i></div>
+                <div><b>method</b> <i>*after_destroy_failure</i></div>
+                <div><b>hooks</b>&nbsp;&nbsp; <i>*after_destroy_failure</i></div>
+                <div><b>method</b> after_change</div>
+                <div><b>hooks</b>&nbsp;&nbsp; after_change</div>
+                <div><b>method</b> after_destroy</div>
+                <div><b>hooks</b>&nbsp;&nbsp; after_destroy</div>
             </td>
         </tr>
         <tr>
             <td>Show</td>
             <td>
-                <div><u>method</u> setup</div>
-                <div><u>hooks</u>&nbsp;&nbsp; setup</div>
-                <div><u>method</u> setup_show</div>
-                <div><u>hooks</u>&nbsp;&nbsp; setup_show</div>
+                <div><b>method</b> setup</div>
+                <div><b>hooks</b>&nbsp;&nbsp; setup</div>
+                <div><b>method</b> setup_show</div>
+                <div><b>hooks</b>&nbsp;&nbsp; setup_show</div>
             </td>
         </tr>
         <tr>
             <td>Index</td>
             <td>
-                <div><u>method</u> setup</div>
-                <div><u>hooks</u>&nbsp;&nbsp; setup</div>
-                <div><u>method</u> setup_index</div>
-                <div><u>hooks</u>&nbsp;&nbsp; setup_index</div>
+                <div><b>method</b> setup</div>
+                <div><b>hooks</b>&nbsp;&nbsp; setup</div>
+                <div><b>method</b> setup_index</div>
+                <div><b>hooks</b>&nbsp;&nbsp; setup_index</div>
             </td>
         </tr>
     </tbody>
