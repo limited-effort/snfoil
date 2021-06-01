@@ -6,9 +6,9 @@ require 'active_support/concern'
 require_relative './shared_contexts'
 
 RSpec.describe SnFoil::Searcher do
-  include_context 'with fake policy'
-
   subject(:searcher) { Class.new TestSearcherClass }
+
+  include_context 'with fake policy'
 
   let(:instance) { searcher.new }
   let(:query) { instance.search(params).to_query }
@@ -325,6 +325,7 @@ end
 
 class FakeScope
   attr_reader :model, :scope
+
   def initialize(model, scope = '')
     @model = model
     @scope = scope

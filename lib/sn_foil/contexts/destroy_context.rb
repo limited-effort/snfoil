@@ -17,6 +17,7 @@ module SnFoil
       class_methods do
         attr_reader :i_setup_destroy_hooks, :i_before_destroy_hooks, :i_after_destroy_hooks,
                     :i_after_destroy_success_hooks, :i_after_destroy_failure_hooks
+
         def destroy(id:, entity: nil, **options)
           new(entity).destroy(**options, id: id)
         end
@@ -62,7 +63,7 @@ module SnFoil
         options[:action] = :destroy
         options = before_setup_destroy_object(**options)
         options = setup_destroy_object(**options)
-        authorize(options[:object], options.fetch(:authorize) { :destroy? }, **options)
+        authorize(options[:object], options.fetch(:authorize, :destroy?), **options)
         options = destroy_hooks(**options)
         options[:object]
       end

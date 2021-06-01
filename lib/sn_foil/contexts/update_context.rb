@@ -17,6 +17,7 @@ module SnFoil
       class_methods do
         attr_reader :i_setup_update_hooks, :i_before_update_hooks, :i_after_update_hooks,
                     :i_after_update_success_hooks, :i_after_update_failure_hooks
+
         def update(id:, params:, entity: nil, **options)
           new(entity).update(**options, id: id, params: params)
         end
@@ -56,7 +57,7 @@ module SnFoil
         raise ArgumentError, 'one of the following keywords is required: id, object' unless id || object
 
         object = wrap_object(object || scope.resolve.find(id))
-        authorize(object, options.fetch(:authorize) { :update? }, **options)
+        authorize(object, options.fetch(:authorize, :update?), **options)
 
         object.attributes = params
         options.merge! object: object
@@ -66,7 +67,7 @@ module SnFoil
         options[:action] = :update
         options = before_setup_update_object(**options)
         options = setup_update_object(**options)
-        authorize(options[:object], options.fetch(:authorize) { :update? }, **options)
+        authorize(options[:object], options.fetch(:authorize, :update?), **options)
         options = update_hooks(**options)
         options[:object]
       end

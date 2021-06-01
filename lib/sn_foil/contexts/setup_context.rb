@@ -43,6 +43,7 @@ module SnFoil
       end
 
       attr_reader :entity
+
       def initialize(entity = nil)
         @entity = entity
       end

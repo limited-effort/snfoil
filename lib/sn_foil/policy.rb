@@ -8,6 +8,7 @@ module SnFoil
 
     attr_reader :record, :entity
     attr_accessor :options
+
     def initialize(entity, record, options = {})
       @record = record
       @entity = entity

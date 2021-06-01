@@ -39,6 +39,7 @@ module SnFoil
     end
 
     attr_reader :scope
+
     def initialize(scope: nil)
       @scope = scope || model.all
     end

@@ -8,10 +8,11 @@ require 'sn_foil/version'
 Gem::Specification.new do |spec|
   spec.name          = 'snfoil'
   spec.version       = SnFoil::VERSION
+  spec.required_ruby_version = '>= 2.5.0'
   spec.authors     = ['Matthew Howes', 'Danny Murphy']
   spec.email       = ['howeszy@gmail.com', 'dmurph24@gmail.com']
   spec.summary       = 'A boilerplate gem for providing basic contexts'
-  spec.homepage      = 'https://github.com/howeszy/snfoil'
+  spec.homepage      = 'https://github.com/limited-effort/snfoil'
   spec.license       = 'MIT'
 
   # Specify which files should be added to the gem when it is released.
@@ -29,6 +30,6 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency 'pry-byebug', '~> 3.0'
   spec.add_development_dependency 'rake', '~> 13.0'
   spec.add_development_dependency 'rspec', '~> 3.9'
-  spec.add_development_dependency 'rubocop', '~> 0.76.0'
-  spec.add_development_dependency 'rubocop-rspec', '~> 1.36.0'
+  spec.add_development_dependency 'rubocop', '~> 1.14'
+  spec.add_development_dependency 'rubocop-rspec', '~> 2.3'
 end

@@ -18,6 +18,7 @@ module SnFoil
       class_methods do
         attr_reader :i_setup_create_hooks, :i_before_create_hooks, :i_after_create_hooks,
                     :i_after_create_success_hooks, :i_after_create_failure_hooks
+
         def create(params:, entity: nil, **options)
           new(entity).create(**options, params: params)
         end
@@ -58,7 +59,7 @@ module SnFoil
         options = before_setup_build_object(**options)
         options = before_setup_create_object(**options)
         options = setup_create_object(**options)
-        authorize(options[:object], options.fetch(:authorize) { :create? }, **options)
+        authorize(options[:object], options.fetch(:authorize, :create?), **options)
         options = create_hooks(**options)
         options[:object]
       end

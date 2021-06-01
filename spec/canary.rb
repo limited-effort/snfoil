@@ -2,6 +2,7 @@
 
 class Canary
   attr_reader :called_by
+
   def initialize
     @callers = []
   end

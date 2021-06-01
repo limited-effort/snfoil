@@ -1,6 +1,11 @@
 require:
   - rubocop-rspec
 
+AllCops:
+  NewCops: enable
+  SuggestExtensions: false
+  TargetRubyVersion: 2.5.0
+
 # ================ Style ===============
 # TODO: Activate later
 Style/Documentation:
@@ -23,6 +28,9 @@ Metrics/BlockLength:
 
 RSpec/MultipleExpectations:
   Max: 5
+
+RSpec/MultipleMemoizedHelpers:
+  Enabled: false
 
 Rspec/NestedGroups:
   Max: 5
