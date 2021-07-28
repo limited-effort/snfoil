@@ -26,10 +26,6 @@ module SnFoil
         def attributes=(attributes)
           __getobj__.attributes = attributes
         end
-
-        def is_a?(klass)
-          __getobj__.instance_of?(klass)
-        end
       end
     end
   end

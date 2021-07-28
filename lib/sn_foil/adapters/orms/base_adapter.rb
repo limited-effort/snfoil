@@ -25,6 +25,14 @@ module SnFoil
         def attributes=(_attributes)
           raise NotImplementedError, '#attributes= not implemented in adapter'
         end
+
+        def is_a?(check_class)
+          __getobj__.class.object_id == check_class.object_id
+        end
+
+        def klass
+          __getobj__.class
+        end
       end
     end
   end
