@@ -8,7 +8,7 @@ class Canary
   end
 
   def sing(data = nil)
-    details = if caller_locations(1..1).first.to_s =~ /`block/
+    details = if /`block/.match?(caller_locations(1..1).first.to_s)
                 { caller: caller_locations(2..2).first, block: true }
               else
                 { caller: caller_locations(1..1).first, block: false }
