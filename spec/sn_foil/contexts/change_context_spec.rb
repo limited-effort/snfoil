@@ -7,26 +7,26 @@ require 'dry-struct'
 RSpec.describe SnFoil::Contexts::ChangeContext do
   let(:including_class) { Class.new ChangeContextClass }
 
-  let(:whitelisted_params) { %i[first_name last_name] }
+  let(:permitted_params) { %i[first_name last_name] }
 
   before do
     including_class.model(OpenStruct)
   end
 
   describe '#self.params' do
-    before { including_class.params(*whitelisted_params) }
+    before { including_class.params(*permitted_params) }
 
     it 'sets the internal params' do
-      expect(including_class.i_params).to eq(whitelisted_params)
+      expect(including_class.i_params).to eq(permitted_params)
     end
   end
 
   describe '#param_names' do
     context 'with context params set' do
-      before { including_class.params(*whitelisted_params) }
+      before { including_class.params(*permitted_params) }
 
       it 'returns the internal params' do
-        expect(including_class.new.param_names).to eq(whitelisted_params)
+        expect(including_class.new.param_names).to eq(permitted_params)
       end
     end
   end
@@ -38,17 +38,17 @@ RSpec.describe SnFoil::Contexts::ChangeContext do
     end
 
     context 'when params are set on the context' do
-      before { including_class.params(*whitelisted_params) }
+      before { including_class.params(*permitted_params) }
 
-      it 'whitelists the provided params' do
-        expect(instance.setup_change(params: params)[:params].keys).to include(*whitelisted_params)
+      it 'permits the provided params' do
+        expect(instance.setup_change(params: params)[:params].keys).to include(*permitted_params)
         expect(instance.setup_change(params: params)[:params].keys).not_to include(:middle_name)
       end
     end
 
     context 'when there are no params set on the context' do
       it 'does not change the params' do
-        expect(instance.setup_change(params: params)[:params].keys).to include(*whitelisted_params)
+        expect(instance.setup_change(params: params)[:params].keys).to include(*permitted_params)
         expect(instance.setup_change(params: params)[:params].keys).to include(:middle_name)
       end
     end

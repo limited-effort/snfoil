@@ -127,7 +127,7 @@ module SnFoil
       def update_hooks(options)
         options = before_update_save(options)
         update_successful = options[:object].save
-        options.merge!(object: unwrap_object(options[:object]))
+        options[:object] = unwrap_object(options[:object])
         options = if update_successful
                     after_update_save_success(options)
                   else

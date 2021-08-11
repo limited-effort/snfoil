@@ -117,7 +117,7 @@ module SnFoil
       def create_hooks(options)
         options = before_create_save(**options)
         save_successful = options[:object].save
-        options.merge!(object: unwrap_object(options[:object]))
+        options[:object] = unwrap_object(options[:object])
         options = if save_successful
                     after_create_save_success(**options)
                   else
