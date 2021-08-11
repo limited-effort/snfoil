@@ -16,9 +16,9 @@ module SnFoil
         attr_reader :i_params, :i_setup_change_hooks, :i_before_change_hooks, :i_after_change_hooks,
                     :i_after_change_success_hooks, :i_after_change_failure_hooks
 
-        def params(*whitelisted_params)
+        def params(*permitted_params)
           @i_params ||= []
-          @i_params |= whitelisted_params
+          @i_params |= permitted_params
         end
 
         def setup_change(method = nil, **options, &block)
