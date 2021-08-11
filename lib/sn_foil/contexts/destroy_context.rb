@@ -123,7 +123,7 @@ module SnFoil
       def destroy_hooks(options)
         options = before_destroy_save(options)
         destroy_successful = options[:object].destroy
-        options.merge!(object: unwrap_object(options[:object]))
+        options[:object] = unwrap_object(options[:object])
         options = if destroy_successful
                     after_destroy_save_success(options)
                   else
