@@ -8,10 +8,10 @@ class Canary
   end
 
   def sing(data = nil)
-    details = if caller_locations[0] =~ /`block/
-                { caller: caller_locations[1], block: true }
+    details = if caller_locations(1..1).first.to_s =~ /`block/
+                { caller: caller_locations(2..2).first, block: true }
               else
-                { caller: caller_locations[0], block: false }
+                { caller: caller_locations(1..1).first, block: false }
               end
     details[:caller] = details[:caller].path.match(%r{[^/]+$})
     @callers << details.merge(data: data)
