@@ -1,0 +1,43 @@
+name: Ruby CI
+on: [pull_request]
+
+jobs:
+  test:
+
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        ruby-version: [2.7, 2.6, 2.5]
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Ruby ${{ matrix.ruby-version }}
+        uses: ruby/setup-ruby@v1.81.0
+        with:
+          ruby-version: ${{ matrix.ruby-version }}
+          bundler-cache: true
+      - name: Install dependencies
+        run: bundle install
+      - name: Run tests
+        run: bundle exec rspec
+  lint:
+
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        ruby-version: [2.7, 2.6, 2.5, '3.0']
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Ruby ${{ matrix.ruby-version }}
+        uses: ruby/setup-ruby@v1.81.0
+        with:
+          ruby-version: ${{ matrix.ruby-version }}
+          bundler-cache: true
+      - name: Install dependencies
+        run: bundle install
+      - name: Run rubocop
+        run: bundle exec rubocop
+
