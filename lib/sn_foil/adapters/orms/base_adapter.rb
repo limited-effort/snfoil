@@ -27,7 +27,7 @@ module SnFoil
         end
 
         def is_a?(check_class)
-          __getobj__.instance_of?(check_class)
+          __getobj__.class.object_id.equal?(check_class.object_id)
         end
 
         def klass
