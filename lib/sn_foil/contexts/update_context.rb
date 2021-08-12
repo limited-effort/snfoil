@@ -60,7 +60,8 @@ module SnFoil
         authorize(object, options.fetch(:authorize, :update?), **options)
 
         object.attributes = params
-        options.merge! object: object
+        options[:object] = object
+        options
       end
 
       def update(**options)
