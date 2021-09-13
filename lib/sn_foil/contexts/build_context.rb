@@ -35,7 +35,8 @@ module SnFoil
                  end
 
         object.attributes = params
-        options.merge! object: object
+        options[:object] = object
+        options
       end
 
       def build(**options)
