@@ -80,7 +80,7 @@ RSpec.describe SnFoil::Contexts::BuildContext do
     context 'when passed authorize in the options' do
       it 'authorizes the object' do
         instance.build(params: params, authorize: :create?)
-        expect(policy).to have_received(:new).with(entity, FakeSuccessORMAdapter)
+        expect(policy).to have_received(:new).with(entity, FakeSuccessORMAdapter, anything)
         expect(policy_double).to have_received(:create?).once
       end
     end

@@ -104,10 +104,11 @@ module SnFoil
 
       def lookup_policy(object, options)
         lookup = if options[:policy]
-                   options[:policy].new(entity, object)
+                   options[:policy].new(entity, object, options: options)
                  elsif policy
-                   policy.new(entity, object)
+                   policy.new(entity, object, options: options)
                  else
+                   SnFoil.logger.debug 'No policy found. Looking up policy using Pundit. `options` will not be passed to policy'
                    Pundit.policy!(entity, object)
                  end
 
