@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require 'pundit'
 require 'active_support/concern'
 require 'active_support/core_ext/string/inflections'
 
