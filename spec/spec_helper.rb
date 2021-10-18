@@ -1,7 +1,8 @@
 # frozen_string_literal: true
 
-require 'sn_foil'
+require 'snfoil'
 require 'pry-byebug'
+
 require_relative 'canary'
 
 ENV['ISTEST'] = 'true'

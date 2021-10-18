@@ -27,6 +27,10 @@ Metrics/BlockLength:
     - spec/**/*_spec.rb
 
 # ================ RSPEC ================
+RSpec/FilePath:
+  CustomTransform:
+    SnFoil: snfoil
+    CRUDContext: crud_context
 
 RSpec/MultipleExpectations:
   Max: 5
@@ -36,3 +40,6 @@ RSpec/MultipleMemoizedHelpers:
 
 RSpec/NestedGroups:
   Max: 5
+
+RSpec/SubjectStub:
+  Enabled: false

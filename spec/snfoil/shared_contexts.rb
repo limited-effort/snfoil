@@ -2,8 +2,6 @@
 
 require 'ostruct'
 require 'dry-struct'
-require 'sn_foil/policy'
-require 'sn_foil/adapters/orms/base_adapter'
 
 RSpec.shared_context('with fake entity') do
   let(:entity) { OpenStruct.new }
@@ -11,7 +9,7 @@ end
 
 RSpec.shared_context('with fake model') do
   let(:model_double) { Person }
-  let(:model_instance_double) { Person.new(first_name: 'Test', last_name: 'Person') }
+  let(:model_instance_double) { Person.new(id: 1, first_name: 'Test', last_name: 'Person') }
   let(:relation_double) { double }
 
   before do
@@ -56,7 +54,7 @@ class FakeSuccessORMAdapter < SnFoil::Adapters::ORMs::BaseAdapter
   end
 
   def attributes=(**attributes)
-    self.class.new(**__getobj__.attributes.merge(attributes))
+    __getobj__.class.new(**__getobj__.attributes.merge(attributes))
   end
 end
 
@@ -90,6 +88,13 @@ class FakePolicy
   alias create? response
   alias update? response
   alias destroy? response
+  alias build? response
+
+  class Scope < Scope
+    def resolve
+      scope.all
+    end
+  end
 end
 
 module Types
@@ -97,6 +102,7 @@ module Types
 end
 
 class Person < Dry::Struct
+  attribute :id, Types::Integer.optional
   attribute :first_name, Types::String.optional
   attribute :last_name, Types::String.optional
 

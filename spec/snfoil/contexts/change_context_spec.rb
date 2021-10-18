@@ -1,11 +1,10 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
-require 'sn_foil/contexts/change_context'
 require 'dry-struct'
 
 RSpec.describe SnFoil::Contexts::ChangeContext do
-  let(:including_class) { Class.new ChangeContextClass }
+  let(:including_class) { ChangeContextClass.clone }
 
   let(:permitted_params) { %i[first_name last_name] }
 
@@ -21,16 +20,6 @@ RSpec.describe SnFoil::Contexts::ChangeContext do
     end
   end
 
-  describe '#param_names' do
-    context 'with context params set' do
-      before { including_class.params(*permitted_params) }
-
-      it 'returns the internal params' do
-        expect(including_class.new.param_names).to eq(permitted_params)
-      end
-    end
-  end
-
   describe '#setup_change' do
     let(:instance) { including_class.new }
     let(:params) do
@@ -41,15 +30,15 @@ RSpec.describe SnFoil::Contexts::ChangeContext do
       before { including_class.params(*permitted_params) }
 
       it 'permits the provided params' do
-        expect(instance.setup_change(params: params)[:params].keys).to include(*permitted_params)
-        expect(instance.setup_change(params: params)[:params].keys).not_to include(:middle_name)
+        expect(instance.run_interval(:setup_change, params: params)[:params].keys).to include(*permitted_params)
+        expect(instance.run_interval(:setup_change, params: params)[:params].keys).not_to include(:middle_name)
       end
     end
 
     context 'when there are no params set on the context' do
       it 'does not change the params' do
-        expect(instance.setup_change(params: params)[:params].keys).to include(*permitted_params)
-        expect(instance.setup_change(params: params)[:params].keys).to include(:middle_name)
+        expect(instance.run_interval(:setup_change, params: params)[:params].keys).to include(*permitted_params)
+        expect(instance.run_interval(:setup_change, params: params)[:params].keys).to include(:middle_name)
       end
     end
   end

@@ -1,13 +1,12 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
-require 'sn_foil/contexts/index_context'
-require 'sn_foil/searcher'
+require 'snfoil/searcher'
 require_relative '../shared_contexts'
 
 RSpec.describe SnFoil::Contexts::IndexContext do
   include_context 'with fake policy'
-  let(:including_class) { Class.new IndexContextClass }
+  let(:including_class) { IndexContextClass.clone }
 
   let(:instance) { including_class.new(entity) }
   let(:searcher) { TestSeacher }
@@ -15,6 +14,7 @@ RSpec.describe SnFoil::Contexts::IndexContext do
   let(:searcher_instance_double) { instance_double(searcher) }
   let(:results) { double }
   let(:params) { {} }
+  let(:canary) { Canary.new }
 
   before do
     including_class.model(model_double)
@@ -31,45 +31,9 @@ RSpec.describe SnFoil::Contexts::IndexContext do
     end
   end
 
-  describe 'self#index' do
-    let(:instance) { instance_double(including_class) }
-
-    before do
-      allow(including_class).to receive(:index).and_call_original
-      allow(including_class).to receive(:new).and_return(instance)
-      allow(instance).to receive(:index)
-    end
-
-    it 'instantiates a new instance of the class and calls index' do
-      including_class.index(params: params)
-      expect(including_class).to have_received(:new).once
-      expect(instance).to have_received(:index).once
-    end
-  end
-
-  describe '#searcher' do
-    before { including_class.searcher(searcher_double) }
-
-    it 'returns the class internal searcher class' do
-      expect(including_class.new.searcher).to eq(searcher_double)
-    end
-  end
-
   describe '#index' do
     before do
       including_class.searcher(searcher_double)
-      allow(instance).to receive(:setup_index).and_call_original
-    end
-
-    it 'calls #setup' do
-      allow(instance).to receive(:setup).and_call_original
-      instance.index(params: params)
-      expect(instance).to have_received(:setup).once
-    end
-
-    it 'calls #setup_index' do
-      instance.index(params: params)
-      expect(instance).to have_received(:setup_index)
     end
 
     context 'with options[:searcher]' do
@@ -83,7 +47,7 @@ RSpec.describe SnFoil::Contexts::IndexContext do
       end
 
       it 'uses the options searcher class' do
-        expect(instance.index(params: params, searcher: other_searcher_double)).to eq(other_results)
+        expect(instance.index(params: params, searcher: other_searcher_double)[:object]).to eq(other_results)
         expect(other_searcher_double).to have_received(:new).once
       end
 
@@ -97,7 +61,7 @@ RSpec.describe SnFoil::Contexts::IndexContext do
 
     context 'without options[:searcher]' do
       it 'uses the context\'s searcher class' do
-        expect(instance.index(params: params)).to eq(results)
+        expect(instance.index(params: params)[:object]).to eq(results)
         expect(searcher_double).to have_received(:new).once
       end
 
@@ -110,36 +74,13 @@ RSpec.describe SnFoil::Contexts::IndexContext do
     end
   end
 
-  context 'when hooks are provided' do
-    let(:canary) { Canary.new }
+  describe 'predefined hooks' do
+    before { including_class.searcher(searcher_double) }
 
-    before do
-      including_class.searcher(searcher_double)
-
-      # Setup Action Hooks
-      including_class.setup do |opts|
-        opts[:canary].sing(:setup)
-        opts
-      end
-      including_class.setup_index do |opts|
-        opts[:canary].sing(:setup_index)
-        opts
-      end
-    end
-
-    describe 'self#setup' do
-      it 'gets called first' do
-        instance.index(params: params, canary: canary)
-        expect(canary.song[0][:data]).to eq :setup
-      end
-    end
-
-    describe 'self#setup_index' do
-      it 'gets called after setup' do
-        instance.index(params: params, canary: canary)
-        expect(canary.song[0][:data]).to eq :setup
-        expect(canary.song[1][:data]).to eq :setup_index
-      end
+    it 'calls setup before setup_index' do
+      instance.index(params: {}, canary: canary)
+      index = canary.song.index { |s| s[:data] == :setup }
+      expect(canary.song[index + 1][:data]).to eq :setup_index
     end
   end
 end
@@ -150,4 +91,14 @@ end
 
 class IndexContextClass
   include SnFoil::Contexts::IndexContext
+
+  setup do |opts|
+    opts[:canary]&.sing(:setup)
+    opts
+  end
+
+  setup_index do |opts|
+    opts[:canary]&.sing(:setup_index)
+    opts
+  end
 end
