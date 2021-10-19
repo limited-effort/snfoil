@@ -19,22 +19,22 @@ require_relative './setup_context'
 require_relative './change_context'
 
 module SnFoil
-  module Contexts
-    module DestroyContext
+  module CRUD
+    module UpdateContext
       extend ActiveSupport::Concern
 
       included do
         include SetupContext
         include ChangeContext
 
-        action :destroy, with: :destroy_action
+        action :update, with: :update_action
 
-        setup_destroy { |options| run_interval(:setup, **options) }
-        setup_destroy { |options| run_interval(:setup_change, **options) }
-        before_destroy { |options| run_interval(:before_change, **options) }
-        after_destroy_success { |options| run_interval(:after_change_success, **options) }
-        after_destroy_failure { |options| run_interval(:after_change_failure, **options) }
-        after_destroy { |options| run_interval(:after_change, **options) }
+        setup_update { |options| run_interval(:setup, **options) }
+        setup_update { |options| run_interval(:setup_change, **options) }
+        before_update { |options| run_interval(:before_change, **options) }
+        after_update_success { |options| run_interval(:after_change_success, **options) }
+        after_update_failure { |options| run_interval(:after_change_failure, **options) }
+        after_update { |options| run_interval(:after_change, **options) }
 
         setup do |options|
           raise ArgumentError, 'one of the following keywords is required: id, object' unless options[:id] || options[:object]
@@ -42,15 +42,18 @@ module SnFoil
           options
         end
 
-        before_destroy do |options|
+        before_update do |options|
+          params = options.fetch(:params, {})
           options[:object] ||= scope.resolve.find(options[:id])
+
+          wrap_object(options[:object]).attributes = params
 
           options
         end
       end
 
-      def destroy_action(options)
-        wrap_object(options[:object]).destroy
+      def update_action(options)
+        wrap_object(options[:object]).save
       end
     end
   end

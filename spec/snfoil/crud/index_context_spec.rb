@@ -4,7 +4,7 @@ require 'spec_helper'
 require 'snfoil/searcher'
 require_relative '../shared_contexts'
 
-RSpec.describe SnFoil::Contexts::IndexContext do
+RSpec.describe SnFoil::CRUD::IndexContext do
   include_context 'with fake policy'
   let(:including_class) { IndexContextClass.clone }
 
@@ -90,7 +90,7 @@ class TestSeacher
 end
 
 class IndexContextClass
-  include SnFoil::Contexts::IndexContext
+  include SnFoil::CRUD::IndexContext
 
   setup do |opts|
     opts[:canary]&.sing(:setup)

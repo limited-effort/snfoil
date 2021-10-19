@@ -5,7 +5,7 @@ require 'spec_helper'
 
 require_relative '../shared_contexts'
 
-RSpec.describe SnFoil::Contexts::BuildContext do
+RSpec.describe SnFoil::CRUD::BuildContext do
   subject(:including_class) { BuildContextClass.clone }
 
   include_context 'with fake policy'
@@ -100,7 +100,7 @@ RSpec.describe SnFoil::Contexts::BuildContext do
 end
 
 class BuildContextClass
-  include SnFoil::Contexts::BuildContext
+  include SnFoil::CRUD::BuildContext
 
   setup do |opts|
     opts[:canary]&.sing(:setup)

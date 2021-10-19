@@ -3,7 +3,7 @@
 require 'spec_helper'
 require 'dry-struct'
 
-RSpec.describe SnFoil::Contexts::ChangeContext do
+RSpec.describe SnFoil::CRUD::ChangeContext do
   let(:including_class) { ChangeContextClass.clone }
 
   let(:permitted_params) { %i[first_name last_name] }
@@ -45,5 +45,5 @@ RSpec.describe SnFoil::Contexts::ChangeContext do
 end
 
 class ChangeContextClass
-  include SnFoil::Contexts::ChangeContext
+  include SnFoil::CRUD::ChangeContext
 end

@@ -30,7 +30,7 @@ Metrics/BlockLength:
 RSpec/FilePath:
   CustomTransform:
     SnFoil: snfoil
-    CRUDContext: crud_context
+    CRUD: crud
 
 RSpec/MultipleExpectations:
   Max: 5

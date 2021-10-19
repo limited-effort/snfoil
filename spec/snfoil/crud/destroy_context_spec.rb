@@ -4,7 +4,7 @@ require 'spec_helper'
 require_relative '../shared_contexts'
 require 'ostruct'
 
-RSpec.describe SnFoil::Contexts::DestroyContext do
+RSpec.describe SnFoil::CRUD::DestroyContext do
   include_context 'with fake policy'
   let(:including_class) { DestroyContextClass.clone }
 
@@ -85,7 +85,7 @@ RSpec.describe SnFoil::Contexts::DestroyContext do
 end
 
 class DestroyContextClass
-  include SnFoil::Contexts::DestroyContext
+  include SnFoil::CRUD::DestroyContext
 
   setup do |opts|
     opts[:canary]&.sing(:setup)

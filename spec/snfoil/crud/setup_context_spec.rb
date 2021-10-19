@@ -6,7 +6,7 @@ require 'spec_helper'
 
 require_relative '../shared_contexts'
 
-RSpec.describe SnFoil::Contexts::SetupContext do
+RSpec.describe SnFoil::CRUD::SetupContext do
   subject(:including_class) { SetupContextClass.clone }
 
   include_context 'with fake policy'
@@ -136,5 +136,5 @@ RSpec.describe SnFoil::Contexts::SetupContext do
 end
 
 class SetupContextClass
-  include SnFoil::Contexts::SetupContext
+  include SnFoil::CRUD::SetupContext
 end

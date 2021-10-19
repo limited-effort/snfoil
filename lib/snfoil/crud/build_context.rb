@@ -15,24 +15,35 @@
 # limitations under the License.
 
 require 'active_support/concern'
-require_relative 'contexts/build_context'
-require_relative 'contexts/index_context'
-require_relative 'contexts/show_context'
-require_relative 'contexts/create_context'
-require_relative 'contexts/update_context'
-require_relative 'contexts/destroy_context'
+require 'snfoil/context'
+require_relative './setup_context'
 
 module SnFoil
-  module CRUDContext
-    extend ActiveSupport::Concern
+  module CRUD
+    module BuildContext
+      extend ActiveSupport::Concern
 
-    included do
-      include Contexts::BuildContext
-      include Contexts::IndexContext
-      include Contexts::ShowContext
-      include Contexts::CreateContext
-      include Contexts::UpdateContext
-      include Contexts::DestroyContext
+      included do
+        include SetupContext
+
+        interval :setup_build
+
+        setup_build do |**options|
+          params = options.fetch(:params, {})
+          options[:object] ||= options.fetch(:model) { model }.new
+
+          wrap_object(options[:object]).attributes = params
+
+          options
+        end
+      end
+
+      def build(**options)
+        options[:action] = :build
+        options = run_interval(:setup, **options)
+        options = run_interval(:setup_build, **options)
+        options[:object]
+      end
     end
   end
 end

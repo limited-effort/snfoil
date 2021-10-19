@@ -3,7 +3,7 @@
 require 'spec_helper'
 require_relative '../shared_contexts'
 
-RSpec.describe SnFoil::Contexts::UpdateContext do
+RSpec.describe SnFoil::CRUD::UpdateContext do
   include_context 'with fake policy'
   let(:including_class) { UpdateContextClass.clone }
 
@@ -94,7 +94,7 @@ RSpec.describe SnFoil::Contexts::UpdateContext do
 end
 
 class UpdateContextClass
-  include SnFoil::Contexts::UpdateContext
+  include SnFoil::CRUD::UpdateContext
 
   setup do |opts|
     opts[:canary]&.sing(:setup)

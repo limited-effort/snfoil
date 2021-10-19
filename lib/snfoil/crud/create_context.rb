@@ -18,7 +18,7 @@ require 'active_support/concern'
 require_relative './change_context'
 
 module SnFoil
-  module Contexts
+  module CRUD
     module CreateContext
       extend ActiveSupport::Concern
 

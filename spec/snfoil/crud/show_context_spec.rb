@@ -3,7 +3,7 @@
 require 'spec_helper'
 require_relative '../shared_contexts'
 
-RSpec.describe SnFoil::Contexts::ShowContext do
+RSpec.describe SnFoil::CRUD::ShowContext do
   include_context 'with fake policy'
   let(:including_class) { ShowContextClass.clone }
 
@@ -72,5 +72,5 @@ RSpec.describe SnFoil::Contexts::ShowContext do
 end
 
 class ShowContextClass
-  include SnFoil::Contexts::ShowContext
+  include SnFoil::CRUD::ShowContext
 end

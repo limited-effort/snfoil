@@ -1,9 +1,8 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
-require 'snfoil/context'
 
-RSpec.describe SnFoil::CRUDContext do
+RSpec.describe SnFoil::CRUD::Context do
   let(:including_class) { Class.new ContextClass }
 
   it 'includes BuildContext' do
@@ -32,5 +31,5 @@ RSpec.describe SnFoil::CRUDContext do
 end
 
 class ContextClass
-  include SnFoil::CRUDContext
+  include SnFoil::CRUD::Context
 end

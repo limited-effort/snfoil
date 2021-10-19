@@ -4,7 +4,7 @@ require 'spec_helper'
 require_relative '../shared_contexts'
 require 'ostruct'
 
-RSpec.describe SnFoil::Contexts::CreateContext do
+RSpec.describe SnFoil::CRUD::CreateContext do
   include_context 'with fake policy'
   let(:including_class) { CreateContextClass.clone }
 
@@ -96,7 +96,7 @@ RSpec.describe SnFoil::Contexts::CreateContext do
 end
 
 class CreateContextClass
-  include SnFoil::Contexts::CreateContext
+  include SnFoil::CRUD::CreateContext
 
   setup do |opts|
     opts[:canary]&.sing(:setup)

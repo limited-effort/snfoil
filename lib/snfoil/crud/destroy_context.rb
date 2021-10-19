@@ -16,16 +16,25 @@
 
 require 'active_support/concern'
 require_relative './setup_context'
+require_relative './change_context'
 
 module SnFoil
-  module Contexts
-    module ShowContext
+  module CRUD
+    module DestroyContext
       extend ActiveSupport::Concern
 
       included do
         include SetupContext
+        include ChangeContext
 
-        action :show, with: :show_action
+        action :destroy, with: :destroy_action
+
+        setup_destroy { |options| run_interval(:setup, **options) }
+        setup_destroy { |options| run_interval(:setup_change, **options) }
+        before_destroy { |options| run_interval(:before_change, **options) }
+        after_destroy_success { |options| run_interval(:after_change_success, **options) }
+        after_destroy_failure { |options| run_interval(:after_change_failure, **options) }
+        after_destroy { |options| run_interval(:after_change, **options) }
 
         setup do |options|
           raise ArgumentError, 'one of the following keywords is required: id, object' unless options[:id] || options[:object]
@@ -33,19 +42,15 @@ module SnFoil
           options
         end
 
-        setup_show do |options|
-          run_interval(:setup, **options)
-        end
-
-        before_show do |**options|
+        before_destroy do |options|
           options[:object] ||= scope.resolve.find(options[:id])
 
           options
         end
       end
 
-      def show_action(options)
-        options[:object]
+      def destroy_action(options)
+        wrap_object(options[:object]).destroy
       end
     end
   end
