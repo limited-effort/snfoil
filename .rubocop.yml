@@ -25,6 +25,7 @@ Lint/AmbiguousBlockAssociation:
 Metrics/BlockLength:
   Exclude:
     - spec/**/*_spec.rb
+    - snfoil.gemspec
 
 # ================ RSPEC ================
 RSpec/FilePath:
