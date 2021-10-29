@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'snfoil/version'
+require_relative 'lib/snfoil/version'
 
 Gem::Specification.new do |spec|
   spec.name          = 'snfoil'

@@ -6,27 +6,27 @@ RSpec.describe SnFoil::CRUD::Context do
   let(:including_class) { Class.new ContextClass }
 
   it 'includes BuildContext' do
-    expect(including_class.ancestors).to include(SnFoil::Contexts::BuildContext)
+    expect(including_class.ancestors).to include(SnFoil::CRUD::BuildContext)
   end
 
   it 'includes IndexContext' do
-    expect(including_class.ancestors).to include(SnFoil::Contexts::IndexContext)
+    expect(including_class.ancestors).to include(SnFoil::CRUD::IndexContext)
   end
 
   it 'includes ShowContext' do
-    expect(including_class.ancestors).to include(SnFoil::Contexts::ShowContext)
+    expect(including_class.ancestors).to include(SnFoil::CRUD::ShowContext)
   end
 
   it 'includes CreateContext' do
-    expect(including_class.ancestors).to include(SnFoil::Contexts::CreateContext)
+    expect(including_class.ancestors).to include(SnFoil::CRUD::CreateContext)
   end
 
   it 'includes UpdateContext' do
-    expect(including_class.ancestors).to include(SnFoil::Contexts::UpdateContext)
+    expect(including_class.ancestors).to include(SnFoil::CRUD::UpdateContext)
   end
 
   it 'includes DestroyContext' do
-    expect(including_class.ancestors).to include(SnFoil::Contexts::DestroyContext)
+    expect(including_class.ancestors).to include(SnFoil::CRUD::DestroyContext)
   end
 end
 
