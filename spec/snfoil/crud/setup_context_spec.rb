@@ -15,7 +15,7 @@ RSpec.describe SnFoil::CRUD::SetupContext do
     before { including_class.model(model_double) }
 
     it 'sets the internal model class' do
-      expect(including_class.i_model).to eq(model_double)
+      expect(including_class.snfoil_model).to eq(model_double)
     end
   end
 
@@ -23,7 +23,7 @@ RSpec.describe SnFoil::CRUD::SetupContext do
     before { including_class.policy(FakePolicy) }
 
     it 'sets the internal model class' do
-      expect(including_class.i_policy).to eq(FakePolicy)
+      expect(including_class.snfoil_policy).to eq(FakePolicy)
     end
   end
 

@@ -37,23 +37,23 @@ module SnFoil
       end
 
       class_methods do
-        attr_reader :i_model, :i_policy
+        attr_reader :snfoil_model, :snfoil_policy
 
         def model(klass = nil)
-          @i_model = klass
+          @snfoil_model = klass
         end
 
         def policy(klass = nil)
-          @i_policy = klass
+          @snfoil_policy = klass
         end
       end
 
       def model
-        self.class.i_model
+        self.class.snfoil_model
       end
 
       def policy
-        self.class.i_policy
+        self.class.snfoil_policy
       end
 
       attr_reader :entity
