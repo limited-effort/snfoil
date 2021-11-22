@@ -8,7 +8,7 @@ RSpec.describe SnFoil::CRUD::CreateContext do
   include_context 'with fake policy'
   let(:including_class) { CreateContextClass.clone }
 
-  let(:instance) { including_class.new(entity) }
+  let(:instance) { including_class.new(entity: entity) }
   let(:entity) { double }
   let(:params) { {} }
   let(:canary) { Canary.new }

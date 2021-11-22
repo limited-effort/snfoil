@@ -7,7 +7,7 @@ RSpec.describe SnFoil::CRUD::UpdateContext do
   include_context 'with fake policy'
   let(:including_class) { UpdateContextClass.clone }
 
-  let(:instance) { including_class.new(entity) }
+  let(:instance) { including_class.new(entity: entity) }
   let(:params) { { first_name: 'John', last_name: 'Doe' } }
   let(:canary) { Canary.new }
 

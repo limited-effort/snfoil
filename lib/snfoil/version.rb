@@ -15,5 +15,5 @@
 # limitations under the License.
 
 module SnFoil
-  VERSION = '0.9.0'
+  VERSION = '0.10.0'
 end

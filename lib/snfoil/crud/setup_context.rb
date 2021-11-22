@@ -56,12 +56,6 @@ module SnFoil
         self.class.snfoil_policy
       end
 
-      attr_reader :entity
-
-      def initialize(entity = nil)
-        @entity = entity
-      end
-
       def scope(_object_class = nil, **options)
         "#{policy.name}::Scope".safe_constantize.new(wrap_object(model), entity, **options)
       end

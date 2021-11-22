@@ -44,8 +44,7 @@ RSpec.describe SnFoil::CRUD::SetupContext do
   end
 
   describe '#scope' do
-    let(:entity) { double }
-    let(:instance) { including_class.new(entity) }
+    let(:instance) { including_class.new(**{ entity: entity }) }
 
     before do
       including_class.model(model_double)

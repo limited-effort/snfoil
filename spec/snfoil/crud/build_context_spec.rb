@@ -10,7 +10,7 @@ RSpec.describe SnFoil::CRUD::BuildContext do
 
   include_context 'with fake policy'
 
-  let(:instance) { including_class.new(entity) }
+  let(:instance) { including_class.new(entity: entity) }
   let(:entity) { double }
   let(:arguments) { { canary: canary, params: params } }
   let(:params) { {} }

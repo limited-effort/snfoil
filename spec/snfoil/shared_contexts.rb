@@ -53,7 +53,7 @@ class FakeSuccessORMAdapter < SnFoil::Adapters::ORMs::BaseAdapter
     true
   end
 
-  def attributes=(**attributes)
+  def attributes=(attributes)
     __getobj__.class.new(**__getobj__.attributes.merge(attributes))
   end
 end

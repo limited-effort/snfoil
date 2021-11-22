@@ -17,12 +17,12 @@ Gem::Specification.new do |spec|
   spec.metadata['homepage_uri'] = spec.homepage
   spec.metadata['source_code_uri'] = spec.homepage
   spec.metadata['changelog_uri'] = 'https://github.com/limited-effort/snfoil/blob/main/CHANGELOG.md'
+  spec.metadata['rubygems_mfa_required'] = 'true'
 
   # Specify which files should be added to the gem when it is released.
   # The `git ls-files -z` loads the files in the RubyGem that have been added into git.
-  spec.files = Dir.chdir(File.expand_path(__dir__)) do
-    `git ls-files -z`.split("\x0").reject { |f| f.match(%r{\A(?:test|spec|features)/}) }
-  end
+  ignore_list = %r{\A(?:test/|spec/|bin/|features/|Rakefile|\.\w)}
+  Dir.chdir(File.expand_path(__dir__)) { `git ls-files -z`.split("\x0").reject { |f| f.match(ignore_list) } }
 
   spec.bindir        = 'exe'
   spec.executables   = spec.files.grep(%r{\Aexe/}) { |f| File.basename(f) }
@@ -31,9 +31,9 @@ Gem::Specification.new do |spec|
   spec.add_dependency 'activesupport', '>= 5.2.6'
   spec.add_dependency 'logger', '~> 1.0'
   spec.add_dependency 'pundit', '~> 2.0'
-  spec.add_dependency 'snfoil-context'
-  spec.add_dependency 'snfoil-policy'
-  spec.add_dependency 'snfoil-searcher'
+  spec.add_dependency 'snfoil-context', '~> 0.10'
+  spec.add_dependency 'snfoil-policy', '~> 0.10'
+  spec.add_dependency 'snfoil-searcher', '~> 0.10'
 
   spec.add_development_dependency 'bundler', '~> 2.0'
   spec.add_development_dependency 'dry-struct', '~> 1.0'
