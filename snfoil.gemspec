@@ -8,8 +8,8 @@ Gem::Specification.new do |spec|
   spec.authors     = ['Matthew Howes', 'Danny Murphy', 'Cliff Campbell']
   spec.email       = ['howeszy@gmail.com', 'dmurph24@gmail.com', 'cliffcampbell@hey.com']
 
-  spec.summary       = ''
-  spec.description   = ''
+  spec.summary       = 'A Toolbox of Context Behaviors'
+  spec.description   = 'A collection of SnFoil gems and additional helper classes'
   spec.homepage      = 'https://github.com/limited-effort/snfoil'
   spec.license       = 'Apache-2.0'
   spec.required_ruby_version = '>= 2.5.0'
@@ -22,7 +22,7 @@ Gem::Specification.new do |spec|
   # Specify which files should be added to the gem when it is released.
   # The `git ls-files -z` loads the files in the RubyGem that have been added into git.
   ignore_list = %r{\A(?:test/|spec/|bin/|features/|Rakefile|\.\w)}
-  Dir.chdir(File.expand_path(__dir__)) { `git ls-files -z`.split("\x0").reject { |f| f.match(ignore_list) } }
+  spec.files = Dir.chdir(File.expand_path(__dir__)) { `git ls-files -z`.split("\x0").reject { |f| f.match(ignore_list) } }
 
   spec.bindir        = 'exe'
   spec.executables   = spec.files.grep(%r{\Aexe/}) { |f| File.basename(f) }
