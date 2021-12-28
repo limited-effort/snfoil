@@ -42,10 +42,10 @@ module SnFoil
 
           options
         end
-      end
 
-      def show_action(options)
-        options[:object]
+        def show_action(options)
+          options[:object]
+        end
       end
     end
   end

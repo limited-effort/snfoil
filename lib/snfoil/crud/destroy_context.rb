@@ -47,10 +47,10 @@ module SnFoil
 
           options
         end
-      end
 
-      def destroy_action(options)
-        wrap_object(options[:object]).destroy
+        def destroy_action(options)
+          wrap_object(options[:object]).destroy
+        end
       end
     end
   end

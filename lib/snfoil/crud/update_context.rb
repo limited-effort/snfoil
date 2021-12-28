@@ -50,10 +50,10 @@ module SnFoil
 
           options
         end
-      end
 
-      def update_action(options)
-        wrap_object(options[:object]).save
+        def update_action(options)
+          wrap_object(options[:object]).save
+        end
       end
     end
   end

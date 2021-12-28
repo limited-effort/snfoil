@@ -36,13 +36,13 @@ module SnFoil
 
           options
         end
-      end
 
-      def build(**options)
-        options[:action] = :build
-        options = run_interval(:setup, **options)
-        options = run_interval(:setup_build, **options)
-        options[:object]
+        def build(**options)
+          options[:action] = :build
+          options = run_interval(:setup, **options)
+          options = run_interval(:setup_build, **options)
+          options[:object]
+        end
       end
     end
   end

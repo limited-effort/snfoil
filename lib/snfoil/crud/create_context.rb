@@ -35,10 +35,10 @@ module SnFoil
         after_create_success { |options| run_interval(:after_change_success, **options) }
         after_create_failure { |options| run_interval(:after_change_failure, **options) }
         after_create { |options| run_interval(:after_change, **options) }
-      end
 
-      def create_action(options)
-        wrap_object(options[:object]).save
+        def create_action(options)
+          wrap_object(options[:object]).save
+        end
       end
     end
   end

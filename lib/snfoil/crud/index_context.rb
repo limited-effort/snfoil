@@ -36,6 +36,10 @@ module SnFoil
 
           options
         end
+
+        def index_action(**options)
+          options[:object]
+        end
       end
 
       class_methods do
@@ -44,10 +48,6 @@ module SnFoil
         def searcher(klass = nil)
           @i_searcher = klass
         end
-      end
-
-      def index_action(**options)
-        options[:object]
       end
     end
   end
