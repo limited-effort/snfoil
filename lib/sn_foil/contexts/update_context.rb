@@ -19,7 +19,7 @@ module SnFoil
                     :i_after_update_success_hooks, :i_after_update_failure_hooks
 
         def update(id:, params:, entity: nil, **options)
-          new(entity).update(**options, id: id, params: params)
+          new(entity).update(id: id, **options, params: params)
         end
 
         def setup_update(method = nil, **options, &block)
@@ -117,11 +117,11 @@ module SnFoil
 
       def before_setup_update_object(**options)
         options = setup(**options)
-        options = setup_hooks.reduce(options) { |opts, hook| run_hook(hook, opts) }
+        options = setup_hooks.reduce(options) { |opts, hook| run_hook(hook, **opts) }
         options = setup_change(**options)
-        options = setup_change_hooks.reduce(options) { |opts, hook| run_hook(hook, opts) }
+        options = setup_change_hooks.reduce(options) { |opts, hook| run_hook(hook, **opts) }
         options = setup_update(**options)
-        setup_update_hooks.reduce(options) { |opts, hook| run_hook(hook, opts) }
+        setup_update_hooks.reduce(options) { |opts, hook| run_hook(hook, **opts) }
       end
 
       # This method is private to help protect the order of execution of hooks

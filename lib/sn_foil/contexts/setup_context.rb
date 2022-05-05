@@ -91,7 +91,7 @@ module SnFoil
 
         return send(hook[:method], **options) if hook[:method]
 
-        instance_exec options, &hook[:block]
+        instance_exec **options, &hook[:block]
       end
 
       def hook_valid?(hook, **options)

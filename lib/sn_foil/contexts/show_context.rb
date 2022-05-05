@@ -53,9 +53,9 @@ module SnFoil
 
       def before_setup_show(**options)
         options = setup(**options)
-        options = setup_hooks.reduce(options) { |opts, hook| run_hook(hook, opts) }
+        options = setup_hooks.reduce(options) { |opts, hook| run_hook(hook, **opts) }
         options = setup_show(**options)
-        setup_show_hooks.reduce(options) { |opts, hook| run_hook(hook, opts) }
+        setup_show_hooks.reduce(options) { |opts, hook| run_hook(hook, **opts) }
       end
     end
   end

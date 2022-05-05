@@ -113,11 +113,11 @@ module SnFoil
 
       def before_setup_destroy_object(**options)
         options = setup(**options)
-        options = setup_hooks.reduce(options) { |opts, hook| run_hook(hook, opts) }
+        options = setup_hooks.reduce(options) { |opts, hook| run_hook(hook, **opts) }
         options = setup_change(**options)
-        options = setup_change_hooks.reduce(options) { |opts, hook| run_hook(hook, opts) }
+        options = setup_change_hooks.reduce(options) { |opts, hook| run_hook(hook, **opts) }
         options = setup_destroy(**options)
-        setup_destroy_hooks.reduce(options) { |opts, hook| run_hook(hook, opts) }
+        setup_destroy_hooks.reduce(options) { |opts, hook| run_hook(hook, **opts) }
       end
 
       # This method is private to help protect the order of execution of hooks
