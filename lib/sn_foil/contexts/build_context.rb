@@ -59,9 +59,9 @@ module SnFoil
 
       def before_setup_build_object(**options)
         options = setup(**options)
-        options = setup_hooks.reduce(options) { |opts, hook| run_hook(hook, opts) }
+        options = setup_hooks.reduce(options) { |opts, hook| run_hook(hook, **opts) }
         options = setup_build(**options)
-        setup_build_hooks.reduce(options) { |opts, hook| run_hook(hook, opts) }
+        setup_build_hooks.reduce(options) { |opts, hook| run_hook(hook, **opts) }
       end
     end
   end
