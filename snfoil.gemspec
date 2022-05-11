@@ -12,7 +12,7 @@ Gem::Specification.new do |spec|
   spec.description   = 'A collection of SnFoil gems and additional helper classes'
   spec.homepage      = 'https://github.com/limited-effort/snfoil'
   spec.license       = 'Apache-2.0'
-  spec.required_ruby_version = '>= 2.5.0'
+  spec.required_ruby_version = '>= 2.7'
 
   spec.metadata['homepage_uri'] = spec.homepage
   spec.metadata['source_code_uri'] = spec.homepage
@@ -31,9 +31,9 @@ Gem::Specification.new do |spec|
   spec.add_dependency 'activesupport', '>= 5.2.6'
   spec.add_dependency 'logger', '~> 1.0'
   spec.add_dependency 'pundit', '~> 2.0'
-  spec.add_dependency 'snfoil-context', '~> 0.10'
-  spec.add_dependency 'snfoil-policy', '~> 0.10'
-  spec.add_dependency 'snfoil-searcher', '~> 0.10'
+  spec.add_dependency 'snfoil-context', '~> 1.0'
+  spec.add_dependency 'snfoil-policy', '~> 1.0'
+  spec.add_dependency 'snfoil-searcher', '~> 1.0'
 
   spec.add_development_dependency 'bundler', '~> 2.0'
   spec.add_development_dependency 'dry-struct', '~> 1.0'
