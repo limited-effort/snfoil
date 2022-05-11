@@ -9,7 +9,7 @@ RSpec.describe SnFoil::CRUD::ChangeContext do
   let(:permitted_params) { %i[first_name last_name] }
 
   before do
-    including_class.model(OpenStruct)
+    including_class.model(double)
   end
 
   describe '#self.params' do

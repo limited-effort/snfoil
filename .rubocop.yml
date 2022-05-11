@@ -12,11 +12,6 @@ AllCops:
 Style/Documentation:
   Enabled: false
 
-Style/OpenStructUse:
-  Exclude:
-    - spec/**/*.rb
-  
-
 # ================ LAYOUT ==============
 Layout/LineLength:
   Max: 150

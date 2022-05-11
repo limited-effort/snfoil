@@ -63,7 +63,7 @@ RSpec.describe SnFoil::CRUD::SetupContext do
   describe '#wrap_object' do
     context 'when adapter is configured' do
       it 'returns an orm wrapped object' do
-        expect(including_class.new.wrap_object(OpenStruct.new).class.ancestors)
+        expect(including_class.new.wrap_object(double).class.ancestors)
           .to include SnFoil::Adapters::ORMs::BaseAdapter
       end
     end
@@ -74,7 +74,7 @@ RSpec.describe SnFoil::CRUD::SetupContext do
       end
 
       it 'returns the object' do
-        expect(including_class.new.wrap_object(OpenStruct.new).class.ancestors)
+        expect(including_class.new.wrap_object(double).class.ancestors)
           .not_to include SnFoil::Adapters::ORMs::BaseAdapter
       end
     end
@@ -83,7 +83,7 @@ RSpec.describe SnFoil::CRUD::SetupContext do
   describe '#unwrap_object' do
     context 'when it is passed a wrapped object' do
       it 'returns the object' do
-        original_object = FakeSuccessORMAdapter.new(OpenStruct.new)
+        original_object = FakeSuccessORMAdapter.new(double)
         unwrapped_object = including_class.new.unwrap_object(original_object)
 
         expect(original_object.class.ancestors).to include SnFoil::Adapters::ORMs::BaseAdapter
@@ -93,7 +93,7 @@ RSpec.describe SnFoil::CRUD::SetupContext do
 
     context 'when it is passed a non wrapped object' do
       it 'returns the object' do
-        original_object = OpenStruct.new
+        original_object = double
         unwrapped_object = including_class.new.unwrap_object(original_object)
 
         expect(unwrapped_object.class.ancestors).to eq original_object.class.ancestors
@@ -104,11 +104,11 @@ RSpec.describe SnFoil::CRUD::SetupContext do
   describe '#adapter?' do
     context 'when an adapter is configured' do
       it 'returns true for a wrapped object' do
-        expect(including_class.new.adapter?(FakeSuccessORMAdapter.new(OpenStruct.new))).to be true
+        expect(including_class.new.adapter?(FakeSuccessORMAdapter.new(double))).to be true
       end
 
       it 'returns false for a non-wrapped object' do
-        expect(including_class.new.adapter?(OpenStruct.new)).to be false
+        expect(including_class.new.adapter?(double)).to be false
       end
     end
 
@@ -118,11 +118,11 @@ RSpec.describe SnFoil::CRUD::SetupContext do
       end
 
       it 'returns false for a wrapped object' do
-        expect(including_class.new.adapter?(FakeSuccessORMAdapter.new(OpenStruct.new))).to be false
+        expect(including_class.new.adapter?(FakeSuccessORMAdapter.new(double))).to be false
       end
 
       it 'returns false for a non-wrapped object' do
-        expect(including_class.new.adapter?(OpenStruct.new)).to be false
+        expect(including_class.new.adapter?(double)).to be false
       end
     end
   end

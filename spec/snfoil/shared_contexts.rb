@@ -4,7 +4,7 @@ require 'ostruct'
 require 'dry-struct'
 
 RSpec.shared_context('with fake entity') do
-  let(:entity) { OpenStruct.new }
+  let(:entity) { double }
 end
 
 RSpec.shared_context('with fake model') do
