@@ -36,7 +36,7 @@ module SnFoil
         after_destroy_failure { |options| run_interval(:after_change_failure, **options) }
         after_destroy { |options| run_interval(:after_change, **options) }
 
-        setup do |options|
+        setup_destroy do |options|
           raise ArgumentError, 'one of the following keywords is required: id, object' unless options[:id] || options[:object]
 
           options

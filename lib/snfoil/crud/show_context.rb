@@ -27,7 +27,7 @@ module SnFoil
 
         action :show, with: :show_action
 
-        setup do |options|
+        setup_show do |options|
           raise ArgumentError, 'one of the following keywords is required: id, object' unless options[:id] || options[:object]
 
           options
