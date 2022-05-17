@@ -30,7 +30,7 @@ module SnFoil
         setup_index { |options| run_interval(:setup, **options) }
 
         before_index do |options|
-          options[:object] ||= options.fetch(:searcher) { self.class.i_searcher }
+          options[:object] ||= options.fetch(:searcher) { self.class.snfoil_searcher }
                                       .new(scope: scope.resolve)
                                       .search(options.fetch(:params) { {} })
 
@@ -43,10 +43,10 @@ module SnFoil
       end
 
       class_methods do
-        attr_reader :i_searcher
+        attr_reader :snfoil_searcher
 
         def searcher(klass = nil)
-          @i_searcher = klass
+          @snfoil_searcher = klass
         end
       end
     end
