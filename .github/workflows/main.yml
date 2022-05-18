@@ -1,5 +1,8 @@
-name: Ruby CI
-on: [pull_request]
+name: build
+on:
+  push:
+    branches: [ main ]
+  pull_request:
 
 jobs:
   test:
@@ -8,7 +11,7 @@ jobs:
 
     strategy:
       matrix:
-        ruby-version: [2.7, 3.0, 3.1]
+        ruby-version: [2.7, '3.0', '3.1']
 
     steps:
       - uses: actions/checkout@v3
@@ -27,7 +30,7 @@ jobs:
 
     strategy:
       matrix:
-        ruby-version: [2.7, 3.0, 3.1]
+        ruby-version: [2.7, '3.0', '3.1']
 
     steps:
       - uses: actions/checkout@v3
@@ -40,4 +43,8 @@ jobs:
         run: bundle install
       - name: Run rubocop
         run: bundle exec rubocop
+      - name: Run fasterer
+        run: bundle exec fasterer
+      - name: Run bundle audit
+        run: bundle exec bundle audit check --update
 
