@@ -4,7 +4,7 @@
 
 SnFoil has been broken into smaller modules.  This gem serves to combine the most common gems in the SnFoil family and add some additional CRUD behavior.
 
-This gem only uses [contexts](https://github.com/limited-effort/snfoil-context), [policies](https://github.com/limited-effort/snfoil-policy), and [searchers](https://github.com/limited-effort/snfoil-searcher) but you can check out all module here:
+This gem only uses [contexts](https://github.com/limited-effort/snfoil-context), [policies](https://github.com/limited-effort/snfoil-policy), and [searchers](https://github.com/limited-effort/snfoil-searcher) but you can check out all our modules here:
 - [Contexts](https://github.com/limited-effort/snfoil-context) - Pipelined Business Logic
 - [Controllers](https://github.com/limited-effort/snfoil-controller) - Separate HTTP Logic
 - [Policies](https://github.com/limited-effort/snfoil-policy) - Authorization Checks
