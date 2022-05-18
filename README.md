@@ -1,8 +1,15 @@
-# Sn::Foil
+# SnFoil
 
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/sn_foil`. To experiment with that code, run `bin/console` for an interactive prompt.
+![build](https://github.com/limited-effort/snfoil/actions/workflows/main.yml/badge.svg) [![maintainability](https://api.codeclimate.com/v1/badges/86e0b2490738e140f2e2/maintainability)](https://codeclimate.com/github/limited-effort/snfoil/maintainability)
 
-TODO: Delete this and the text above, and describe your gem
+SnFoil has been broken into smaller modules.  This gem serves to combine the most common gems in the SnFoil family and add some additional CRUD behavior.
+
+This gem only uses [contexts](https://github.com/limited-effort/snfoil-context), [policies](https://github.com/limited-effort/snfoil-policy), and [searchers](https://github.com/limited-effort/snfoil-searcher) but you can check out all module here:
+- [Contexts](https://github.com/limited-effort/snfoil-context) - Pipelined Business Logic
+- [Controllers](https://github.com/limited-effort/snfoil-controller) - Separate HTTP Logic
+- [Policies](https://github.com/limited-effort/snfoil-policy) - Authorization Checks
+- [Rails](https://github.com/limited-effort/snfoil-rails) - Ruby on Rails Fluff
+- [Searchers](https://github.com/limited-effort/snfoil-searcher) - Intuitive Search Classes
 
 ## Installation
 
@@ -11,546 +18,87 @@ Add this line to your application's Gemfile:
 ```ruby
 gem 'snfoil'
 ```
-
-And then execute:
-
-    $ bundle
-
-Or install it yourself as:
-
-    $ gem install snfoil
-
 ## Usage
 
+### Contexts
 
-### Major Components
+There is where the magic of the original gem started.  The idea was to make a pipleline of logic that you could "plug" into certain intervals at.  You can find the [full documentation for contexts here](https://github.com/limited-effort/snfoil-context).
 
-#### Model
-#### Policy
-#### Searcher
+SnFoil adds six CRUD-centeric contexts prewired to get you off the ground as fast as possible. Each context sets up intervals for you, and generally follow the same pattern for calls: `setup`, `setup_<action>`, `before_<action>`, `after_<action>_success`, `after_<action>_failure`, and `after_<action>`.  You can find more information about each by clicking their respective links.
+- [SnFoil::CRUD::BuildContext](docs/build-context.md) - for setting up an object.
+- [SnFoil::CRUD::CreateContext](docs/create-context.md) - for setting up and saving an object to a data source.
+- [SnFoil::CRUD::DestroyContext](docs/destroy-context.md) - find and destroy an object
+- [SnFoil::CRUD::IndexContext](docs/index-context.md) - query for objects
+- [SnFoil::CRUD::ShowContext](docs/show-context.md) - find an object
+- [SnFoil::CRUD::UpdateContext](docs/update-context.md) find and update an object
 
-## Contexts
-Contexts are groupings of common actions that a certain entity can perform.
-
-### Data
-
-### Actions
-
-SnFoil Contexts handle basic CRUD through a few different actions
-
-<table>
-    <thead>
-        <th>Action</th>
-        <th>Description</th>
-    </thead>
-    <tbody>
-        <tr>
-            <td>Build</td>
-            <td>
-                The action on setting up a model but not persiting.
-                <div>
-                    <i>Author's note:</i> So far I have just been using this so factories in testing follow the same setup logic as a context would.
-                </div>
-            </td>
-        </tr>
-        <tr>
-            <td>Create</td>
-            <td>The action of setting up a model and persisting it.</td>
-        </tr>
-        <tr>
-            <td>Update</td>
-            <td>The action of finding a pre-existing model and updating the attributes.</td>
-        </tr>
-        <tr>
-            <td>Destroy</td>
-            <td>The action of finding a pre-existing model and destroying it.</td>
-        </tr>
-        <tr>
-            <td>Show</td>
-            <td>The action of finding a pre-existing model by an identifier.</td>
-        </tr>
-        <tr>
-            <td>Index</td>
-            <td>The action of finding a pre-existing models by using a searcher.</td>
-        </tr>
-    </tbody>
-</table>
-
-### Methods
-Methods allow users to create inheritable actions that occur in a specific order.  Methods will always run before their hook counterpart.  Since these are inheritable, you can chain needed actions all the way through the parent heirarchy by using the `super` keyword. 
-
-<strong>Important Note</strong> Methods <u>always</u> need to return the options hash at the end.
-
-<i>Author's opinion:</i> While simplier than hooks, they do not allow for as clean of a composition as hooks.
-
-#### Example
+You can pick and choose which features you want to use by including the specific file
 
 ```ruby
-# Call the webhooks for third party integrations
-# Commit business logic to internal process
-def after_create_success(**options)
-    options = super
+require 'snfoil/crud/index_context'
+require 'snfoil/crud/show_context'
 
-    call_webhook_for_model(options[:object])
-    finalize_business_logic(options[:object])
+class PeopleContext
+  include SnFoil::CRUD::IndexContext
+  include SnFoil::CRUD::ShowContext
 
-    options
-end
-
-# notify error tracker
-def after_create_error(**options)
-    options = super
-
-    notify_errors(options[:object].errors)
-
-    options
+  # hooks and methods here
 end
 ```
 
-### Hooks
-Hooks make it very easy to compose multiple actions that need to occur in a specific order.  You can have as many repeated hooks as you would like.  This makes defining single responsibility hooks very simple, and they will get called in the order they are defined.  The major downside of hooks are that they are currently not inheritable.
+Or you can add all them in one go with `SnFoil::CRUD::Context`.
 
-<strong>Important Note</strong> Hooks <u>always</u> need to return the options hash at the end.
-
-#### Example
-Lets take the Method example and make it into hooks instead.
 ```ruby
-# Call the webhooks for third party integrations
-after_create_success do |options|
-    call_webhook_for_model(options[:object])
-    options
-end
+require 'snfoil/crud/context'
 
-# Commit business logic to internal process
-after_create_success do |options|
-    finalize_business_logic(options[:object])
-    options
-end
+class PeopleContext
+  include SnFoil::CRUD::Context
 
-# notify error tracker
-after_create_error do |options|
-    notify_errors(options[:object].errors)
-    options
+  # hooks and methods here
 end
 ```
 
-<table>
-    <thead>
-        <th>Name</th>
-        <th>Timing</th>
-        <th>Description</th>
-    </thead>
-    <tbody>
-        <tr>
-            <td>setup</td>
-            <td>-Always at the beginning</td>
-            <td>Primarily used for basic setup logic that always needs to occur</td>
-        </tr>
-        <tr>
-            <td>setup_&lt;action&gt;</td>
-            <td>-Before the object has been found or created</td>
-            <td>Primarily used for basic setup logic that only needs to occur for certain actions</td>
-        </tr>
-        <tr>
-            <td>before_&lt;action&gt;</td>
-            <td>
-                <div>-After the object has been found or created</div>
-                <div>-Before the object has been persisted/altered</div>
-            </td>
-            <td></td>
-        </tr>
-        <tr>
-            <td>after_&lt;action&gt;_success</td>
-            <td>-After the object has been successfully been persisted/altered</td>
-            <td></td>
-        </tr>
-        <tr>
-            <td>after_&lt;action&gt;_failure</td>
-            <td>-After an error has occured persisting/altering the object</td>
-            <td></td>
-        <tr>
-            <td>after_&lt;action&gt;</td>
-            <td>-Always at the end</td>
-            <td></td>
-        </tr>
-        </tr>
-    </tbody>
-<table>
+### ORM Adapters
 
-### Call Order
+In order to be able to work with multiple data sources SnFoil allows you to create adapters for interacting with object. Adapters are just wrapper for your objects that add specific functionality needed by the base `SnFoil::CRUD` methods.  SnFoil handles the wrapping and unwrapping for you under the hood.
 
-The call order for actions is extremely important because SnFoil passes the options hash throughout the entire process.  So any data you may need down the call order can be added earlier in the stack.
+We created an adapter for `ActiveRecord` for you, but you can also create your own by inheriting from `SnFoil::Adapters::ORMs::BaseAdapter`.
 
-<table>
-    <thead>
-        <tr>
-            <th rowspan="2">Action</th>
-            <th colspan="2">Order</th>
-        </tr>
-        <tr>
-            <th>Type</th>
-            <th>Name</th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr>
-            <td rowspan="5">Build</td>
-        </tr>
-        <tr>
-            <td>Method</td>
-            <td>setup</td>
-        </tr>
-        <tr>
-            <td>Hooks</td>
-            <td>setup</td>
-        </tr>
-        <tr>
-            <td>Method</td>
-            <td>setup_build</td>
-        </tr>
-        <tr>
-            <td>Hooks</td>
-            <td>setup_build</td>
-        </tr>
-        <tr><td rowspan="25">Create</td></tr>
-        <tr>
-            <td>Method</td>
-            <td>setup</td>
-        </tr>
-        <tr>
-            <td>Hooks</td>
-            <td>setup</td>
-        </tr>
-        <tr>
-            <td>Method</td>
-            <td>setup_build</td>
-        </tr>
-        <tr>
-            <td>Hooks</td>
-            <td>setup_build</td>
-        </tr>
-        <tr>
-            <td>Method</td>
-            <td>setup_change</td>
-        </tr>
-        <tr>
-            <td>Hooks</td>
-            <td>setup_change</td>
-        </tr>
-        <tr>
-            <td>Method</td>
-            <td>setup_create</td>
-        </tr>
-        <tr>
-            <td>Hooks</td>
-            <td>setup_create</td>
-        </tr>
-        <tr>
-            <td>Method</td>
-            <td>before_change</td>
-        </tr>
-        <tr>
-            <td>Hooks</td>
-            <td>before_change</td>
-        </tr>
-        <tr>
-            <td>Method</td>
-            <td>before_create</td>
-        </tr>
-        <tr>
-            <td>Hooks</td>
-            <td>before_create</td>
-        </tr>
-        <tr>
-            <td>Method</td>
-            <td><i>*after_change_success</i</td>
-        </tr>
-        <tr>
-            <td>Hooks</td>
-            <td><i>*after_change_success</i</td>
-        </tr>
-        <tr>
-            <td>Method</td>
-            <td><i>*after_create_success</i</td>
-        </tr>
-        <tr>
-            <td>Hooks</td>
-            <td><i>*after_create_success</i</td>
-        </tr>
-        <tr>
-            <td>Method</td>
-            <td><i>*after_change_failure</i</td>
-        </tr>
-        <tr>
-            <td>Hooks</td>
-            <td><i>*after_change_failure</i</td>
-        </tr>
-        <tr>
-            <td>Method</td>
-            <td><i>*after_create_failure</i</td>
-        </tr>
-        <tr>
-            <td>Hooks</td>
-            <td><i>*after_create_failure</i</td>
-        </tr>
-        <tr>
-            <td>Method</td>
-            <td>after_change</td>
-        </tr>
-        <tr>
-            <td>Hooks</td>
-            <td>after_change</td>
-        </tr>
-        <tr>
-            <td>Method</td>
-            <td>after_create</td>
-        </tr>
-        <tr>
-            <td>Hooks</td>
-            <td>after_create</td>
-        </tr>
-        <tr><td rowspan="23">Update</td></tr>
-        <tr>
-            <td>Method</td>
-            <td>setup</td>
-        </tr>
-        <tr>
-            <td>Hooks</td>
-            <td>setup</td>
-        </tr>
-        <tr>
-            <td>Method</td>
-            <td>setup_change</td>
-        </tr>
-        <tr>
-            <td>Hooks</td>
-            <td>setup_change</td>
-        </tr>
-        <tr>
-            <td>Method</td>
-            <td>setup_update</td>
-        </tr>
-        <tr>
-            <td>Hooks</td>
-            <td>setup_update</td>
-        </tr>
-        <tr>
-            <td>Method</td>
-            <td>before_change</td>
-        </tr>
-        <tr>
-            <td>Hooks</td>
-            <td>before_change</td>
-        </tr>
-        <tr>
-            <td>Method</td>
-            <td>before_update</td>
-        </tr>
-        <tr>
-            <td>Hooks</td>
-            <td>before_update</td>
-        </tr>
-        <tr>
-            <td>Method</td>
-            <td><i>*after_change_success</i</td>
-        </tr>
-        <tr>
-            <td>Hooks</td>
-            <td><i>*after_change_success</i</td>
-        </tr>
-        <tr>
-            <td>Method</td>
-            <td><i>*after_update_success</i</td>
-        </tr>
-        <tr>
-            <td>Hooks</td>
-            <td><i>*after_update_success</i</td>
-        </tr>
-        <tr>
-            <td>Method</td>
-            <td><i>*after_change_failure</i</td>
-        </tr>
-        <tr>
-            <td>Hooks</td>
-            <td><i>*after_change_failure</i</td>
-        </tr>
-        <tr>
-            <td>Method</td>
-            <td><i>*after_update_failure</i</td>
-        </tr>
-        <tr>
-            <td>Hooks</td>
-            <td><i>*after_update_failure</i</td>
-        </tr>
-        <tr>
-            <td>Method</td>
-            <td>after_change</td>
-        </tr>
-        <tr>
-            <td>Hooks</td>
-            <td>after_change</td>
-        </tr>
-        <tr>
-            <td>Method</td>
-            <td>after_update</td>
-        </tr>
-        <tr>
-            <td>Hooks</td>
-            <td>after_update</td>
-        </tr>
-        <tr><td rowspan="23">Destroy</td></tr>
-        <tr>
-            <td>Method</td>
-            <td>setup</td>
-        </tr>
-        <tr>
-            <td>Hooks</td>
-            <td>setup</td>
-        </tr>
-        <tr>
-            <td>Method</td>
-            <td>setup_change</td>
-        </tr>
-        <tr>
-            <td>Hooks</td>
-            <td>setup_change</td>
-        </tr>
-        <tr>
-            <td>Method</td>
-            <td>setup_destroy</td>
-        </tr>
-        <tr>
-            <td>Hooks</td>
-            <td>setup_destroy</td>
-        </tr>
-        <tr>
-            <td>Method</td>
-            <td>before_change</td>
-        </tr>
-        <tr>
-            <td>Hooks</td>
-            <td>before_change</td>
-        </tr>
-        <tr>
-            <td>Method</td>
-            <td>before_destroy</td>
-        </tr>
-        <tr>
-            <td>Hooks</td>
-            <td>before_destroy</td>
-        </tr>
-        <tr>
-            <td>Method</td>
-            <td><i>*after_change_success</i</td>
-        </tr>
-        <tr>
-            <td>Hooks</td>
-            <td><i>*after_change_success</i</td>
-        </tr>
-        <tr>
-            <td>Method</td>
-            <td><i>*after_destroy_success</i</td>
-        </tr>
-        <tr>
-            <td>Hooks</td>
-            <td><i>*after_destroy_success</i</td>
-        </tr>
-        <tr>
-            <td>Method</td>
-            <td><i>*after_change_failure</i</td>
-        </tr>
-        <tr>
-            <td>Hooks</td>
-            <td><i>*after_change_failure</i</td>
-        </tr>
-        <tr>
-            <td>Method</td>
-            <td><i>*after_destroy_failure</i</td>
-        </tr>
-        <tr>
-            <td>Hooks</td>
-            <td><i>*after_destroy_failure</i</td>
-        </tr>
-        <tr>
-            <td>Method</td>
-            <td>after_change</td>
-        </tr>
-        <tr>
-            <td>Hooks</td>
-            <td>after_change</td>
-        </tr>
-        <tr>
-            <td>Method</td>
-            <td>after_destroy</td>
-        </tr>
-        <tr>
-            <td>Hooks</td>
-            <td>after_destroy</td>
-        </tr>
-        <tr>
-            <td rowspan="5">Show</td>
-        </tr>
-        <tr>
-            <td>Method</td>
-            <td>setup</td>
-        </tr>
-        <tr>
-            <td>Hooks</td>
-            <td>setup</td>
-        </tr>
-        <tr>
-            <td>Method</td>
-            <td>setup_show</td>
-        </tr>
-        <tr>
-            <td>Hooks</td>
-            <td>setup_show</td>
-        </tr>
-        <tr>
-            <td rowspan="5">Index</td>
-        </tr>
-        <tr>
-            <td>Method</td>
-            <td>setup</td>
-        </tr>
-        <tr>
-            <td>Hooks</td>
-            <td>setup</td>
-        </tr>
-        <tr>
-            <td>Method</td>
-            <td>setup_index</td>
-        </tr>
-        <tr>
-            <td>Hooks</td>
-            <td>setup_index</td>
-        </tr>
-    </tbody>
-<table>
+Just make sure your adapter defines the following methods:
+- `new` - method to create a new datasource object.  This should not commit to the data source
+- `all` - method to grab all of a type from the data source
+- `save` - method to commit an object to the data source
+- `destroy` - method to remove an object from the data source
+- `attributes=` - method for assigning a hash of attributes to the object
 
-<div>
-* only occurs depeding on the success or failure of the action
-</div>
+You can set your custom adapter by directly assigning it
 
-## Policies
+```ruby
+SnFoil.orm = CustomAdapter
+```
 
-## Searchers
+Or if you prefer an initializer style
 
+```ruby
+SnFoil.configure do |config|
+  config.orm = CustomAdapter
+end
+```
 
 ## Development
 
-After checking out the repo, run `bin/setup` to install dependencies. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
+After checking out the repo, run `bin/setup` to install dependencies. Then, run `rake spec` to run the tests. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
 
-To install this gem onto your local machine, run `bundle exec rake install`. To release a new version, update the version number in `version.rb`, and then run `bundle exec rake release`, which will create a git tag for the version, push git commits and tags, and push the `.gem` file to [rubygems.org](https://rubygems.org).
+To install this gem onto your local machine, run `bundle exec rake install`. To release a new version, update the version number in `version.rb`, and then run `bundle exec rake release`, which will create a git tag for the version, push git commits and the created tag, and push the `.gem` file to [rubygems.org](https://rubygems.org).
 
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/[USERNAME]/snfoil. This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [Contributor Covenant](http://contributor-covenant.org) code of conduct.
+Bug reports and pull requests are welcome on GitHub at https://github.com/limited-effort/snfoil. This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [code of conduct](https://github.com/limited-effort/snfoil/blob/main/CODE_OF_CONDUCT.md).
 
 ## License
 
-The gem is available as open source under the terms of the [MIT License](https://opensource.org/licenses/MIT).
+The gem is available as open source under the terms of the [Apache 2 License](https://opensource.org/licenses/Apache-2.0).
 
 ## Code of Conduct
 
-Everyone interacting in the Sn::Foil project’s codebases, issue trackers, chat rooms and mailing lists is expected to follow the [code of conduct](https://github.com/[USERNAME]/snfoil/blob/master/CODE_OF_CONDUCT.md).
+Everyone interacting in the Snfoil::Context project's codebases, issue trackers, chat rooms and mailing lists is expected to follow the [code of conduct](https://github.com/limited-effort/snfoil/blob/main/CODE_OF_CONDUCT.md).

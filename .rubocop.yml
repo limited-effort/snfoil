@@ -5,7 +5,7 @@ require:
 AllCops:
   NewCops: enable
   SuggestExtensions: false
-  TargetRubyVersion: 2.5.0
+  TargetRubyVersion: 2.7
 
 # ================ Style ===============
 # TODO: Activate later
@@ -25,8 +25,13 @@ Lint/AmbiguousBlockAssociation:
 Metrics/BlockLength:
   Exclude:
     - spec/**/*_spec.rb
+    - snfoil.gemspec
 
 # ================ RSPEC ================
+RSpec/FilePath:
+  CustomTransform:
+    SnFoil: snfoil
+    CRUD: crud
 
 RSpec/MultipleExpectations:
   Max: 5
@@ -36,3 +41,6 @@ RSpec/MultipleMemoizedHelpers:
 
 RSpec/NestedGroups:
   Max: 5
+
+RSpec/SubjectStub:
+  Enabled: false

@@ -6,6 +6,15 @@
 /pkg/
 /spec/reports/
 /tmp/
-/coverage/
-*.gem
+
+# rspec failure tracking
+.rspec_status
+
+# GEMFILE
 Gemfile.lock
+
+# GEM
+/*.gem
+
+# MAC
+.DS_Store
