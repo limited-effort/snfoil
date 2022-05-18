@@ -30,9 +30,9 @@ module SnFoil
         interval :setup
 
         authorize do |options|
-          options.fetch(:policy, policy)
+          options.fetch(:policy) { policy }
                  .new(entity, options[:object], **options)
-                 .send(options.fetch(:authorize, "#{options[:action]}?"))
+                 .send(options.fetch(:authorize) { "#{options[:action]}?" })
         end
       end
 

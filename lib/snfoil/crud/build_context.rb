@@ -29,7 +29,7 @@ module SnFoil
         interval :setup_build
 
         setup_build do |**options|
-          params = options.fetch(:params, {})
+          params = options.fetch(:params) { {} }
           options[:object] ||= options.fetch(:model) { model }.new
 
           wrap_object(options[:object]).attributes = params

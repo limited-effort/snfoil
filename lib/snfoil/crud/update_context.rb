@@ -43,7 +43,7 @@ module SnFoil
         end
 
         before_update do |options|
-          params = options.fetch(:params, {})
+          params = options.fetch(:params) { {} }
           options[:object] ||= scope.resolve.find(options[:id])
 
           wrap_object(options[:object]).attributes = params
