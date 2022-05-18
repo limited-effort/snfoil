@@ -37,7 +37,11 @@ module SnFoil
       end
 
       class_methods do
-        attr_reader :snfoil_model, :snfoil_policy
+        attr_reader :snfoil_model, :snfoil_policy, :snfoil_searcher
+
+        def searcher(klass = nil)
+          @snfoil_searcher = klass
+        end
 
         def model(klass = nil)
           @snfoil_model = klass

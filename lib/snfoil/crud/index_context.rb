@@ -41,14 +41,6 @@ module SnFoil
           options[:object]
         end
       end
-
-      class_methods do
-        attr_reader :snfoil_searcher
-
-        def searcher(klass = nil)
-          @snfoil_searcher = klass
-        end
-      end
     end
   end
 end

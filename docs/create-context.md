@@ -8,6 +8,21 @@ Create does the following:
 - Assigns attributes
 - Saves Object
 
+##### Example
+
+```ruby
+class PeopleContext
+  include SnFoil::CRUD::CreateContext
+
+  model Person
+end
+```
+#### Required Class Definitions
+
+- Model
+
+### Primary Action
+Saves the model.
 ### Intervals (in order)
 
 <table>
@@ -20,19 +35,19 @@ Create does the following:
   <tbody>
     <tr>
       <td>setup</td>
-      <td></td>
+      <td>Shared by all CRUD actions</td>
       <td></td>
     </tr>
     <tr>
       <td>setup_build</td>
-      <td></td>
+      <td>Shared by Build and Create actions</td>
       <td>
         Creates a new model, Assigns attributes
       </td>
     </tr>
     <tr>
       <td>setup_change</td>
-      <td></td>
+      <td>Shared by Create, Update, and Destroy actions</td>
       <td></td>
     </tr>
     <tr>
@@ -42,7 +57,7 @@ Create does the following:
     </tr>
     <tr>
       <td>before_change</td>
-      <td></td>
+      <td>Shared by Create, Update, and Destroy actions</td>
       <td></td>
     </tr>
     <tr>
@@ -52,7 +67,7 @@ Create does the following:
     </tr>
     <tr>
       <td>after_change_success</td>
-      <td></td>
+      <td>Shared by Create, Update, and Destroy actions</td>
       <td></td>
     </tr>
     <tr>
@@ -62,7 +77,7 @@ Create does the following:
     </tr>
     <tr>
       <td>after_change_failure</td>
-      <td></td>
+      <td>Shared by Create, Update, and Destroy actions</td>
       <td></td>
     </tr>
     <tr>
@@ -72,7 +87,7 @@ Create does the following:
     </tr>
     <tr>
       <td>after_change</td>
-      <td></td>
+      <td>Shared by Create, Update, and Destroy actions</td>
       <td></td>
     </tr>
     <tr>

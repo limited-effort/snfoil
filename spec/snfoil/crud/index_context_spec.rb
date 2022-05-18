@@ -27,7 +27,7 @@ RSpec.describe SnFoil::CRUD::IndexContext do
     before { including_class.searcher(searcher_double) }
 
     it 'sets the internal searcher class' do
-      expect(including_class.i_searcher).to eq(searcher_double)
+      expect(including_class.snfoil_searcher).to eq(searcher_double)
     end
   end
 

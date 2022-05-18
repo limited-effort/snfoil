@@ -9,6 +9,20 @@ Build does the following:
 
 Since build's usage is pretty straight forward it only adds a single interval for you to hook into.
 
+##### Example
+
+```ruby
+class PeopleContext
+  include SnFoil::CRUD::BuildContext
+
+  model Person
+end
+```
+### Required Class Definitions
+- Model
+  
+### Primary Action
+Does nothing
 ### Intervals (in order)
 
 <table>
@@ -21,12 +35,12 @@ Since build's usage is pretty straight forward it only adds a single interval fo
   <tbody>
     <tr>
       <td>setup</td>
-      <td></td>
+      <td>Shared by all CRUD actions</td>
       <td></td>
     </tr>
     <tr>
       <td>setup_build</td>
-      <td></td>
+      <td>Shared by Build and Create actions</td>
       <td>
         Creates a new model object, Assigns Attributes
       </td>

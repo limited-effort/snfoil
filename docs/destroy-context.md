@@ -7,6 +7,24 @@ Destroy does the following:
 - Find a model
 - Destroy the model
 
+##### Example
+
+```ruby
+class PeopleContext
+  include SnFoil::CRUD::DestroyContext
+
+  searcher PeopleSearcher
+  model Person
+end
+```
+
+### Required Class Definitions
+
+- Searcher
+- Model
+
+### Primary Action
+Destroys the model.
 ### Intervals (in order)
 
 <table>
@@ -19,12 +37,12 @@ Destroy does the following:
   <tbody>
     <tr>
       <td>setup</td>
-      <td></td>
+      <td>Shared by all CRUD actions</td>
       <td></td>
     </tr>
     <tr>
       <td>setup_change</td>
-      <td></td>
+      <td>Shared by Create, Update, and Destroy actions</td>
       <td></td>
     </tr>
     <tr>
@@ -34,7 +52,7 @@ Destroy does the following:
     </tr>
     <tr>
       <td>before_change</td>
-      <td></td>
+      <td>Shared by Create, Update, and Destroy actions</td>
       <td></td>
     </tr>
     <tr>
@@ -44,7 +62,7 @@ Destroy does the following:
     </tr>
     <tr>
       <td>after_change_success</td>
-      <td></td>
+      <td>Shared by Create, Update, and Destroy actions</td>
       <td></td>
     </tr>
     <tr>
@@ -54,7 +72,7 @@ Destroy does the following:
     </tr>
     <tr>
       <td>after_change_failure</td>
-      <td></td>
+      <td>Shared by Create, Update, and Destroy actions</td>
       <td></td>
     </tr>
     <tr>
@@ -64,7 +82,7 @@ Destroy does the following:
     </tr>
     <tr>
       <td>after_change</td>
-      <td></td>
+      <td>Shared by Create, Update, and Destroy actions</td>
       <td></td>
     </tr>
     <tr>

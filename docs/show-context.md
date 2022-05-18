@@ -6,6 +6,25 @@ Show does the following:
 
 - Finds the model
 
+##### Example
+
+```ruby
+class PeopleContext
+  include SnFoil::CRUD::ShowContext
+
+  searcher PeopleSearcher
+  model Person
+end
+```
+
+### Required Class Definitions
+
+- Searcher
+- Model
+
+### Primary Action
+Does nothing
+
 ### Intervals (in order)
 
 <table>
@@ -23,7 +42,7 @@ Show does the following:
     </tr>
     <tr>
       <td>setup_show</td>
-      <td></td>
+      <td>Shared by all CRUD actions</td>
       <td></td>
     </tr>
     <tr>
