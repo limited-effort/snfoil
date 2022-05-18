@@ -67,7 +67,7 @@ Any time a model is fetched, that process goes through a searcher.  This ensures
 class PeopleContext
   include SnFoil::CRUD::Context
 
-  model PeopleSearcher
+  searcher PeopleSearcher
 end
 ```
 
@@ -84,7 +84,7 @@ Scopes are definition of data that an entity/user is allowed to access.  While t
 class PeopleContext
   include SnFoil::CRUD::Context
 
-  model PersonPolicy
+  policy PersonPolicy
 end
 ```
 
