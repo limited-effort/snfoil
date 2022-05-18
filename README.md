@@ -63,6 +63,14 @@ Each of the CRUD contexts allows a Searcher, Policy, and Model to be added to th
 #### Searchers
 Any time a model is fetched, that process goes through a searcher.  This ensures that authorization logic is always followed - lowering the likelyhood of entity/user getting access to a model they shouldn't
 
+```ruby
+class PeopleContext
+  include SnFoil::CRUD::Context
+
+  model PeopleSearcher
+end
+```
+
 #### Policies
 Policies serve two purposes:
 - Authorization
@@ -71,7 +79,26 @@ Policies serve two purposes:
 Authorization is pretty self explainatory.  It is the logic of whether or not an entity is allowed to perform an action.
 
 Scopes are definition of data that an entity/user is allowed to access.  While they are not required for SnFoil::Policies, they are required for SnFoil's CRUD helpers.
+
+```ruby
+class PeopleContext
+  include SnFoil::CRUD::Context
+
+  model PersonPolicy
+end
+```
+
 #### Models
+
+Models are just the entity that the primary action of the CRUD context operates on.  Simply put, its the Model.
+
+```ruby
+class PeopleContext
+  include SnFoil::CRUD::Context
+
+  model Person
+end
+```
 
 ### ORM Adapters
 
