@@ -14,6 +14,7 @@ class PeopleContext
   include SnFoil::CRUD::DestroyContext
 
   searcher PeopleSearcher
+  policy PersonPolicy
   model Person
 end
 ```
@@ -21,6 +22,7 @@ end
 ### Required Class Definitions
 
 - Searcher
+- Policy
 - Model
 
 ### Primary Action

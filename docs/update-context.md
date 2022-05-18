@@ -15,6 +15,7 @@ class PeopleContext
   include SnFoil::CRUD::UpdateContext
 
   searcher PeopleSearcher
+  policy PersonPolicy
   model Person
 end
 ```
@@ -22,6 +23,7 @@ end
 ### Required Class Definitions
 
 - Searcher
+- Policy
 - Model
 
 ### Primary Action

@@ -14,11 +14,13 @@ Create does the following:
 class PeopleContext
   include SnFoil::CRUD::CreateContext
 
+  policy PersonPolicy
   model Person
 end
 ```
 #### Required Class Definitions
 
+- Policy
 - Model
 
 ### Primary Action

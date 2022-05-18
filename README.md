@@ -58,6 +58,21 @@ class PeopleContext
 end
 ```
 
+Each of the CRUD contexts allows a Searcher, Policy, and Model to be added to the class.  These are there so each function of the CRUD context can proceed without a lot of bootstrap code.
+
+#### Searchers
+Any time a model is fetched, that process goes through a searcher.  This ensures that authorization logic is always followed - lowering the likelyhood of entity/user getting access to a model they shouldn't
+
+#### Policies
+Policies serve two purposes:
+- Authorization
+- Scopes
+
+Authorization is pretty self explainatory.  It is the logic of whether or not an entity is allowed to perform an action.
+
+Scopes are definition of data that an entity/user is allowed to access.  While they are not required for SnFoil::Policies, they are required for SnFoil's CRUD helpers.
+#### Models
+
 ### ORM Adapters
 
 In order to be able to work with multiple data sources SnFoil allows you to create adapters for interacting with object. Adapters are just wrapper for your objects that add specific functionality needed by the base `SnFoil::CRUD` methods.  SnFoil handles the wrapping and unwrapping for you under the hood.
