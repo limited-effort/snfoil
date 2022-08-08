@@ -5,7 +5,7 @@ require:
 AllCops:
   NewCops: enable
   SuggestExtensions: false
-  TargetRubyVersion: 2.7
+  TargetRubyVersion: 2.6
 
 # ================ Style ===============
 # TODO: Activate later
