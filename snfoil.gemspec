@@ -12,7 +12,7 @@ Gem::Specification.new do |spec|
   spec.description   = 'A collection of SnFoil gems and additional helper classes'
   spec.homepage      = 'https://github.com/limited-effort/snfoil'
   spec.license       = 'Apache-2.0'
-  spec.required_ruby_version = '>= 2.7'
+  spec.required_ruby_version = '>= 2.6'
 
   spec.metadata['homepage_uri'] = spec.homepage
   spec.metadata['source_code_uri'] = spec.homepage
