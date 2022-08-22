@@ -33,7 +33,7 @@ module SnFoil
           next options if options[:object]
 
           options[:object] ||= if options[:id]
-                                 scope.resolve.find(options[:id])
+                                 options.fetch(:scope) { scope.resolve }.find(options[:id])
                                else
                                  options.fetch(:model) { model }.new
                                end

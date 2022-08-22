@@ -29,26 +29,26 @@ module SnFoil
 
         action :destroy, with: :destroy_action
 
-        setup_destroy { |options| run_interval(:setup, **options) }
-        setup_destroy { |options| run_interval(:setup_change, **options) }
-        before_destroy { |options| run_interval(:before_change, **options) }
-        after_destroy_success { |options| run_interval(:after_change_success, **options) }
-        after_destroy_failure { |options| run_interval(:after_change_failure, **options) }
-        after_destroy { |options| run_interval(:after_change, **options) }
+        setup_destroy { |**options| run_interval(:setup, **options) }
+        setup_destroy { |**options| run_interval(:setup_change, **options) }
+        before_destroy { |**options| run_interval(:before_change, **options) }
+        after_destroy_success { |**options| run_interval(:after_change_success, **options) }
+        after_destroy_failure { |**options| run_interval(:after_change_failure, **options) }
+        after_destroy { |**options| run_interval(:after_change, **options) }
 
-        setup_destroy do |options|
+        setup_destroy do |**options|
           raise ArgumentError, 'one of the following keywords is required: id, object' unless options[:id] || options[:object]
 
           options
         end
 
-        before_change do |options|
-          options[:object] ||= scope.resolve.find(options[:id])
+        before_change do |**options|
+          options[:object] ||= options.fetch(:scope) { scope.resolve }.find(options[:id])
 
           options
         end
 
-        def destroy_action(options)
+        def destroy_action(**options)
           wrap_object(options[:object]).destroy
         end
       end
