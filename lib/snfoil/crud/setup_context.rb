@@ -63,8 +63,8 @@ module SnFoil
         self.class.snfoil_policy
       end
 
-      def scope(_object_class = nil)
-        "#{policy.name}::Scope".safe_constantize.new(wrap_object(model), entity)
+      def scope
+        "#{policy.name}::Scope".safe_constantize.new(entity, wrap_object(model))
       end
 
       def wrap_object(object)
