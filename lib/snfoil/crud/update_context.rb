@@ -29,6 +29,12 @@ module SnFoil
 
         action :update, with: :update_action
 
+        setup_update do |**options|
+          raise ArgumentError, 'one of the following keywords is required: id, object' unless options[:id] || options[:object]
+
+          options
+        end
+
         setup_update { |**options| run_interval(:setup, **options) }
         setup_update { |**options| run_interval(:setup_build, **options) }
         setup_update { |**options| run_interval(:setup_change, **options) }
@@ -37,12 +43,6 @@ module SnFoil
         after_update_success { |**options| run_interval(:after_change_success, **options) }
         after_update_failure { |**options| run_interval(:after_change_failure, **options) }
         after_update { |**options| run_interval(:after_change, **options) }
-
-        setup_update do |**options|
-          raise ArgumentError, 'one of the following keywords is required: id, object' unless options[:id] || options[:object]
-
-          options
-        end
 
         def update_action(**options)
           wrap_object(options[:object]).save

@@ -32,7 +32,7 @@ Gem::Specification.new do |spec|
   spec.add_dependency 'logger', '~> 1.0'
   spec.add_dependency 'pundit', '~> 2.0'
   spec.add_dependency 'snfoil-context', '>= 1.0.1', '< 2.0'
-  spec.add_dependency 'snfoil-policy', '>= 1.0.1', '< 2.0'
+  spec.add_dependency 'snfoil-policy', '>= 1.1.0', '< 2.0'
   spec.add_dependency 'snfoil-searcher', '>= 1.0.1', '< 2.0'
 
   spec.add_development_dependency 'bundle-audit', '~> 0.1.0'

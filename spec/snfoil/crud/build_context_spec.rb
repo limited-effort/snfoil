@@ -46,7 +46,7 @@ RSpec.describe SnFoil::CRUD::BuildContext do
     end
 
     it 'returns the built object' do
-      expect(instance.build(**arguments)).to eq model_instance_double
+      expect(instance.build(**arguments)[:object]).to eq model_instance_double
     end
   end
 
@@ -55,7 +55,7 @@ RSpec.describe SnFoil::CRUD::BuildContext do
       it 'directly returns any object provided in the options' do
         object = double
         allow(object).to receive(:attributes).and_return({})
-        expect(instance.build(**arguments, object: object)).to eq object
+        expect(instance.build(**arguments, object: object)[:object]).to eq object
       end
     end
 
@@ -68,14 +68,14 @@ RSpec.describe SnFoil::CRUD::BuildContext do
       end
 
       it 'instantiates an object using the options model class' do
-        expect(instance.build(**arguments, model: other_model_double)).to eq other_model_instance_double
+        expect(instance.build(**arguments, model: other_model_double)[:object]).to eq other_model_instance_double
         expect(other_model_double).to have_received(:new).exactly(3).times
       end
     end
 
     context 'without options[:model]' do
       it 'instantiates an object using the contexts model class' do
-        expect(instance.build(**arguments)).to eq(model_instance_double)
+        expect(instance.build(**arguments)[:object]).to eq(model_instance_double)
         expect(model_double).to have_received(:new).twice
       end
     end
