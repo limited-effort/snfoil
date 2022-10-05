@@ -28,15 +28,16 @@ module SnFoil
 
         action :create, with: :create_action
 
-        setup_create { |options| run_interval(:setup, **options) }
-        setup_create { |options| run_interval(:setup_build, **options) }
-        setup_create { |options| run_interval(:setup_change, **options) }
-        before_create { |options| run_interval(:before_change, **options) }
-        after_create_success { |options| run_interval(:after_change_success, **options) }
-        after_create_failure { |options| run_interval(:after_change_failure, **options) }
-        after_create { |options| run_interval(:after_change, **options) }
+        setup_create { |**options| run_interval(:setup, **options) }
+        setup_create { |**options| run_interval(:setup_build, **options) }
+        setup_create { |**options| run_interval(:setup_change, **options) }
+        before_create { |**options| run_interval(:before_build, **options) }
+        before_create { |**options| run_interval(:before_change, **options) }
+        after_create_success { |**options| run_interval(:after_change_success, **options) }
+        after_create_failure { |**options| run_interval(:after_change_failure, **options) }
+        after_create { |**options| run_interval(:after_change, **options) }
 
-        def create_action(options)
+        def create_action(**options)
           wrap_object(options[:object]).save
         end
       end

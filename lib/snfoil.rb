@@ -37,6 +37,7 @@ require_relative 'snfoil/adapters/orms/active_record'
 
 module SnFoil
   class Error < StandardError; end
+  class AuthorizationError < SnFoil::Error; end
 
   mattr_accessor :orm, default: 'active_record'
   mattr_writer :logger

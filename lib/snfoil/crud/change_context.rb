@@ -27,7 +27,7 @@ module SnFoil
 
         intervals :setup_change, :before_change, :after_change, :after_change_success, :after_change_failure
 
-        setup_change do |options|
+        setup_change do |**options|
           options[:pre_change_context_params] ||= options[:params]
           options[:params] = options[:params].select { |params| self.class.i_params.include?(params) } if self.class.i_params
 

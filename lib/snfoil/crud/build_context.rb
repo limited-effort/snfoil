@@ -27,12 +27,22 @@ module SnFoil
         include SetupContext
 
         interval :setup_build
+        interval :before_build
 
         setup_build do |**options|
-          params = options.fetch(:params) { {} }
-          options[:object] ||= options.fetch(:model) { model }.new
+          next options if options[:object]
 
-          wrap_object(options[:object]).attributes = params
+          options[:object] ||= if options[:id]
+                                 options.fetch(:scope) { scope.resolve }.find(options[:id])
+                               else
+                                 options.fetch(:model) { model }.new
+                               end
+
+          options
+        end
+
+        before_build do |**options|
+          wrap_object(options[:object]).attributes = options.fetch(:params) { {} }
 
           options
         end
@@ -41,7 +51,7 @@ module SnFoil
           options[:action] = :build
           options = run_interval(:setup, **options)
           options = run_interval(:setup_build, **options)
-          options[:object]
+          run_interval(:before_build, **options)
         end
       end
     end

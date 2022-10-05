@@ -29,10 +29,13 @@ module SnFoil
 
         interval :setup
 
-        authorize do |options|
-          options.fetch(:policy) { policy }
-                 .new(entity, options[:object], **options)
-                 .send(options.fetch(:authorize) { "#{options[:action]}?" })
+        authorize do |**options|
+          authentication_policy = options.fetch(:policy) { policy }
+          authentication_action = options.fetch(:authorize) { "#{options[:action]}?" }
+          next true if authentication_policy.new(entity, options[:object], **options).send(authentication_action)
+
+          raise SnFoil::AuthorizationError,
+                "#{entity ? entity&.class : 'Unknown'}: #{entity&.id} is not allowed to #{authentication_action} on #{authentication_policy}"
         end
       end
 
@@ -60,8 +63,8 @@ module SnFoil
         self.class.snfoil_policy
       end
 
-      def scope(_object_class = nil)
-        "#{policy.name}::Scope".safe_constantize.new(wrap_object(model), entity)
+      def scope
+        "#{policy.name}::Scope".safe_constantize.new(entity, wrap_object(model))
       end
 
       def wrap_object(object)

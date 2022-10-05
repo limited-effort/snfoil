@@ -27,23 +27,23 @@ module SnFoil
 
         action :show, with: :show_action
 
-        setup_show do |options|
+        setup_show do |**options|
           raise ArgumentError, 'one of the following keywords is required: id, object' unless options[:id] || options[:object]
 
           options
         end
 
-        setup_show do |options|
+        setup_show do |**options|
           run_interval(:setup, **options)
         end
 
         before_show do |**options|
-          options[:object] ||= scope.resolve.find(options[:id])
+          options[:object] ||= options.fetch(:scope) { scope.resolve }.find(options[:id])
 
           options
         end
 
-        def show_action(options)
+        def show_action(**options)
           options[:object]
         end
       end

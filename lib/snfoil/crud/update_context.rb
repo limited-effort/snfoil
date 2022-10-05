@@ -24,34 +24,27 @@ module SnFoil
       extend ActiveSupport::Concern
 
       included do
-        include SetupContext
+        include BuildContext
         include ChangeContext
 
         action :update, with: :update_action
 
-        setup_update { |options| run_interval(:setup, **options) }
-        setup_update { |options| run_interval(:setup_change, **options) }
-        before_update { |options| run_interval(:before_change, **options) }
-        after_update_success { |options| run_interval(:after_change_success, **options) }
-        after_update_failure { |options| run_interval(:after_change_failure, **options) }
-        after_update { |options| run_interval(:after_change, **options) }
-
-        setup_update do |options|
+        setup_update do |**options|
           raise ArgumentError, 'one of the following keywords is required: id, object' unless options[:id] || options[:object]
 
           options
         end
 
-        before_update do |options|
-          params = options.fetch(:params) { {} }
-          options[:object] ||= scope.resolve.find(options[:id])
+        setup_update { |**options| run_interval(:setup, **options) }
+        setup_update { |**options| run_interval(:setup_build, **options) }
+        setup_update { |**options| run_interval(:setup_change, **options) }
+        before_update { |**options| run_interval(:before_build, **options) }
+        before_update { |**options| run_interval(:before_change, **options) }
+        after_update_success { |**options| run_interval(:after_change_success, **options) }
+        after_update_failure { |**options| run_interval(:after_change_failure, **options) }
+        after_update { |**options| run_interval(:after_change, **options) }
 
-          wrap_object(options[:object]).attributes = params
-
-          options
-        end
-
-        def update_action(options)
+        def update_action(**options)
           wrap_object(options[:object]).save
         end
       end
