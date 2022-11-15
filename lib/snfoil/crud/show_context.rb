@@ -37,7 +37,7 @@ module SnFoil
           run_interval(:setup, **options)
         end
 
-        before_show do |**options|
+        setup_show do |**options|
           options[:object] ||= options.fetch(:scope) { scope.resolve }.find(options[:id])
 
           options

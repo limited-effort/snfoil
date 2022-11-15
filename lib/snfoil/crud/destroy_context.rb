@@ -42,7 +42,7 @@ module SnFoil
           options
         end
 
-        before_change do |**options|
+        setup_destroy do |**options|
           options[:object] ||= options.fetch(:scope) { scope.resolve }.find(options[:id])
 
           options
