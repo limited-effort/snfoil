@@ -5,8 +5,8 @@ require_relative 'lib/snfoil/version'
 Gem::Specification.new do |spec|
   spec.name          = 'snfoil'
   spec.version       = SnFoil::VERSION
-  spec.authors     = ['Matthew Howes', 'Danny Murphy', 'Cliff Campbell']
-  spec.email       = ['howeszy@gmail.com', 'dmurph24@gmail.com', 'cliffcampbell@hey.com']
+  spec.authors     = ['Matthew Howes', 'Danny Murphy', 'Cliff Campbell', 'Chris Ritsen']
+  spec.email       = ['howeszy@gmail.com', 'dmurph24@gmail.com', 'cliffcampbell@hey.com', 'chris.ritsen@gmail.com']
 
   spec.summary       = 'A Toolbox of Context Behaviors'
   spec.description   = 'A collection of SnFoil gems and additional helper classes'
