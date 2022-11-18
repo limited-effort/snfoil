@@ -29,7 +29,7 @@ module SnFoil
 
         setup_index { |**options| run_interval(:setup, **options) }
 
-        before_index do |**options|
+        setup_index do |**options|
           options[:object] ||= options.fetch(:searcher) { self.class.snfoil_searcher }
                                       .new(scope: options.fetch(:scope) { scope.resolve })
                                       .search(options.fetch(:params) { {} })
