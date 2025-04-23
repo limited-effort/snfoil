@@ -15,8 +15,8 @@
 # limitations under the License.
 
 require 'active_support/concern'
-require_relative './setup_context'
-require_relative './change_context'
+require_relative 'setup_context'
+require_relative 'change_context'
 
 module SnFoil
   module CRUD

@@ -1,0 +1,11 @@
+services:
+  workspace:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    command: sleep infinity
+    volumes:
+      - .:/workspace
+    env_file:
+      - path: .env
+        required: false

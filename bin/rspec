@@ -1,9 +1,7 @@
 #!/usr/bin/env ruby
 # frozen_string_literal: true
 
+require 'rubygems'
 require 'bundler/setup'
-require 'snfoil/policy'
-require 'debug'
-require 'irb'
 
-IRB.start(__FILE__)
+load Gem.bin_path('rspec', 'rspec')

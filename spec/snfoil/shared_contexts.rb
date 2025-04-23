@@ -13,8 +13,7 @@ RSpec.shared_context('with fake model') do
   let(:relation_double) { double }
 
   before do
-    allow(model_double).to receive(:new).and_return(model_instance_double)
-    allow(model_double).to receive(:all).and_return(relation_double)
+    allow(model_double).to receive_messages(new: model_instance_double, all: relation_double)
     allow(relation_double).to receive(:find).and_return(model_instance_double)
     allow(SnFoil).to receive(:adapter).and_return(FakeSuccessORMAdapter)
   end
@@ -54,7 +53,7 @@ class FakeSuccessORMAdapter < SnFoil::Adapters::ORMs::BaseAdapter
   end
 
   def attributes=(attributes)
-    __getobj__.class.new(**__getobj__.attributes.merge(attributes))
+    __getobj__.class.new(**__getobj__.attributes, **attributes)
   end
 end
 
