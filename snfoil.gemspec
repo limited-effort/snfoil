@@ -5,14 +5,14 @@ require_relative 'lib/snfoil/version'
 Gem::Specification.new do |spec|
   spec.name          = 'snfoil'
   spec.version       = SnFoil::VERSION
-  spec.authors     = ['Matthew Howes', 'Danny Murphy', 'Cliff Campbell']
-  spec.email       = ['howeszy@gmail.com', 'dmurph24@gmail.com', 'cliffcampbell@hey.com']
+  spec.authors     = ['Matthew Howes', 'Cliff Campbell']
+  spec.email       = ['matt.howes@limitedeffort.io', 'cliffcampbell@hey.com']
 
   spec.summary       = 'A Toolbox of Context Behaviors'
   spec.description   = 'A collection of SnFoil gems and additional helper classes'
   spec.homepage      = 'https://github.com/limited-effort/snfoil'
   spec.license       = 'Apache-2.0'
-  spec.required_ruby_version = '>= 2.6'
+  spec.required_ruby_version = '>=3.0'
 
   spec.metadata['homepage_uri'] = spec.homepage
   spec.metadata['source_code_uri'] = spec.homepage

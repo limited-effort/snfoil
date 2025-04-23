@@ -16,7 +16,7 @@
 
 require 'active_support/concern'
 require 'snfoil/context'
-require_relative './setup_context'
+require_relative 'setup_context'
 
 module SnFoil
   module CRUD

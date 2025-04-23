@@ -1,11 +1,11 @@
-require:
+plugins:
   - rubocop-performance
   - rubocop-rspec
 
 AllCops:
   NewCops: enable
   SuggestExtensions: false
-  TargetRubyVersion: 2.6
+  TargetRubyVersion: 3.0
 
 # ================ Style ===============
 # TODO: Activate later
@@ -28,7 +28,7 @@ Metrics/BlockLength:
     - snfoil.gemspec
 
 # ================ RSPEC ================
-RSpec/FilePath:
+RSpec/SpecFilePathFormat:
   CustomTransform:
     SnFoil: snfoil
     CRUD: crud
