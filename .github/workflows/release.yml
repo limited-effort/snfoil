@@ -27,7 +27,7 @@ jobs:
 
       - name: Verify version matches
         run: |
-          GEM_VERSION=$(ruby -e "require './lib/snfoil/policy/version.rb'; puts SnFoil::Policy::VERSION")
+          GEM_VERSION=$(ruby -e "require './lib/snfoil/version.rb'; puts SnFoil::VERSION")
           TAG_VERSION=${{ steps.get_version.outputs.VERSION }}
           
           if [ "$GEM_VERSION" != "$TAG_VERSION" ]; then
