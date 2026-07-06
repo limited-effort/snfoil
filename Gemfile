@@ -10,6 +10,7 @@ group :development, :test do
   gem 'debug', '~> 1.10'
   gem 'dry-struct', '~> 1.0'
   gem 'fasterer', '~> 0.11.0'
+  gem 'ostruct', '~> 0.6.0'
   gem 'rake', '~> 13.0'
   gem 'rspec', '~> 3.10'
   gem 'rubocop', '~> 1.75'
