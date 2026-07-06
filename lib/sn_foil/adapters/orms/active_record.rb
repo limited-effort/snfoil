@@ -18,7 +18,7 @@ module SnFoil
           __getobj__.save
         end
 
-        def destroy
+        def destroy # rubocop:disable Naming/PredicateMethod -- reason: This is a method that calls the underlying ActiveRecord method
           __getobj__.destroy
           __getobj__.destroyed?
         end
