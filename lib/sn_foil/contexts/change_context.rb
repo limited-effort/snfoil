@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require 'active_support/concern'
-require_relative './setup_context'
+require_relative 'setup_context'
 
 module SnFoil
   module Contexts

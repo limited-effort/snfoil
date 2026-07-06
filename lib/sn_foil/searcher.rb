@@ -99,14 +99,10 @@ module SnFoil
     end
 
     def transform_params_booleans(params)
-      params.map do |key, value|
-        value = if booleans.include?(key.to_sym)
-                  value_to_boolean(value)
-                else
-                  value
-                end
+      params.to_h do |key, value|
+        value = value_to_boolean(value) if booleans.include?(key.to_sym)
         [key, value]
-      end.to_h
+      end
     end
 
     def value_to_boolean(value)

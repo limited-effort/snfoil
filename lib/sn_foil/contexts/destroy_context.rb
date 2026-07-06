@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
 require 'active_support/concern'
-require_relative './setup_context'
-require_relative './change_context'
+require_relative 'setup_context'
+require_relative 'change_context'
 
 module SnFoil
   module Contexts
@@ -56,7 +56,8 @@ module SnFoil
       def setup_destroy_object(id: nil, object: nil, **options)
         raise ArgumentError, 'one of the following keywords is required: id, object' unless id || object
 
-        options.merge! object: wrap_object(object || scope.resolve.find(id))
+        options[:object] = wrap_object(object || scope.resolve.find(id))
+        options
       end
 
       def destroy(**options)

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require 'active_support/concern'
-require_relative './setup_context'
+require_relative 'setup_context'
 
 module SnFoil
   module Contexts
@@ -35,7 +35,8 @@ module SnFoil
                  end
 
         object.attributes = params
-        options.merge! object: object
+        options[:object] = object
+        options
       end
 
       def build(**options)
