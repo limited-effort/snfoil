@@ -21,7 +21,7 @@
 
   "containerEnv": {
     "DEVCONTAINER": "true",
-    "CLAUDE_CONFIG_DIR": "/home/vscode/.claude"
+    "CLAUDE_CONFIG_DIR": "/root/.claude"
   },
 
   "remoteEnv": {
@@ -36,6 +36,7 @@
   "customizations": {
     "vscode": {
       "extensions": [
+        "anthropic.claude-code",
         "Shopify.ruby-lsp"
       ]
     }
