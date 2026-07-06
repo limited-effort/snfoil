@@ -3,7 +3,7 @@
 require 'spec_helper'
 require 'sn_foil/searcher'
 require 'active_support/concern'
-require_relative './shared_contexts'
+require_relative 'shared_contexts'
 
 RSpec.describe SnFoil::Searcher do
   subject(:searcher) { Class.new TestSearcherClass }
@@ -38,7 +38,7 @@ RSpec.describe SnFoil::Searcher do
 
   describe 'self#model' do
     it 'sets the internal model class' do
-      expect(instance.model.to_s).to match(/Person/)
+      expect(instance.model.to_s).to include('Person')
     end
   end
 
@@ -281,7 +281,7 @@ RSpec.describe SnFoil::Searcher do
         it 'does not convert the value to true(Boolean)' do
           query
           expect(canary.song[0][:data][:parameter]).to be 'true'
-          expect(canary.song[0][:data][:parameter]).not_to eq true
+          expect(canary.song[0][:data][:parameter]).not_to be true
         end
       end
 
@@ -298,7 +298,7 @@ RSpec.describe SnFoil::Searcher do
         it 'does not convert the value to false(Boolean)' do
           query
           expect(canary.song[0][:data][:parameter]).to be 'false'
-          expect(canary.song[0][:data][:parameter]).not_to eq false
+          expect(canary.song[0][:data][:parameter]).not_to be false
         end
       end
     end

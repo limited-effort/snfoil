@@ -6,7 +6,7 @@ require 'sn_foil/policy'
 require 'sn_foil/adapters/orms/base_adapter'
 
 RSpec.shared_context('with fake entity') do
-  let(:entity) { OpenStruct.new }
+  let(:entity) { OpenStruct.new } # rubocop:disable Style/OpenStructUse -- reason: legacy support and its a test double
 end
 
 RSpec.shared_context('with fake model') do
@@ -15,8 +15,7 @@ RSpec.shared_context('with fake model') do
   let(:relation_double) { double }
 
   before do
-    allow(model_double).to receive(:new).and_return(model_instance_double)
-    allow(model_double).to receive(:all).and_return(relation_double)
+    allow(model_double).to receive_messages(new: model_instance_double, all: relation_double)
     allow(relation_double).to receive(:find).and_return(model_instance_double)
     allow(SnFoil).to receive(:adapter).and_return(FakeSuccessORMAdapter)
   end
@@ -47,25 +46,29 @@ class FakeSuccessORMAdapter < SnFoil::Adapters::ORMs::BaseAdapter
     __getobj__.all
   end
 
-  def save
+  def save # rubocop:disable Naming/PredicateMethod -- reason: legacy support
     true
   end
 
-  def destroy
+  def destroy # rubocop:disable Naming/PredicateMethod -- reason: legacy support
     true
   end
 
-  def attributes=(**attributes)
-    self.class.new(**__getobj__.attributes.merge(attributes))
+  def attributes=(attributes)
+    if attributes.nil? || (attributes.is_a?(Hash) && attributes.empty?)
+      self.class.new({})
+    else
+      self.class.new(**__getobj__.attributes, **attributes)
+    end
   end
 end
 
 class FakeFailureORMAdapter < FakeSuccessORMAdapter
-  def save
+  def save # rubocop:disable Naming/PredicateMethod -- reason: legacy support
     false
   end
 
-  def destroy
+  def destroy # rubocop:disable Naming/PredicateMethod -- reason: legacy support
     false
   end
 end

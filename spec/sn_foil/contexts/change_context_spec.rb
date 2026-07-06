@@ -2,6 +2,7 @@
 
 require 'spec_helper'
 require 'sn_foil/contexts/change_context'
+require 'ostruct'
 require 'dry-struct'
 
 RSpec.describe SnFoil::Contexts::ChangeContext do
@@ -10,7 +11,7 @@ RSpec.describe SnFoil::Contexts::ChangeContext do
   let(:permitted_params) { %i[first_name last_name] }
 
   before do
-    including_class.model(OpenStruct)
+    including_class.model(OpenStruct) # rubocop:disable Style/OpenStructUse -- reason: legacy support and its a test double
   end
 
   describe '#self.params' do

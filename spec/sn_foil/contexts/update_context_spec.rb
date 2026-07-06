@@ -50,13 +50,13 @@ RSpec.describe SnFoil::Contexts::UpdateContext do
 
       it 'authorizes any (wrapped) object provided in the options' do
         instance.setup_update_object(params: {}, object: object)
-        expect(policy).to have_received(:new).with(entity, FakeSuccessORMAdapter, anything)
+        expect(policy).to have_received(:new).with(entity, Person).once
         expect(policy_double).to have_received(:update?).once
       end
 
       it 'updates the attributes of any object provided in the options' do
         allow(object).to receive(:attributes).and_call_original
-        instance.setup_update_object(params: {}, object: object)
+        instance.setup_update_object(params: { first_name: 'John' }, object: object)
         expect(object).to have_received(:attributes).once
       end
     end
@@ -69,13 +69,13 @@ RSpec.describe SnFoil::Contexts::UpdateContext do
 
       it 'authorizes any object provided in the options' do
         instance.setup_update_object(params: {}, id: 1)
-        expect(policy).to have_received(:new).with(entity, FakeSuccessORMAdapter, anything)
+        expect(policy).to have_received(:new).with(entity, Person).twice
         expect(policy_double).to have_received(:update?).once
       end
 
       it 'updates the attributes of any object provided in the options' do
         allow(model_instance_double).to receive(:attributes).and_call_original
-        instance.setup_update_object(params: {}, id: 1)
+        instance.setup_update_object(params: { first_name: 'John' }, id: 1)
         expect(model_instance_double).to have_received(:attributes).once
       end
     end
@@ -90,7 +90,7 @@ RSpec.describe SnFoil::Contexts::UpdateContext do
 
     it 'authorizes the object before and after the changes' do
       instance.update(params: params, id: 1)
-      expect(policy).to have_received(:new).with(entity, FakeSuccessORMAdapter, anything).twice
+      expect(policy).to have_received(:new).with(entity, Person).thrice
       expect(policy_double).to have_received(:update?).twice
     end
 
