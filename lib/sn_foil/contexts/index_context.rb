@@ -55,9 +55,9 @@ module SnFoil
 
       def before_setup_index(**options)
         options = setup(**options)
-        options = setup_hooks.reduce(options) { |opts, hook| run_hook(hook, opts) }
+        options = setup_hooks.reduce(options) { |opts, hook| run_hook(hook, **opts) }
         options = setup_index(**options)
-        setup_index_hooks.reduce(options) { |opts, hook| run_hook(hook, opts) }
+        setup_index_hooks.reduce(options) { |opts, hook| run_hook(hook, **opts) }
       end
     end
   end

@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-require 'pundit'
 require 'active_support/concern'
 require 'active_support/core_ext/string/inflections'
 
@@ -91,7 +90,7 @@ module SnFoil
 
         return send(hook[:method], **options) if hook[:method]
 
-        instance_exec options, &hook[:block]
+        instance_exec **options, &hook[:block]
       end
 
       def hook_valid?(hook, **options)
@@ -105,11 +104,10 @@ module SnFoil
 
       def lookup_policy(object, options)
         lookup = if options[:policy]
-                   options[:policy].new(entity, object, options: options)
+                   options[:policy].new(entity, object)
                  elsif policy
-                   policy.new(entity, object, options: options)
+                   policy.new(entity, object)
                  else
-                   SnFoil.logger.debug 'No policy found. Looking up policy using Pundit. `options` will not be passed to policy'
                    Pundit.policy!(entity, object)
                  end
 

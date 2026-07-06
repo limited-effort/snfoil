@@ -29,8 +29,7 @@ module SnFoil
       def setup_show_object(id: nil, object: nil, **options)
         raise ArgumentError, 'one of the following keywords is required: id, object' unless id || object
 
-        options[:object] = wrap_object(object || scope.resolve.find(id))
-        options
+        options.merge! object: wrap_object(object || scope.resolve.find(id))
       end
 
       def setup_show_hooks
@@ -53,9 +52,9 @@ module SnFoil
 
       def before_setup_show(**options)
         options = setup(**options)
-        options = setup_hooks.reduce(options) { |opts, hook| run_hook(hook, opts) }
+        options = setup_hooks.reduce(options) { |opts, hook| run_hook(hook, **opts) }
         options = setup_show(**options)
-        setup_show_hooks.reduce(options) { |opts, hook| run_hook(hook, opts) }
+        setup_show_hooks.reduce(options) { |opts, hook| run_hook(hook, **opts) }
       end
     end
   end

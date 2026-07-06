@@ -6,7 +6,7 @@ module SnFoil
   module Adapters
     module ORMs
       class BaseAdapter < SimpleDelegator
-        def new(**_params)
+        def new(*_params)
           raise NotImplementedError, '#new not implemented in adapter'
         end
 
