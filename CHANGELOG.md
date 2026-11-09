@@ -1,5 +1,9 @@
 ## [Unreleased]
 
+### Changed
+
+- Require Ruby 3.3 or newer (previously 3.0).
+
 ## [1.1.2] - 2025-04-23
 
 ### Changed
