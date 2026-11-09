@@ -27,6 +27,14 @@ Metrics/BlockLength:
     - spec/**/*_spec.rb
     - snfoil.gemspec
 
+# ================ NAMING ================
+# save/destroy return booleans to match the ORM adapter API they wrap
+Naming/PredicateMethod:
+  AllowedMethods:
+    - call
+    - save
+    - destroy
+
 # ================ RSPEC ================
 RSpec/SpecFilePathFormat:
   CustomTransform:
