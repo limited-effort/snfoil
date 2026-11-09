@@ -5,7 +5,7 @@ plugins:
 AllCops:
   NewCops: enable
   SuggestExtensions: false
-  TargetRubyVersion: 3.0
+  TargetRubyVersion: 3.3
 
 # ================ Style ===============
 # TODO: Activate later
@@ -26,6 +26,14 @@ Metrics/BlockLength:
   Exclude:
     - spec/**/*_spec.rb
     - snfoil.gemspec
+
+# ================ NAMING ================
+# save/destroy return booleans to match the ORM adapter API they wrap
+Naming/PredicateMethod:
+  AllowedMethods:
+    - call
+    - save
+    - destroy
 
 # ================ RSPEC ================
 RSpec/SpecFilePathFormat:
